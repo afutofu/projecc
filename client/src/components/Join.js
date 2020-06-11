@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { setUsername } from "../store/actions";
 
 const JoinComp = styled.div`
   position: relative;
@@ -119,7 +122,7 @@ const Button = styled.button`
   }
 `;
 
-const Join = () => {
+const Join = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
@@ -127,7 +130,7 @@ const Join = () => {
   const onLogin = (e) => {
     e.preventDefault();
     console.log("Login");
-
+    props.setUsername(username);
     setRedirect(true);
   };
 
@@ -160,4 +163,10 @@ const Join = () => {
   return render();
 };
 
-export default Join;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUsername: (username) => dispatch(setUsername(username)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Join);
