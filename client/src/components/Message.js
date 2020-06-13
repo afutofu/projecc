@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const MessageComp = styled.div`
+  display: relative;
   width: 100%;
   background: none;
   display: flex;
@@ -28,7 +29,7 @@ const Name = styled.h3`
 
 const DateComp = styled.p`
   font-size: 12px;
-  color: #555;
+  color: #666;
   margin: 0;
 `;
 
@@ -38,7 +39,7 @@ const MessageText = styled.p`
   margin: 0;
 `;
 
-const Message = ({ message, name }) => {
+const Message = ({ user, msg }) => {
   const dateObj = new Date();
   const date =
     dateObj.getMonth() +
@@ -50,15 +51,14 @@ const Message = ({ message, name }) => {
   const time = dateObj.getHours() + ":" + dateObj.getMinutes();
 
   const dateTime = date + " " + time;
-  //   const dateTime = "0:10";
 
   return (
     <MessageComp>
       <NameDate>
-        <Name>{name}</Name>
+        <Name>{user}</Name>
         <DateComp>{dateTime}</DateComp>
       </NameDate>
-      <MessageText>{message}</MessageText>
+      <MessageText>{msg}</MessageText>
     </MessageComp>
   );
 };

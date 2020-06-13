@@ -15,19 +15,22 @@ const io = socketio(server);
 io.on("connection", (socket) => {
   console.log("New connection!!");
 
-  socket.on("joinChat", ({ name, chat }, callback) => {
-    const { error, user } = addUser(socket.id, name, chat);
+  socket.on("joinChat", ({ name, channel }, callback) => {
+    const { error, user } = addUser(socket.id, name, channel);
 
     if (error) return callback(error);
 
     socket.emit("message", {
       user: "admin",
-      text: `${user.name}, welcome to the room ${user.room}`,
+      msg: `${user.name}, welcome to the room ${user.room}`,
+      channel: user.room,
     });
 
-    socket.broadcast
-      .to(user.room)
-      .emit("message", { user: "admin", text: `${user.name} has joined` });
+    socket.broadcast.to(user.room).emit("message", {
+      user: "admin",
+      msg: `${user.name} has joined`,
+      channel: user.room,
+    });
 
     socket.join(user.room);
 
@@ -37,7 +40,11 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (message, callback) => {
     const user = getUser(socket.id);
 
-    io.to(user.room).emit("message", { user: user.name, text: message });
+    io.to(user.room).emit("message", {
+      user: user.name,
+      msg: message.msg,
+      channel: message.channel,
+    });
 
     callback();
   });

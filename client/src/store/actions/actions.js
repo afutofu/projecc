@@ -1,1 +1,7 @@
+// AUTH
 export const SET_USERNAME = "SET_USERNAME";
+
+// MESSAGES
+export const CHANGE_CHANNEL = "CHANGE_CHANNEL";
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const RECEIVE_MESSAGE = "RECEIVE_MESSAGE";

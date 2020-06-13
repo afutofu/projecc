@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
-const BranchItemComp = styled.div`
+import { changeChannel } from "../store/actions";
+
+const ChannelItemComp = styled.div`
   width: 100%;
   height: 35px;
   font-family: "Montserrat", "san-serif";
@@ -36,18 +39,24 @@ const ItemName = styled.h3`
   font-weight: 600;
 
   transition: 0.1s;
-  ${BranchItemComp}:hover & {
+  ${ChannelItemComp}:hover & {
     color: #ddd;
   }
 `;
 
-const BranchItem = (props) => {
+const ChannelItem = (props) => {
   return (
-    <BranchItemComp>
+    <ChannelItemComp onClick={() => props.changeChannel(props.name)}>
       <ChatPrefix />
       <ItemName>{props.name}</ItemName>
-    </BranchItemComp>
+    </ChannelItemComp>
   );
 };
 
-export default BranchItem;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    changeChannel: (channel) => dispatch(changeChannel(channel)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(ChannelItem);

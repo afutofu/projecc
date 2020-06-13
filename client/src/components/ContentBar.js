@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import BranchItem from "./BranchItem";
+import ChannelItem from "./ChannelItem";
 
 const ContentBarComp = styled.div`
   position: relative;
@@ -40,8 +40,8 @@ const ContentBar = () => {
     <ContentBarComp>
       <Header>Project Name</Header>
       <Container>
-        <BranchItem name="general" />
-        <BranchItem name="deadline" />
+        <ChannelItem name="general" />
+        <ChannelItem name="deadline" />
       </Container>
     </ContentBarComp>
   );

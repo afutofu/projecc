@@ -35,14 +35,12 @@ const Header = styled.div`
   font-size: 16px;
   cursor: default;
   position: relative;
+  background-color: #2b2b2b;
 `;
 
 const Container = styled.div`
   position: relative;
   height: calc(100% - 50px);
-  padding: 0px 20px;
-  padding-top: 0;
-  box-sizing: border-box;
 `;
 
 const Content = (props) => {
