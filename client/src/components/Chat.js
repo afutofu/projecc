@@ -15,14 +15,20 @@ const ChatComp = styled.div`
 
 const Form = styled.form.attrs((props) => ({
   onSubmit: props.onSubmit,
-}))``;
+}))`
+  position: relative;
+  width: 100%;
+  bottom: 0;
+  margin: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+`;
 
 const Input = styled.input.attrs((props) => ({
   placeholder: "Message ~general",
 }))`
-  position: absolute;
+  position: relative;
   width: 100%;
-  bottom: 20px;
   height: 45px;
   padding: 10px 20px;
   border-radius: 10px;
@@ -33,13 +39,7 @@ const Input = styled.input.attrs((props) => ({
   box-sizing: border-box;
   font-size: 14px;
   font-family: "Raleway", "san-serif";
-`;
-
-const InputContainer = styled.div`
-  width: 100%;
-  padding: 0 20px;
-  box-sizing: border-box;
-  /* overflow-y: auto; */
+  margin: 0;
 `;
 
 let socket;

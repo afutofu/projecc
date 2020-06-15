@@ -7,13 +7,16 @@ import { Redirect } from "react-router-dom";
 import ProjectBar from "./ProjectBar";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
+import ChannelAddModal from "./ChannelAddModal";
 
 const ProjectComp = styled.div`
+  position: relative;
   width: 100vw;
   height: 100vh;
   background-color: #1b1b1b;
   color: white;
   display: flex;
+  overflow: hidden;
 `;
 
 let socket;
@@ -30,6 +33,7 @@ const Project = (props) => {
 
     return (
       <ProjectComp>
+        <ChannelAddModal />
         <ProjectBar />
         <ContentBar />
         <Content />

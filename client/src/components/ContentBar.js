@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 import ChannelItem from "./ChannelItem";
+import { channelModalOpen } from "../store/actions/modal";
 
 const ContentBarComp = styled.div`
   position: relative;
@@ -35,16 +37,60 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const ContentBar = () => {
+const AddChannelButton = styled.button`
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  bottom: 0;
+  background: #1e1e1e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: 0;
+  border: none;
+  box-sizing: border-box;
+  padding-top: 5px;
+  cursor: pointer;
+
+  i {
+    color: #888;
+    font-size: 18px;
+    transition: 0.2s;
+  }
+
+  :hover i {
+    color: #ddd;
+  }
+`;
+
+const ContentBar = (props) => {
+  console.log(props.channels);
+
   return (
     <ContentBarComp>
       <Header>Project Name</Header>
       <Container>
-        <ChannelItem name="general" />
-        <ChannelItem name="deadline" />
+        {props.channels.map((channel, i) => {
+          return <ChannelItem key={i} name={channel} />;
+        })}
       </Container>
+      <AddChannelButton onClick={props.channelModalOpen}>
+        <i className="fa fa-plus"></i>
+      </AddChannelButton>
     </ContentBarComp>
   );
 };
 
-export default ContentBar;
+const mapStateToProps = (state) => {
+  return {
+    channels: Object.keys(state.message.channels),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    channelModalOpen: () => dispatch(channelModalOpen()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentBar);

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 import Chat from "./Chat";
 
@@ -48,7 +49,7 @@ const Content = (props) => {
     <ContentComp>
       <Header>
         <ChatPrefix />
-        general
+        {props.selectedChannel}
       </Header>
       <Container>
         <Chat />
@@ -57,4 +58,10 @@ const Content = (props) => {
   );
 };
 
-export default Content;
+const mapStateToProps = (state) => {
+  return {
+    selectedChannel: state.message.selectedChannel,
+  };
+};
+
+export default connect(mapStateToProps)(Content);

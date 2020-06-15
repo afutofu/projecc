@@ -1,16 +1,19 @@
-import { CHANGE_CHANNEL, RECEIVE_MESSAGE } from "../actions/actions";
+import {
+  CHANGE_CHANNEL,
+  RECEIVE_MESSAGE,
+  CREATE_CHANNEL,
+} from "../actions/actions";
 
 let initialState = {
   channels: {
     general: [],
-    deadline: [],
+    music: [],
   },
 };
 
 initialState = {
   channels: {
-    general: [],
-    deadline: [],
+    ...initialState.channels,
   },
   selectedChannel: Object.keys(initialState.channels)[0],
 };
@@ -32,6 +35,11 @@ const messageReducer = (state = initialState, action) => {
             { user: action.payload.user, msg: action.payload.msg },
           ],
         },
+      };
+    case CREATE_CHANNEL:
+      return {
+        ...state,
+        channels: { ...state.channels, [action.payload.channel]: [] },
       };
     default:
       return state;

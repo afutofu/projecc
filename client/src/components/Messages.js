@@ -10,7 +10,14 @@ const MessagesComp = styled.div`
   flex-direction: column-reverse;
   /* justify-content: flex-end; */
   /* align-items: flex-start; */
-  /* overflow-y: auto; */
+  overflow-y: auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+`;
+
+const TopSpace = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const Messages = ({ messages }) => {
@@ -24,6 +31,7 @@ const Messages = ({ messages }) => {
       {newMessages.map((message, i) => {
         return <Message key={i} user={message.user} msg={message.msg} />;
       })}
+      <TopSpace />
     </MessagesComp>
   );
 };
