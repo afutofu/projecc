@@ -2,7 +2,19 @@
 export { setUsername } from "./auth";
 
 // MESSAGES
-export { changeChannel, receiveMessage, createChannel } from "./message";
+export {
+  changeChannel,
+  receiveMessage,
+  createChannel,
+  deleteChannel,
+  createProject,
+  setSelectedProject,
+} from "./message";
 
 // MODAL
-export { channelModalOpen, channelModalClose } from "./modal";
+export {
+  channelModalOpen,
+  channelModalClose,
+  projectModalOpen,
+  projectModalClose,
+} from "./modal";

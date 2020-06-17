@@ -2,12 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import ChannelItem from "./ChannelItem";
+import ChannelBar from "./ChannelBar";
 import { channelModalOpen } from "../store/actions/modal";
 
 const ContentBarComp = styled.div`
   position: relative;
-  margin-left: 70px;
   width: 240px;
   height: 100%;
   background-color: #252525;
@@ -17,7 +16,7 @@ const ContentBarComp = styled.div`
 const Header = styled.div`
   width: 100%;
   height: 50px;
-  border-bottom: 1px solid #111;
+  border-bottom: 1px solid #1b1b1b;
   color: #ddd;
   padding: 10px 20px;
   display: flex;
@@ -37,60 +36,20 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const AddChannelButton = styled.button`
-  position: absolute;
-  width: 100%;
-  height: 40px;
-  bottom: 0;
-  background: #1e1e1e;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  outline: 0;
-  border: none;
-  box-sizing: border-box;
-  padding-top: 5px;
-  cursor: pointer;
-
-  i {
-    color: #888;
-    font-size: 18px;
-    transition: 0.2s;
-  }
-
-  :hover i {
-    color: #ddd;
-  }
-`;
-
 const ContentBar = (props) => {
-  console.log(props.channels);
-
+  const { selectedProject } = props;
   return (
     <ContentBarComp>
-      <Header>Project Name</Header>
-      <Container>
-        {props.channels.map((channel, i) => {
-          return <ChannelItem key={i} name={channel} />;
-        })}
-      </Container>
-      <AddChannelButton onClick={props.channelModalOpen}>
-        <i className="fa fa-plus"></i>
-      </AddChannelButton>
+      <Header>{selectedProject}</Header>
+      {selectedProject === null ? null : <ChannelBar />}
     </ContentBarComp>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    channels: Object.keys(state.message.channels),
+    selectedProject: state.message.selectedProject,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    channelModalOpen: () => dispatch(channelModalOpen()),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContentBar);
+export default connect(mapStateToProps)(ContentBar);

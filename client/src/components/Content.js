@@ -24,7 +24,7 @@ const ChatPrefix = styled.span`
 const Header = styled.div`
   width: 100%;
   height: 50px;
-  border-bottom: 1px solid #111;
+  border-bottom: 1px solid #1b1b1b;
   color: #ddd;
   padding: 10px 20px;
   display: flex;

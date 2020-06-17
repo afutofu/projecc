@@ -22,9 +22,12 @@ const TopSpace = styled.div`
 
 const Messages = ({ messages }) => {
   let newMessages = [];
-  messages.forEach((message) => {
-    newMessages.unshift(message);
-  });
+
+  if (messages !== undefined) {
+    messages.forEach((message) => {
+      newMessages.unshift(message);
+    });
+  }
 
   return (
     <MessagesComp>

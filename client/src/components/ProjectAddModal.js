@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
-import { createChannel } from "../store/actions";
-import { channelModalClose } from "../store/actions";
+import { createProject } from "../store/actions";
+import { projectModalClose } from "../store/actions";
 
 const modalFadeIn = keyframes`
   0% {
@@ -38,7 +38,7 @@ const modalFadeOut = keyframes`
 const ButtonContainerHeight = "80px";
 const horizontalPadding = "25px";
 
-const ChannelAddModalComp = styled.div`
+const ProjectAddModalComp = styled.div`
   position: relative;
   color: #ddd;
   position: absolute;
@@ -171,62 +171,56 @@ const CancelButton = styled.button`
 
 let firstRender = true;
 const ChannelAddModal = (props) => {
-  const [channelName, setChannelName] = useState("");
-  const {
-    modalOpen,
-    createChannel,
-    channelModalClose,
-    selectedProject,
-  } = props;
+  const [projectName, setProjectName] = useState("");
+  const { modalOpen, createProject, projectModalClose } = props;
 
   if (modalOpen) firstRender = false;
 
-  const onCreateChannel = () => {
-    createChannel(channelName, selectedProject);
-    setChannelName("");
-    channelModalClose();
+  const onCreateProject = () => {
+    createProject({ name: projectName });
+    setProjectName("");
+    projectModalClose();
   };
 
   return (
-    <ChannelAddModalComp modalOpen={modalOpen} firstRender={firstRender}>
-      <Backdrop onClick={() => channelModalClose()} />
+    <ProjectAddModalComp modalOpen={modalOpen} firstRender={firstRender}>
+      <Backdrop onClick={() => projectModalClose()} />
       <ChannelAddBox>
         <Container>
-          <Title>create a channel</Title>
-          <Header>channel name</Header>
+          <Title>create a project</Title>
+          <Header>project name</Header>
+
           <Input
-            onChange={(e) => setChannelName(e.target.value)}
-            value={channelName}
+            onChange={(e) => setProjectName(e.target.value)}
+            value={projectName}
             onKeyPress={(e) => {
-              if (e.key === "Enter") onCreateChannel();
+              if (e.key === "Enter") onCreateProject();
             }}
           />
         </Container>
         <ButtonContainer>
-          <CreateButton onClick={() => onCreateChannel()}>
+          <CreateButton onClick={() => onCreateProject()}>
             Create Channel
           </CreateButton>
-          <CancelButton onClick={() => channelModalClose()}>
+          <CancelButton onClick={() => projectModalClose()}>
             Cancel
           </CancelButton>
         </ButtonContainer>
       </ChannelAddBox>
-    </ChannelAddModalComp>
+    </ProjectAddModalComp>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    modalOpen: state.modal.channelModalOpen,
-    selectedProject: state.message.selectedProject,
+    modalOpen: state.modal.projectModalOpen,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createChannel: (channel, project) =>
-      dispatch(createChannel(channel, project)),
-    channelModalClose: () => dispatch(channelModalClose()),
+    createProject: (project) => dispatch(createProject(project)),
+    projectModalClose: () => dispatch(projectModalClose()),
   };
 };
 

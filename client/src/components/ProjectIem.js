@@ -8,6 +8,7 @@ const ProjectItemComp = styled.div`
   background-color: #444;
   color: white;
   border-radius: 50%;
+  box-sizing: border-box;
   cursor: pointer;
 
   transition: 0.2s;
@@ -17,8 +18,22 @@ const ProjectItemComp = styled.div`
   }
 `;
 
-const ProjectItem = () => {
-  return <ProjectItemComp></ProjectItemComp>;
+const ProjectItem = (props) => {
+  const { setSelectedProject, project } = props;
+
+  if (project === null) {
+    return (
+      <ProjectItemComp
+        onClick={() => setSelectedProject(null)}
+      ></ProjectItemComp>
+    );
+  }
+
+  return (
+    <ProjectItemComp
+      onClick={() => setSelectedProject(project.name)}
+    ></ProjectItemComp>
+  );
 };
 
 export default ProjectItem;

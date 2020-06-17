@@ -1,6 +1,6 @@
 import { SET_USERNAME } from "../actions/actions";
 
-const initialState = { isLogged: false, username: "" };
+const initialState = { isLogged: true, username: "s" };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {

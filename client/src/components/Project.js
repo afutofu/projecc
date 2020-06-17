@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 import ProjectBar from "./ProjectBar";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
+import ProjectAddModal from "./ProjectAddModal";
 import ChannelAddModal from "./ChannelAddModal";
 
 const ProjectComp = styled.div`
@@ -33,6 +34,7 @@ const Project = (props) => {
 
     return (
       <ProjectComp>
+        <ProjectAddModal />
         <ChannelAddModal />
         <ProjectBar />
         <ContentBar />

@@ -60,7 +60,6 @@ const Chat = (props) => {
     );
 
     socket.on("message", (message) => {
-      console.log(message);
       props.receiveMessage(message);
     });
 
