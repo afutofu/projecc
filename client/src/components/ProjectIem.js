@@ -31,7 +31,7 @@ const ProjectItem = (props) => {
 
   return (
     <ProjectItemComp
-      onClick={() => setSelectedProject(project.name)}
+      onClick={() => setSelectedProject(project)}
     ></ProjectItemComp>
   );
 };

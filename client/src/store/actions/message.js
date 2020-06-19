@@ -1,5 +1,5 @@
 import {
-  CHANGE_CHANNEL,
+  SET_SELECTED_CHANNEL,
   RECEIVE_MESSAGE,
   CREATE_CHANNEL,
   DELETE_CHANNEL,
@@ -7,10 +7,10 @@ import {
   SET_SELECTED_PROJECT,
 } from "./actions";
 
-export const changeChannel = (channel) => {
+export const setSelectedChannel = (channel, project) => {
   return {
-    type: CHANGE_CHANNEL,
-    payload: { channel },
+    type: SET_SELECTED_CHANNEL,
+    payload: { channel, project },
   };
 };
 
@@ -22,10 +22,10 @@ export const receiveMessage = (message) => {
   };
 };
 
-export const createChannel = (channel, projectName) => {
+export const createChannel = (channel, project) => {
   return {
     type: CREATE_CHANNEL,
-    payload: { channel, projectName },
+    payload: { channel, project },
   };
 };
 

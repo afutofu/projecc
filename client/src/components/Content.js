@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
@@ -44,23 +44,63 @@ const Container = styled.div`
   height: calc(100% - 50px);
 `;
 
+const CenterContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", "san-serif";
+`;
+
 const Content = (props) => {
+  const { selectedProject, projects } = props;
+
+  let selectedChannel = null;
+
+  if (selectedProject) {
+    const project = projects.find(
+      (project) => project.name === selectedProject
+    );
+    if (project) {
+      selectedChannel = project.selectedChannel;
+    }
+  }
+
+  if (selectedProject && selectedProject.selectedChannel) {
+    return (
+      <ContentComp>
+        <Header>
+          <ChatPrefix />
+          {selectedProject.selectedChannel}
+        </Header>
+        <Container>
+          <Chat />
+        </Container>
+      </ContentComp>
+    );
+  } else if (selectedProject && !selectedChannel) {
+    return (
+      <ContentComp>
+        <CenterContainer>No Channel Selected</CenterContainer>
+      </ContentComp>
+    );
+  }
+
   return (
     <ContentComp>
-      <Header>
-        <ChatPrefix />
-        {props.selectedChannel}
-      </Header>
-      <Container>
-        <Chat />
-      </Container>
+      <CenterContainer>No Project Selected</CenterContainer>
     </ContentComp>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    selectedChannel: state.message.selectedChannel,
+    selectedProject: state.message.selectedProject,
+    projects: state.message.projects,
+    selectedChannel: state.message.selectedProject
+      ? state.message.selectedProject.selectedChannel
+      : null,
   };
 };
 

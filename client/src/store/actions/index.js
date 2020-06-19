@@ -3,7 +3,7 @@ export { setUsername } from "./auth";
 
 // MESSAGES
 export {
-  changeChannel,
+  setSelectedChannel,
   receiveMessage,
   createChannel,
   deleteChannel,

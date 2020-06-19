@@ -1,5 +1,5 @@
 import {
-  CHANGE_CHANNEL,
+  SET_SELECTED_CHANNEL,
   RECEIVE_MESSAGE,
   CREATE_CHANNEL,
   DELETE_CHANNEL,
@@ -21,49 +21,66 @@ initialState = {
   selectedChannel: Object.keys(initialState.channels)[0],
 };
 
-// initialState = {
-//   projects: {
-//     channels: {
-//       general: [],
-//       music: [],
-//     },
-//     selectedChannel: null,
-//   },
-//   selectedProject: null,
-// };
+const setSelectedChannel = (state, action) => {
+  const projectName = action.payload.project.name;
+  const newSelectedChannel = action.payload.channel;
+
+  let newState = { ...state };
+
+  newState.projects.map((project) => {
+    if (project.name === projectName) {
+      project.selectedChannel = newSelectedChannel;
+    }
+    return project;
+  });
+
+  return newState;
+};
 
 const createChannel = (state, action) => {
-  const projectName = action.payload.projectName;
+  const projectName = action.payload.project.name;
   const newChannel = action.payload.channel;
 
-  return {
+  let newSelectedProject = state.selectedProject;
+
+  let newState = {
     ...state,
     projects: state.projects.map((project) => {
       if (project.name === projectName) {
-        return {
+        newSelectedProject = {
           ...project,
           channels: { ...project.channels, [newChannel]: [] },
           selectedChannel: newChannel,
         };
+        return newSelectedProject;
       }
       return project;
     }),
   };
+
+  newState = {
+    ...newState,
+    selectedProject: newSelectedProject,
+  };
+
+  return newState;
 };
 
 const deleteChannel = (state, action) => {
   const projectName = action.payload.projectName;
   const channelToDelete = action.payload.channel;
 
-  let newSelectedChannel = null;
   let newState = { ...state };
 
   newState.projects.map((project) => {
     if (project.name === projectName) {
+      delete project.channels[channelToDelete];
+
       if (Object.keys(project.channels).length > 0) {
         project.selectedChannel = Object.keys(project.channels)[0];
+      } else {
+        project.selectedChannel = null;
       }
-      delete project.channels[channelToDelete];
     }
     return project;
   });
@@ -73,11 +90,12 @@ const deleteChannel = (state, action) => {
 
 const messageReducer = (state = initialState, action) => {
   switch (action.type) {
-    case CHANGE_CHANNEL:
-      return {
-        ...state,
-        selectedChannel: action.payload.channel,
-      };
+    case SET_SELECTED_CHANNEL:
+      setSelectedChannel(state, action);
+    // return {
+    //   ...state,
+    //   selectedChannel: action.payload.channel,
+    // };
     case RECEIVE_MESSAGE:
       return {
         ...state,
@@ -90,10 +108,6 @@ const messageReducer = (state = initialState, action) => {
         },
       };
     case CREATE_CHANNEL:
-      // return {
-      //   ...state,
-      //   channels: { ...state.channels, [action.payload.channel]: [] },
-      // };
       return createChannel(state, action);
     case DELETE_CHANNEL:
       return deleteChannel(state, action);
@@ -101,7 +115,7 @@ const messageReducer = (state = initialState, action) => {
       return {
         ...state,
         projects: [...state.projects, action.payload],
-        selectedProject: action.payload.name,
+        selectedProject: action.payload,
       };
     case SET_SELECTED_PROJECT:
       return {

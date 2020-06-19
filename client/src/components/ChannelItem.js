@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { changeChannel, deleteChannel } from "../store/actions";
+import { setSelectedChannel, deleteChannel } from "../store/actions";
 
 const ChannelItemComp = styled.div`
   width: 100%;
@@ -17,6 +17,7 @@ const ChannelItemComp = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: ${(props) => (props.selected ? "#333" : "none")};
   cursor: pointer;
 
   transition: 0.1s;
@@ -37,7 +38,7 @@ const ChatPrefix = styled.span`
 
 const ItemName = styled.h3`
   font-size: 14px;
-  color: #888;
+  color: ${(props) => (props.selected ? "#ddd" : "#888")};
   margin: 0;
   font-weight: 600;
 
@@ -80,18 +81,28 @@ const Button = styled.div`
 `;
 
 const ChannelItem = (props) => {
-  const { changeChannel, deleteChannel, projectName } = props;
+  const {
+    setSelectedChannel,
+    deleteChannel,
+    projectName,
+    selected,
+    name,
+    project,
+  } = props;
 
   const onDeleteChannel = (e) => {
     e.stopPropagation();
-    deleteChannel(props.name, projectName);
+    deleteChannel(name, projectName);
   };
 
   return (
-    <ChannelItemComp onClick={() => changeChannel(props.name)}>
+    <ChannelItemComp
+      onClick={() => setSelectedChannel(name, project)}
+      selected={selected}
+    >
       <ItemContainer>
         <ChatPrefix />
-        <ItemName>{props.name}</ItemName>
+        <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
       <Buttons>
         <Button onClick={(e) => onDeleteChannel(e)}>
@@ -104,7 +115,8 @@ const ChannelItem = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    changeChannel: (channel) => dispatch(changeChannel(channel)),
+    setSelectedChannel: (channel, project) =>
+      dispatch(setSelectedChannel(channel, project)),
     deleteChannel: (channel, projectName) =>
       dispatch(deleteChannel(channel, projectName)),
   };

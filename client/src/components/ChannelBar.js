@@ -65,7 +65,7 @@ const AddChannelButton = styled.button`
 `;
 
 const ContentBar = (props) => {
-  const { channelModalOpen, project, channels } = props;
+  const { channelModalOpen, project, channels, selectedChannel } = props;
 
   // const channels = Object.keys(project.channels);
   return (
@@ -73,7 +73,13 @@ const ContentBar = (props) => {
       <Container>
         {channels.map((channel, i) => {
           return (
-            <ChannelItem key={i} name={channel} projectName={project.name} />
+            <ChannelItem
+              key={i}
+              name={channel}
+              projectName={project.name}
+              project={project}
+              selected={channel == selectedChannel ? true : false}
+            />
           );
         })}
       </Container>
@@ -85,14 +91,15 @@ const ContentBar = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { selectedProject, projects } = state.message;
+  const { selectedProject } = state.message;
 
-  const project = projects.find((project) => project.name === selectedProject);
+  console.log(selectedProject);
 
-  if (project) {
+  if (selectedProject) {
     return {
-      project,
-      channels: Object.keys(project.channels),
+      project: selectedProject,
+      channels: Object.keys(selectedProject.channels),
+      selectedChannel: selectedProject.selectedChannel,
     };
   }
 };

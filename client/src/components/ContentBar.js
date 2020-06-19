@@ -7,10 +7,12 @@ import { channelModalOpen } from "../store/actions/modal";
 
 const ContentBarComp = styled.div`
   position: relative;
-  width: 240px;
+  width: ${({ selectedProject }) =>
+    selectedProject === null ? "0px" : "240px"};
   height: 100%;
   background-color: #252525;
   box-sizing: border-box;
+  transition: 1s;
 `;
 
 const Header = styled.div`
@@ -38,9 +40,10 @@ const Container = styled.div`
 
 const ContentBar = (props) => {
   const { selectedProject } = props;
+
   return (
-    <ContentBarComp>
-      <Header>{selectedProject}</Header>
+    <ContentBarComp selectedProject={selectedProject}>
+      <Header>{selectedProject ? selectedProject.name : null}</Header>
       {selectedProject === null ? null : <ChannelBar />}
     </ContentBarComp>
   );
