@@ -15,10 +15,10 @@ export const setSelectedChannel = (channel, project) => {
 };
 
 export const receiveMessage = (message) => {
-  const { user, msg, channel } = message;
+  const { user, msg, projectName, channel } = message;
   return {
     type: RECEIVE_MESSAGE,
-    payload: { user, msg, channel },
+    payload: { user, msg, projectName, channel },
   };
 };
 
@@ -37,10 +37,9 @@ export const deleteChannel = (channel, projectName) => {
 };
 
 export const createProject = (project) => {
-  const { name } = project;
   return {
     type: CREATE_PROJECT,
-    payload: { name, channels: { general: [] }, selectedChannel: "general" },
+    payload: project,
   };
 };
 

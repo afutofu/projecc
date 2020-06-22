@@ -75,7 +75,10 @@ const Content = (props) => {
           {selectedProject.selectedChannel}
         </Header>
         <Container>
-          <Chat />
+          <Chat
+            selectedProject={selectedProject}
+            selectedChannel={selectedProject.selectedChannel}
+          />
         </Container>
       </ContentComp>
     );

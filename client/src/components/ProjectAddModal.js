@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
+import io from "socket.io-client";
 
 import { createProject } from "../store/actions";
 import { projectModalClose } from "../store/actions";
@@ -169,15 +170,26 @@ const CancelButton = styled.button`
   }
 `;
 
+let socket;
 let firstRender = true;
 const ChannelAddModal = (props) => {
+  const ENDPOINT = "localhost:5000";
   const [projectName, setProjectName] = useState("");
-  const { modalOpen, createProject, projectModalClose } = props;
+  const { modalOpen, createProject, projectModalClose, username } = props;
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+
+    socket.on("receiveCreatedProject", ({ createdProject }, callback) => {
+      callback();
+      createProject(createdProject);
+    });
+  }, []);
 
   if (modalOpen) firstRender = false;
 
   const onCreateProject = () => {
-    createProject({ name: projectName });
+    socket.emit("createProject", { projectName, creatorName: username });
     setProjectName("");
     projectModalClose();
   };
@@ -214,6 +226,7 @@ const ChannelAddModal = (props) => {
 const mapStateToProps = (state) => {
   return {
     modalOpen: state.modal.projectModalOpen,
+    username: state.auth.username,
   };
 };
 

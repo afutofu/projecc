@@ -125,11 +125,10 @@ const Button = styled.button`
 const Join = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(true);
 
   const onLogin = (e) => {
     e.preventDefault();
-    console.log("Login");
     props.setUsername(username);
     setRedirect(true);
   };

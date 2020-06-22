@@ -37,6 +37,25 @@ const setSelectedChannel = (state, action) => {
   return newState;
 };
 
+const receiveMessage = (state, action) => {
+  const { user, msg, projectName, channel } = action.payload;
+
+  let newState = { ...state };
+
+  newState.projects.map((project) => {
+    if (project.name === projectName) {
+      project.channels = {
+        ...project.channels,
+        [channel]: [...project.channels[channel], { user, msg }],
+      };
+      return project;
+    }
+    return project;
+  });
+
+  return newState;
+};
+
 const createChannel = (state, action) => {
   const projectName = action.payload.project.name;
   const newChannel = action.payload.channel;
@@ -91,22 +110,19 @@ const deleteChannel = (state, action) => {
 const messageReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_SELECTED_CHANNEL:
-      setSelectedChannel(state, action);
-    // return {
-    //   ...state,
-    //   selectedChannel: action.payload.channel,
-    // };
+      return setSelectedChannel(state, action);
     case RECEIVE_MESSAGE:
-      return {
-        ...state,
-        channels: {
-          ...state.channels,
-          [action.payload.channel]: [
-            ...state.channels[action.payload.channel],
-            { user: action.payload.user, msg: action.payload.msg },
-          ],
-        },
-      };
+      // return {
+      //   ...state,
+      //   channels: {
+      //     ...state.channels,
+      //     [action.payload.channel]: [
+      //       ...state.channels[action.payload.channel],
+      //       { user: action.payload.user, msg: action.payload.msg },
+      //     ],
+      //   },
+      // };
+      return receiveMessage(state, action);
     case CREATE_CHANNEL:
       return createChannel(state, action);
     case DELETE_CHANNEL:

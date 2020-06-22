@@ -93,8 +93,6 @@ const ContentBar = (props) => {
 const mapStateToProps = (state) => {
   const { selectedProject } = state.message;
 
-  console.log(selectedProject);
-
   if (selectedProject) {
     return {
       project: selectedProject,

@@ -46,45 +46,61 @@ let socket;
 
 const Chat = (props) => {
   const [message, setMessage] = useState("");
-  const ENDPOINT = "localhost:5000";
+  const [messages, setMessages] = useState([]);
+  const { selectedProject, selectedChannel, receiveMessage, username } = props;
+  const ENDPOINT = `localhost:5000/${selectedProject.name}`;
 
   useEffect(() => {
     socket = io(ENDPOINT);
 
-    if (props.username === "") return;
+    if (username === "") return;
 
+    // Join channel
     socket.emit(
-      "joinChat",
-      { name: props.username, channel: props.selectedChannel },
-      () => {}
+      "joinChannel",
+      { name: username, channel: selectedChannel },
+      () => {
+        // console.log("Joined channel");
+      }
     );
 
+    // Listening for message from server
     socket.on("message", (message) => {
-      props.receiveMessage(message);
+      // Send message to redux store
+      receiveMessage(message);
+      setMessages([...messages, message]);
     });
 
     return () => {
+      // Leave channel
       socket.emit("disconnect");
-      socket.off();
+      console.log("disconnect");
+      socket.close();
     };
   }, []);
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
     if (message) {
+      // Send message to server
       socket.emit(
         "sendMessage",
-        { msg: message, channel: props.selectedChannel },
+        {
+          msg: message,
+          projectName: selectedProject.name,
+          channel: selectedChannel,
+        },
         () => {
           setMessage("");
         }
       );
     }
   };
-
+  console.log(selectedProject);
+  console.log(selectedProject.channels);
   return (
     <ChatComp>
-      <Messages messages={props.messages} />
+      <Messages messages={selectedProject.channels[selectedChannel]} />
       <Form onSubmit={onMessageSubmit}>
         <Input onChange={(e) => setMessage(e.target.value)} value={message} />
       </Form>
@@ -95,8 +111,8 @@ const Chat = (props) => {
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
-    selectedChannel: state.message.selectedChannel,
-    messages: state.message.channels[state.message.selectedChannel],
+    // selectedChannel: state.message.selectedChannel,
+    // messages: state.message.channels[state.message.selectedChannel],
   };
 };
 
