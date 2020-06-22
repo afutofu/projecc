@@ -20,4 +20,8 @@ const createProject = (projectName, creatorName) => {
   return { createdProject };
 };
 
-module.exports = { createProject };
+const clearProjects = () => {
+  projects = [];
+};
+
+module.exports = { createProject, clearProjects };

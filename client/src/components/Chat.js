@@ -74,7 +74,6 @@ const Chat = (props) => {
     return () => {
       // Leave channel
       socket.emit("disconnect");
-      console.log("disconnect");
       socket.close();
     };
   }, []);
@@ -96,8 +95,6 @@ const Chat = (props) => {
       );
     }
   };
-  console.log(selectedProject);
-  console.log(selectedProject.channels);
   return (
     <ChatComp>
       <Messages messages={selectedProject.channels[selectedChannel]} />

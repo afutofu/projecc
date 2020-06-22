@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 
 import ChannelBar from "./ChannelBar";
-import { channelModalOpen } from "../store/actions/modal";
 
 const ContentBarComp = styled.div`
   position: relative;
@@ -12,7 +11,7 @@ const ContentBarComp = styled.div`
   height: 100%;
   background-color: #252525;
   box-sizing: border-box;
-  transition: 1s;
+  transition: 0.5s;
 `;
 
 const Header = styled.div`
