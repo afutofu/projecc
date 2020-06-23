@@ -5,20 +5,37 @@ import {
   DELETE_CHANNEL,
   CREATE_PROJECT,
   SET_SELECTED_PROJECT,
+  FETCH_PROJECTS_BEGIN,
+  FETCH_PROJECTS_SUCCESS,
+  FETCH_PROJECTS_FAIL,
 } from "../actions/actions";
 
 let initialState = {
-  channels: {
-    general: [],
-    music: [],
-  },
+  loading: false,
+  error: false,
   projects: [],
   selectedProject: null,
 };
 
-initialState = {
-  ...initialState,
-  selectedChannel: Object.keys(initialState.channels)[0],
+const fetchProjectsSuccess = (state, payload) => {
+  const { projects } = payload;
+  let newProjects = [];
+
+  Object.keys(projects).forEach((key) => {
+    let project = projects[key];
+    if (Object.keys(project.channels).length > 0) {
+      // Set selectedChannel to first channel in channels
+      project.selectedChannel = Object.keys(project.channels)[0];
+    } else {
+      project.selectedChannel = null;
+    }
+    newProjects.push(project);
+  });
+
+  return {
+    ...state,
+    projects: newProjects,
+  };
 };
 
 const setSelectedChannel = (state, action) => {
@@ -109,19 +126,22 @@ const deleteChannel = (state, action) => {
 
 const messageReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_PROJECTS_BEGIN:
+      return {
+        ...state,
+        loading: true,
+      };
+    case FETCH_PROJECTS_SUCCESS:
+      return fetchProjectsSuccess(state, action.payload);
+    case FETCH_PROJECTS_FAIL:
+      return {
+        ...state,
+        error: action.payload.err,
+        loading: false,
+      };
     case SET_SELECTED_CHANNEL:
       return setSelectedChannel(state, action);
     case RECEIVE_MESSAGE:
-      // return {
-      //   ...state,
-      //   channels: {
-      //     ...state.channels,
-      //     [action.payload.channel]: [
-      //       ...state.channels[action.payload.channel],
-      //       { user: action.payload.user, msg: action.payload.msg },
-      //     ],
-      //   },
-      // };
       return receiveMessage(state, action);
     case CREATE_CHANNEL:
       return createChannel(state, action);
@@ -138,6 +158,7 @@ const messageReducer = (state = initialState, action) => {
         ...state,
         selectedProject: action.payload.project,
       };
+
     default:
       return state;
   }

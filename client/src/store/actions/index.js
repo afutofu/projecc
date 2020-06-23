@@ -9,6 +9,7 @@ export {
   deleteChannel,
   createProject,
   setSelectedProject,
+  fetchProjects,
 } from "./message";
 
 // MODAL

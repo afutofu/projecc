@@ -3,12 +3,15 @@ import styled from "styled-components";
 import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import axios from "axios";
 
 import ProjectBar from "./ProjectBar";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
 import ProjectAddModal from "./ProjectAddModal";
 import ChannelAddModal from "./ChannelAddModal";
+
+import { fetchProjects } from "../store/actions";
 
 const ProjectComp = styled.div`
   position: relative;
@@ -25,8 +28,11 @@ const Project = (props) => {
   const ENDPOINT = "localhost:5000";
   const [redirect, setRedirect] = useState(false);
 
+  const { fetchProjects } = props;
+
   useEffect(() => {
     if (props.isLogged == false) setRedirect(true);
+    fetchProjects();
   }, []);
 
   const render = () => {
@@ -52,4 +58,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Project);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchProjects: () => dispatch(fetchProjects()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Project);
