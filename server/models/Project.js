@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = require("bson-objectid");
 
 const ProjectSchema = mongoose.Schema({
   name: {
@@ -10,8 +11,14 @@ const ProjectSchema = mongoose.Schema({
     default: [],
   },
   channels: {
-    type: Object,
-    default: { general: [] },
+    type: Array,
+    default: [
+      {
+        _id: ObjectId(),
+        name: "general",
+        messages: [],
+      },
+    ],
   },
 });
 

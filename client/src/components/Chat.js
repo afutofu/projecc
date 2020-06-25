@@ -80,6 +80,7 @@ const Chat = (props) => {
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
+    console.log(message);
     if (message) {
       // Send message to server
       socket.emit(

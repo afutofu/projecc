@@ -1,82 +1,75 @@
 const express = require("express");
 const router = express.Router();
 
-// Project Modal
+// Project Model
 const Project = require("../../models/Project");
+const { update } = require("../../models/Project");
 
-// @route   GET api/projects
+// @route   GET /api/projects
 // @desc    Get All Projects
 // @access  Public
-router.get("/", async (req, res) => {
-  try {
-    const projects = await Project.find();
-    res.json(projects);
-  } catch (err) {
-    res.json({ message: err });
-  }
+router.get("/", (req, res) => {
+  Project.find((err, projects) => {
+    if (err) return res.status(500).send(err);
+    res.status(200).send(projects);
+  });
 });
 
-// @route   GET api/projects/:projectId
+// @route   GET /api/projects/:projectId
 // @desc    Get a Project
 // @access  Public
-router.get("/:projectId", async (req, res) => {
+router.get("/:projectId", (req, res) => {
   const projectId = req.params.projectId;
 
-  try {
-    const foundProject = await Project.findById(projectId);
+  Project.findById(projectId, (err, foundProject) => {
+    if (err) return res.status(500).send(err);
     res.send(foundProject);
-  } catch (err) {
-    res.json({ message: err });
-  }
+  });
 });
 
-// @route   POST api/projects
+// @route   POST /api/projects
 // @desc    Create a Project
 // @access  Public
-router.post("/", async (req, res) => {
-  const project = new Project({
+router.post("/", (req, res) => {
+  const newProject = new Project({
     name: req.body.name,
     members: [req.body.creatorName],
   });
 
-  try {
-    const savedProject = await project.save();
-    res.json(savedProject);
-  } catch (err) {
-    res.json({ message: err });
-  }
+  newProject.save((err) => {
+    if (err) return res.status(500).send(err);
+    res.status(200).send(newProject);
+  });
 });
 
-// @route   UPDATE api/projects/:projectId
+// @route   UPDATE /api/projects/:projectId
 // @desc    Delete a Project
 // @access  Public
-router.patch("/:projectId", async (req, res) => {
+router.patch("/:projectId", (req, res) => {
   const projectId = req.params.projectId;
-  const updateProject = req.body; // {name:"project"}
+  const updates = req.body; // {name:"project"}
 
-  try {
-    const updatedProject = await Project.updateOne(
-      { _id: projectId },
-      { $set: updateProject }
-    );
-    res.json(updatedProject);
-  } catch (err) {
-    res.json({ message: err });
-  }
+  Project.findByIdAndUpdate(
+    projectId,
+    updates,
+    { new: true },
+    (err, updatedProject) => {
+      if (err) res.json({ message: err });
+      res.send(updatedProject);
+    }
+  );
 });
 
-// @route   DELETE api/projects/:projectId
+// @route   DELETE /api/projects/:projectId
 // @desc    Delete a Project
 // @access  Public
 router.delete("/:projectId", async (req, res) => {
   const projectId = req.params.projectId;
 
-  try {
-    const removedPost = await Project.remove({ _id: projectId });
-    res.json(removedPost);
-  } catch (err) {
-    res.json({ message: err });
-  }
+  Project.findByIdAndDelete(projectId, (err, deletedProject) => {
+    if (err) return res.status(500).send(err);
+    res.status(200).send(deletedProject);
+  });
 });
 
 module.exports = router;

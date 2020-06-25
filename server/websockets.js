@@ -59,12 +59,6 @@ const connectSocket = (server) => {
 
           // Listening for socket to leave channel
           socket.on("disconnect", () => {
-            // const connectedNspSockets = Object.keys(projectNsp.connected);
-            // connectedNspSockets.forEach((socketId) => {
-            //   projectNsp.connected[socketId].disconnect();
-            // });
-            // projectNsp.removeAllListeners();
-            // delete io.nsps[`/${createdProject.name}`];
             removeUser(socket.id);
             console.log(socket.id, "has left the channel");
             socket.off;

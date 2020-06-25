@@ -179,29 +179,40 @@ const ChannelAddModal = (props) => {
 
   useEffect(() => {
     socket = io(ENDPOINT);
-
     socket.on("receiveCreatedProject", ({ createdProject }, callback) => {
       callback();
-      createProject(createdProject);
     });
   }, []);
 
   if (modalOpen) firstRender = false;
 
   const onCreateProject = () => {
-    socket.emit("createProject", { projectName, creatorName: username });
+    createProject({ name: projectName, creatorName: username })
+      .then((createdProject) => {
+        console.log(createdProject);
+        socket.emit("createProject", {
+          projectId: createdProject._id,
+          projectName,
+          creatorName: username,
+        });
+        setProjectName("");
+        projectModalClose();
+      })
+      .catch((err) => {});
+  };
+
+  const onProjectModalClose = () => {
     setProjectName("");
     projectModalClose();
   };
 
   return (
     <ProjectAddModalComp modalOpen={modalOpen} firstRender={firstRender}>
-      <Backdrop onClick={() => projectModalClose()} />
+      <Backdrop onClick={() => onProjectModalClose()} />
       <ChannelAddBox>
         <Container>
           <Title>create a project</Title>
           <Header>project name</Header>
-
           <Input
             onChange={(e) => setProjectName(e.target.value)}
             value={projectName}
@@ -214,7 +225,7 @@ const ChannelAddModal = (props) => {
           <CreateButton onClick={() => onCreateProject()}>
             Create Channel
           </CreateButton>
-          <CancelButton onClick={() => projectModalClose()}>
+          <CancelButton onClick={() => onProjectModalClose()}>
             Cancel
           </CancelButton>
         </ButtonContainer>
