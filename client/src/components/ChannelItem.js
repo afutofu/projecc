@@ -75,7 +75,11 @@ const Button = styled.div`
   transition: 0.2s;
   padding: 5px;
 
-  :hover {
+  i {
+    transition: 0.2s;
+  }
+
+  :hover i {
     color: #1a8cff;
   }
 `;
@@ -88,16 +92,17 @@ const ChannelItem = (props) => {
     selected,
     name,
     project,
+    _id,
   } = props;
 
   const onDeleteChannel = (e) => {
     e.stopPropagation();
-    deleteChannel(name, projectName);
+    deleteChannel(_id, project._id);
   };
 
   return (
     <ChannelItemComp
-      onClick={() => setSelectedChannel(name, project)}
+      onClick={() => setSelectedChannel(_id, project._id)}
       selected={selected}
     >
       <ItemContainer>

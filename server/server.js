@@ -19,11 +19,13 @@ app.use(express.json());
 const routes = require("./routes");
 const projectsRoute = require("./routes/api/projects");
 const channelsRoute = require("./routes/api/channels");
+const messagesRoute = require("./routes/api/messages");
 
 // ROUTES
 app.use("/", routes);
 app.use("/api/projects", projectsRoute);
 app.use("/api/projects/:projectId/channels", channelsRoute);
+app.use("/api/projects/:projectId/channels/:channelId/messages", messagesRoute);
 
 // CONNECT TO DB
 mongoose.connect(

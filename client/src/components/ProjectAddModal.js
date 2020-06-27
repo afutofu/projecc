@@ -178,10 +178,10 @@ const ChannelAddModal = (props) => {
   const { modalOpen, createProject, projectModalClose, username } = props;
 
   useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.on("receiveCreatedProject", ({ createdProject }, callback) => {
-      callback();
-    });
+    // socket = io(ENDPOINT);
+    // socket.on("receiveCreatedProject", ({ createdProject }, callback) => {
+    //   callback();
+    // });
   }, []);
 
   if (modalOpen) firstRender = false;
@@ -190,15 +190,18 @@ const ChannelAddModal = (props) => {
     createProject({ name: projectName, creatorName: username })
       .then((createdProject) => {
         console.log(createdProject);
-        socket.emit("createProject", {
-          projectId: createdProject._id,
-          projectName,
-          creatorName: username,
-        });
+        // socket.emit("createProject", {
+        //   projectId: createdProject._id,
+        //   projectName,
+        //   creatorName: username,
+        // });
         setProjectName("");
         projectModalClose();
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+        setProjectName("");
+      });
   };
 
   const onProjectModalClose = () => {

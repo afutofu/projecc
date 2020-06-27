@@ -27,18 +27,19 @@ router.post("/", async (req, res) => {
   Project.findById(projectId, (err, foundProject) => {
     if (err) return res.status(500).send(err);
     let newChannels = foundProject.channels;
-    newChannels.push({
+    const newChannel = {
       _id: ObjectId(),
       name: channelName,
       messages: [],
-    });
+    };
+    newChannels.push(newChannel);
     Project.findByIdAndUpdate(
       projectId,
       { channels: newChannels },
       { new: true },
       (err, updatedProject) => {
         if (err) return res.status(500).send(err);
-        res.status(200).send(updatedProject.channels);
+        res.status(200).send(newChannel);
       }
     );
   });
@@ -90,7 +91,7 @@ router.delete("/:channelId", async (req, res) => {
       { new: true },
       (err, updatedProject) => {
         if (err) return res.status(500).send(err);
-        res.status(200).send(updatedProject.channels);
+        res.status(200).send(updatedProject);
       }
     );
   });

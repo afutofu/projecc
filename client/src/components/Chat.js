@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 
 import Messages from "./Messages";
-import { receiveMessage } from "../store/actions";
+import { receiveMessage, createMessage } from "../store/actions";
 
 const ChatComp = styled.div`
   position: relative;
@@ -47,58 +47,76 @@ let socket;
 const Chat = (props) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const { selectedProject, selectedChannel, receiveMessage, username } = props;
+  const {
+    selectedProject,
+    selectedChannel,
+    receiveMessage,
+    username,
+    createMessage,
+  } = props;
   const ENDPOINT = `localhost:5000/${selectedProject.name}`;
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
+  // useEffect(() => {
+  //   socket = io(ENDPOINT);
 
-    if (username === "") return;
+  //   if (username === "") return;
 
-    // Join channel
-    socket.emit(
-      "joinChannel",
-      { name: username, channel: selectedChannel },
-      () => {
-        // console.log("Joined channel");
-      }
-    );
+  //   // Join channel
+  //   socket.emit(
+  //     "joinChannel",
+  //     { name: username, channel: selectedChannel },
+  //     () => {
+  //       // console.log("Joined channel");
+  //     }
+  //   );
 
-    // Listening for message from server
-    socket.on("message", (message) => {
-      // Send message to redux store
-      receiveMessage(message);
-      setMessages([...messages, message]);
-    });
+  //   // Listening for message from server
+  //   socket.on("message", (message) => {
+  //     // Send message to redux store
+  //     receiveMessage(message);
+  //     setMessages([...messages, message]);
+  //   });
 
-    return () => {
-      // Leave channel
-      socket.emit("disconnect");
-      socket.close();
-    };
-  }, []);
+  //   return () => {
+  //     // Leave channel
+  //     socket.emit("disconnect");
+  //     socket.close();
+  //   };
+  // }, []);
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
-    console.log(message);
     if (message) {
       // Send message to server
-      socket.emit(
-        "sendMessage",
+      // socket.emit(
+      //   "sendMessage",
+      //   {
+      //     msg: message,
+      //     projectName: selectedProject.name,
+      //     channel: selectedChannel,
+      //   },
+      //   () => {
+      //     setMessage("");
+      //   }
+      // );
+      createMessage(
         {
-          msg: message,
-          projectName: selectedProject.name,
-          channel: selectedChannel,
+          text: message,
+          user: username,
         },
-        () => {
-          setMessage("");
-        }
+        selectedChannel._id,
+        selectedProject._id
       );
+      setMessage("");
     }
   };
   return (
     <ChatComp>
-      <Messages messages={selectedProject.channels[selectedChannel]} />
+      <Messages
+        messages={selectedChannel.messages}
+        channelId={selectedChannel._id}
+        projectId={selectedProject._id}
+      />
       <Form onSubmit={onMessageSubmit}>
         <Input onChange={(e) => setMessage(e.target.value)} value={message} />
       </Form>
@@ -117,6 +135,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     receiveMessage: (message) => dispatch(receiveMessage(message)),
+    createMessage: (message, channelId, projectId) =>
+      dispatch(createMessage(message, channelId, projectId)),
   };
 };
 

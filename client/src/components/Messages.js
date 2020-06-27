@@ -20,7 +20,7 @@ const TopSpace = styled.div`
   margin-bottom: 20px;
 `;
 
-const Messages = ({ messages }) => {
+const Messages = ({ messages, channelId, projectId }) => {
   let newMessages = [];
 
   if (messages !== undefined) {
@@ -31,8 +31,15 @@ const Messages = ({ messages }) => {
 
   return (
     <MessagesComp>
-      {newMessages.map((message, i) => {
-        return <Message key={i} user={message.user} msg={message.msg} />;
+      {newMessages.map((message) => {
+        return (
+          <Message
+            key={message._id}
+            message={message}
+            channelId={channelId}
+            projectId={projectId}
+          />
+        );
       })}
       <TopSpace />
     </MessagesComp>

@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
+import { connect } from "react-redux";
+import { deleteMessage } from "../store/actions";
+
 const MessageComp = styled.div`
   display: relative;
   width: 100%;
-  background: none;
+  background-color: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -13,10 +16,17 @@ const MessageComp = styled.div`
   margin-bottom: 20px;
 `;
 
+const TopRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
 const NameDate = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
 `;
 
 const Name = styled.h3`
@@ -39,28 +49,62 @@ const MessageText = styled.p`
   margin: 0;
 `;
 
-const Message = ({ user, msg }) => {
-  const dateObj = new Date();
-  const date =
-    dateObj.getMonth() +
-    1 +
-    "/" +
-    dateObj.getDate() +
-    "/" +
-    dateObj.getFullYear();
-  const time = dateObj.getHours() + ":" + dateObj.getMinutes();
+const Buttons = styled.div`
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  opacity: 0;
 
-  const dateTime = date + " " + time;
+  transition: 0.2s;
+  ${MessageComp}:hover & {
+    transition: 0.5s;
+    opacity: 1;
+  }
+`;
 
+const Button = styled.div`
+  transition: 0.2s;
+  padding: 5px;
+  cursor: pointer;
+
+  i {
+    transition: 0.2s;
+    font-size: 18px;
+  }
+
+  :hover i {
+    color: #1a8cff;
+  }
+`;
+
+const Message = (props) => {
+  const { message, channelId, projectId, deleteMessage } = props;
+  const { _id, user, date, text } = message;
   return (
     <MessageComp>
-      <NameDate>
-        <Name>{user}</Name>
-        <DateComp>{dateTime}</DateComp>
-      </NameDate>
-      <MessageText>{msg}</MessageText>
+      <TopRow>
+        <NameDate>
+          <Name>{user}</Name>
+          <DateComp>{date}</DateComp>
+        </NameDate>
+        <Buttons>
+          <Button onClick={() => deleteMessage(_id, channelId, projectId)}>
+            <i className="fa fa-trash"></i>
+          </Button>
+        </Buttons>
+      </TopRow>
+      <MessageText>{text}</MessageText>
     </MessageComp>
   );
 };
 
-export default Message;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteMessage: (messageId, channelId, projectId) =>
+      dispatch(deleteMessage(messageId, channelId, projectId)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Message);

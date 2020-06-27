@@ -182,7 +182,7 @@ const ChannelAddModal = (props) => {
   if (modalOpen) firstRender = false;
 
   const onCreateChannel = () => {
-    createChannel(channelName, selectedProject);
+    createChannel(channelName, selectedProject._id);
     setChannelName("");
     channelModalClose();
   };

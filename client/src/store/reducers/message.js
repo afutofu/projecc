@@ -1,13 +1,22 @@
 import {
   SET_SELECTED_CHANNEL,
   RECEIVE_MESSAGE,
-  CREATE_CHANNEL,
-  DELETE_CHANNEL,
-  CREATE_PROJECT,
   SET_SELECTED_PROJECT,
   FETCH_PROJECTS_BEGIN,
   FETCH_PROJECTS_SUCCESS,
   FETCH_PROJECTS_FAIL,
+  CREATE_CHANNEL_BEGIN,
+  CREATE_CHANNEL_SUCCESS,
+  CREATE_CHANNEL_FAIL,
+  DELETE_CHANNEL_BEGIN,
+  DELETE_CHANNEL_SUCCESS,
+  DELETE_CHANNEL_FAIL,
+  CREATE_MESSAGE_BEGIN,
+  CREATE_MESSAGE_SUCCESS,
+  CREATE_MESSAGE_FAIL,
+  DELETE_MESSAGE_BEGIN,
+  DELETE_MESSAGE_SUCCESS,
+  DELETE_MESSAGE_FAIL,
 } from "../actions/actions";
 
 let initialState = {
@@ -17,19 +26,58 @@ let initialState = {
   selectedProject: null,
 };
 
-const fetchProjectsSuccess = (state, payload) => {
-  const { projects } = payload;
-  let newProjects = [];
+const messageReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_PROJECTS_BEGIN:
+      return {
+        ...state,
+        loading: true,
+      };
+    case FETCH_PROJECTS_SUCCESS:
+      return fetchProjectsSuccess(state, action);
+    case FETCH_PROJECTS_FAIL:
+      return fetchProjectsFail(state, action);
+    case SET_SELECTED_CHANNEL:
+      return setSelectedChannel(state, action);
+    case RECEIVE_MESSAGE:
+      return receiveMessage(state, action);
+    case CREATE_CHANNEL_BEGIN:
+      return createChannelBegin(state, action);
+    case CREATE_CHANNEL_SUCCESS:
+      return createChannelSuccess(state, action);
+    case CREATE_CHANNEL_FAIL:
+      return createChannelFail(state, action);
+    case DELETE_CHANNEL_BEGIN:
+      return deleteChannelBegin(state, action);
+    case DELETE_CHANNEL_SUCCESS:
+      return deleteChannelSuccess(state, action);
+    case DELETE_CHANNEL_FAIL:
+      return deleteChannelFail(state, action);
+    case CREATE_MESSAGE_BEGIN:
+      return createMessageBegin(state, action);
+    case CREATE_MESSAGE_SUCCESS:
+      return createMessageSuccess(state, action);
+    case CREATE_MESSAGE_FAIL:
+      return createMessageFail(state, action);
+    case DELETE_MESSAGE_BEGIN:
+      return deleteMessageBegin(state, action);
+    case DELETE_MESSAGE_SUCCESS:
+      return deleteMessageSuccess(state, action);
+    case DELETE_MESSAGE_FAIL:
+      return deleteMessageFail(state, action);
+    case SET_SELECTED_PROJECT:
+      return setSelectedProject(state, action);
+    default:
+      return state;
+  }
+};
 
-  Object.keys(projects).forEach((key) => {
-    let project = projects[key];
-    if (Object.keys(project.channels).length > 0) {
-      // Set selectedChannel to first channel in channels
-      project.selectedChannel = Object.keys(project.channels)[0];
-    } else {
-      project.selectedChannel = null;
-    }
-    newProjects.push(project);
+const fetchProjectsSuccess = (state, action) => {
+  const { projects } = action.payload;
+
+  const newProjects = projects.map((project) => {
+    project.selectedChannel = project.channels[0];
+    return project;
   });
 
   return {
@@ -38,20 +86,39 @@ const fetchProjectsSuccess = (state, payload) => {
   };
 };
 
+const fetchProjectsFail = (state, action) => {
+  return {
+    ...state,
+    error: action.payload.err,
+    loading: false,
+  };
+};
+
 const setSelectedChannel = (state, action) => {
-  const projectName = action.payload.project.name;
-  const newSelectedChannel = action.payload.channel;
+  const projectId = action.payload.projectId;
+  const newSelectedChannelId = action.payload.channelId;
 
-  let newState = { ...state };
+  let newSelectedProject = {
+    ...state.selectedProject,
+  };
 
-  newState.projects.map((project) => {
-    if (project.name === projectName) {
-      project.selectedChannel = newSelectedChannel;
-    }
-    return project;
-  });
-
-  return newState;
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === projectId) {
+        project.channels.forEach((channel) => {
+          if (channel._id === newSelectedChannelId) {
+            project.selectedChannel = channel;
+          }
+        });
+        newSelectedProject = {
+          ...project,
+        };
+      }
+      return project;
+    }),
+    selectedProject: newSelectedProject,
+  };
 };
 
 const receiveMessage = (state, action) => {
@@ -73,95 +140,176 @@ const receiveMessage = (state, action) => {
   return newState;
 };
 
-const createChannel = (state, action) => {
-  const projectName = action.payload.project.name;
-  const newChannel = action.payload.channel;
+// CREATE CHANNEL
+const createChannelBegin = (state, action) => {
+  return {
+    ...state,
+    loading: true,
+  };
+};
 
-  let newSelectedProject = state.selectedProject;
+const createChannelSuccess = (state, action) => {
+  const createdChannel = action.payload.channel;
+  const projectId = action.payload.projectId;
 
-  let newState = {
+  return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project.name === projectName) {
-        newSelectedProject = {
-          ...project,
-          channels: { ...project.channels, [newChannel]: [] },
-          selectedChannel: newChannel,
-        };
-        return newSelectedProject;
+      if (project._id === projectId) {
+        project.channels.push(createdChannel);
+        project.selectedChannel = createdChannel;
       }
       return project;
     }),
+    loading: false,
   };
-
-  newState = {
-    ...newState,
-    selectedProject: newSelectedProject,
-  };
-
-  return newState;
 };
 
-const deleteChannel = (state, action) => {
-  const projectName = action.payload.projectName;
-  const channelToDelete = action.payload.channel;
+const createChannelFail = (state, action) => {
+  return {
+    ...state,
+    error: action.payload.err,
+    loading: false,
+  };
+};
 
-  let newState = { ...state };
+// DELETE CHANNEL
+const deleteChannelBegin = (state, action) => {
+  return {
+    ...state,
+    loading: true,
+  };
+};
 
-  newState.projects.map((project) => {
-    if (project.name === projectName) {
-      delete project.channels[channelToDelete];
+const deleteChannelSuccess = (state, action) => {
+  const updatedProject = action.payload.updatedProject;
 
-      if (Object.keys(project.channels).length > 0) {
-        project.selectedChannel = Object.keys(project.channels)[0];
-      } else {
-        project.selectedChannel = null;
+  let newProject = {
+    ...updatedProject,
+    selectedChannel:
+      state.selectedProject.channels.length > 0
+        ? state.selectedProject.channels[0]
+        : null,
+  };
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === updatedProject._id) {
+        // Replace the current project with the updated project without the deleted channel
+        project = {
+          ...newProject,
+        };
       }
-    }
-    return project;
-  });
-
-  return newState;
+      return project;
+    }),
+    selectedProject: {
+      ...newProject,
+    },
+    loading: false,
+  };
 };
 
-const messageReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case FETCH_PROJECTS_BEGIN:
-      return {
-        ...state,
-        loading: true,
-      };
-    case FETCH_PROJECTS_SUCCESS:
-      return fetchProjectsSuccess(state, action.payload);
-    case FETCH_PROJECTS_FAIL:
-      return {
-        ...state,
-        error: action.payload.err,
-        loading: false,
-      };
-    case SET_SELECTED_CHANNEL:
-      return setSelectedChannel(state, action);
-    case RECEIVE_MESSAGE:
-      return receiveMessage(state, action);
-    case CREATE_CHANNEL:
-      return createChannel(state, action);
-    case DELETE_CHANNEL:
-      return deleteChannel(state, action);
-    case CREATE_PROJECT:
-      return {
-        ...state,
-        projects: [...state.projects, action.payload],
-        selectedProject: action.payload,
-      };
-    case SET_SELECTED_PROJECT:
-      return {
-        ...state,
-        selectedProject: action.payload.project,
-      };
+const deleteChannelFail = (state, action) => {
+  return {
+    ...state,
+    error: action.payload.err,
+    loading: false,
+  };
+};
 
-    default:
-      return state;
-  }
+// CREATE MESSAGE
+const createMessageBegin = (state, action) => {
+  return {
+    ...state,
+    loading: true,
+  };
+};
+
+const createMessageSuccess = (state, action) => {
+  const { newMessage, channelId, projectId } = action.payload;
+
+  let newSelectedProject = {
+    ...state.selectedProject,
+  };
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id == projectId) {
+        project.channels.map((channel) => {
+          if (channel._id == channelId) {
+            channel.messages.push(newMessage);
+          }
+        });
+        newSelectedProject = project;
+      }
+      return project;
+    }),
+    loading: false,
+    selectedProject: {
+      ...newSelectedProject,
+    },
+  };
+};
+
+const createMessageFail = (state, action) => {
+  return {
+    ...state,
+    error: action.payload.err,
+    loading: false,
+  };
+};
+
+// DELETE MESSAGE
+const deleteMessageBegin = (state, action) => {
+  return {
+    ...state,
+    loading: true,
+  };
+};
+
+const deleteMessageSuccess = (state, action) => {
+  const { updatedChannel, channelId, projectId } = action.payload;
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id == projectId) {
+        project.channels.map((channel) => {
+          if (channel._id == channelId) {
+            channel = {
+              ...updatedChannel,
+            };
+          }
+          return channel;
+        });
+      }
+      return project;
+    }),
+    selectedProject: {
+      ...state.selectedProject,
+      selectedChannel: {
+        ...updatedChannel,
+      },
+    },
+    loading: false,
+  };
+};
+
+const deleteMessageFail = (state, action) => {
+  return {
+    ...state,
+    error: action.payload.err,
+    loading: false,
+  };
+};
+
+const setSelectedProject = (state, action) => {
+  return {
+    ...state,
+    selectedProject: action.payload.project,
+  };
 };
 
 export default messageReducer;

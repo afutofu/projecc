@@ -71,14 +71,15 @@ const ContentBar = (props) => {
   return (
     <ChannelBarComp>
       <Container>
-        {channels.map((channel, i) => {
+        {channels.map((channel) => {
           return (
             <ChannelItem
-              key={i}
-              name={channel}
+              key={channel._id}
+              _id={channel._id}
+              name={channel.name}
               projectName={project.name}
               project={project}
-              selected={channel == selectedChannel ? true : false}
+              selected={channel._id == selectedChannel._id ? true : false}
             />
           );
         })}
@@ -96,7 +97,7 @@ const mapStateToProps = (state) => {
   if (selectedProject) {
     return {
       project: selectedProject,
-      channels: Object.keys(selectedProject.channels),
+      channels: selectedProject.channels,
       selectedChannel: selectedProject.selectedChannel,
     };
   }

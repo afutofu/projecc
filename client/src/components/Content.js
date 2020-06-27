@@ -56,23 +56,12 @@ const CenterContainer = styled.div`
 const Content = (props) => {
   const { selectedProject, projects } = props;
 
-  let selectedChannel = null;
-
-  if (selectedProject) {
-    const project = projects.find(
-      (project) => project.name === selectedProject
-    );
-    if (project) {
-      selectedChannel = project.selectedChannel;
-    }
-  }
-
   if (selectedProject && selectedProject.selectedChannel) {
     return (
       <ContentComp>
         <Header>
           <ChatPrefix />
-          {selectedProject.selectedChannel}
+          {selectedProject.selectedChannel.name}
         </Header>
         <Container>
           <Chat
@@ -82,7 +71,7 @@ const Content = (props) => {
         </Container>
       </ContentComp>
     );
-  } else if (selectedProject && !selectedChannel) {
+  } else if (selectedProject) {
     return (
       <ContentComp>
         <CenterContainer>No Channel Selected</CenterContainer>
