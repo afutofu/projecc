@@ -70,18 +70,19 @@ const Button = styled.div`
   cursor: pointer;
 
   i {
-    transition: 0.2s;
+    transition: 0.3s;
     font-size: 18px;
   }
 
   :hover i {
-    color: #1a8cff;
+    color: red;
   }
 `;
 
 const Message = (props) => {
   const { message, channelId, projectId, deleteMessage } = props;
   const { _id, user, date, text } = message;
+
   return (
     <MessageComp>
       <TopRow>
@@ -91,7 +92,7 @@ const Message = (props) => {
         </NameDate>
         <Buttons>
           <Button onClick={() => deleteMessage(_id, channelId, projectId)}>
-            <i className="fa fa-trash"></i>
+            <i className="fa fa-times"></i>
           </Button>
         </Buttons>
       </TopRow>

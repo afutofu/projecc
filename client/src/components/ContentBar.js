@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 
 import ChannelBar from "./ChannelBar";
+import { projectModalOpen, deleteProject } from "../store/actions";
 
 const ContentBarComp = styled.div`
   position: relative;
@@ -21,7 +22,7 @@ const Header = styled.div`
   color: #ddd;
   padding: 10px 20px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   font-family: "Montserrat", "san-serif";
@@ -30,19 +31,75 @@ const Header = styled.div`
   cursor: default;
 `;
 
-const Container = styled.div`
-  width: 100%;
-  height: calc(100% - 50px);
-  padding: 20px 10px;
-  box-sizing: border-box;
+const Buttons = styled.div`
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  opacity: 0;
+
+  transition: 0.2s;
+  ${Header}:hover & {
+    transition: 0.5s;
+    opacity: 1;
+  }
+`;
+
+const Button = styled.div`
+  transition: 0.2s;
+  padding: 5px;
+  cursor: pointer;
+
+  i {
+    transition: 0.3s;
+  }
+
+  :hover i {
+    color: ${(props) => (props.color === "red" ? "red" : "#1a8cff")};
+  }
 `;
 
 const ContentBar = (props) => {
-  const { selectedProject } = props;
+  const { selectedProject, projectModalOpen, deleteProject } = props;
+
+  const onRenameProject = () => {
+    projectModalOpen("RENAME", {
+      currentProjectName: selectedProject.name,
+      projectId: selectedProject._id,
+    });
+  };
+
+  const onDeleteProject = () => {
+    deleteProject(selectedProject._id);
+  };
+
+  const renderName = () => {
+    const maxNameLength = 15;
+
+    if (selectedProject) {
+      if (selectedProject.name.length > maxNameLength) {
+        return selectedProject.name.substring(0, maxNameLength) + "...";
+      }
+      return selectedProject.name;
+    }
+
+    return null;
+  };
 
   return (
     <ContentBarComp selectedProject={selectedProject}>
-      <Header>{selectedProject ? selectedProject.name : null}</Header>
+      <Header>
+        {renderName()}
+        <Buttons>
+          <Button onClick={(e) => onRenameProject(e)}>
+            <i className="fa fa-pencil"></i>
+          </Button>
+          <Button onClick={(e) => onDeleteProject(e)} color="red">
+            <i className="fa fa-times"></i>
+          </Button>
+        </Buttons>
+      </Header>
       {selectedProject === null ? null : <ChannelBar />}
     </ContentBarComp>
   );
@@ -54,4 +111,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ContentBar);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    projectModalOpen: (type, data) => dispatch(projectModalOpen(type, data)),
+    deleteProject: (projectId) => dispatch(deleteProject(projectId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentBar);

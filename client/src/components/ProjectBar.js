@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import ProjectItem from "./ProjectIem";
 import { projectModalOpen } from "../store/actions";
-import { setSelectedProject } from "../store/actions/message";
+import { setSelectedProject } from "../store/actions/";
 
 const itemSpacing = "15px";
 
@@ -56,9 +56,8 @@ const PlusIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-bottom: 15px; */
-  cursor: pointer;
   box-sizing: border-box;
+  cursor: pointer;
 
   i {
     transition: 0.2s;
@@ -73,12 +72,21 @@ const PlusIcon = styled.div`
 `;
 
 const ProjectBar = (props) => {
-  const { projects, projectModalOpen, setSelectedProject } = props;
+  const {
+    projects,
+    selectedProject,
+    projectModalOpen,
+    setSelectedProject,
+  } = props;
 
   return (
     <ProjectBarComp>
       <ProfileItem>
-        <ProjectItem setSelectedProject={setSelectedProject} project={null} />
+        <ProjectItem
+          setSelectedProject={setSelectedProject}
+          project={null}
+          selected={selectedProject == null ? true : false}
+        />
       </ProfileItem>
       <Separator />
       <ProjectItemWrapper>
@@ -88,11 +96,14 @@ const ProjectBar = (props) => {
               setSelectedProject={setSelectedProject}
               key={i}
               project={project}
+              selected={
+                selectedProject ? selectedProject._id == project._id : null
+              }
             />
           );
         })}
       </ProjectItemWrapper>
-      <PlusIcon onClick={() => projectModalOpen()}>
+      <PlusIcon onClick={() => projectModalOpen("ADD")}>
         <i className="fa fa-plus"></i>
       </PlusIcon>
     </ProjectBarComp>
@@ -102,12 +113,13 @@ const ProjectBar = (props) => {
 const mapStateToProps = (state) => {
   return {
     projects: state.message.projects,
+    selectedProject: state.message.selectedProject,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    projectModalOpen: () => dispatch(projectModalOpen()),
+    projectModalOpen: (type) => dispatch(projectModalOpen(type)),
     setSelectedProject: (project) => dispatch(setSelectedProject(project)),
   };
 };

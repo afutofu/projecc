@@ -2,7 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { setSelectedChannel, deleteChannel } from "../store/actions";
+import {
+  setSelectedChannel,
+  deleteChannel,
+  channelModalOpen,
+} from "../store/actions";
 
 const ChannelItemComp = styled.div`
   width: 100%;
@@ -76,11 +80,11 @@ const Button = styled.div`
   padding: 5px;
 
   i {
-    transition: 0.2s;
+    transition: 0.3s;
   }
 
   :hover i {
-    color: #1a8cff;
+    color: ${(props) => (props.color === "red" ? "red" : "#1a8cff")};
   }
 `;
 
@@ -88,6 +92,7 @@ const ChannelItem = (props) => {
   const {
     setSelectedChannel,
     deleteChannel,
+    channelModalOpen,
     projectName,
     selected,
     name,
@@ -100,6 +105,11 @@ const ChannelItem = (props) => {
     deleteChannel(_id, project._id);
   };
 
+  const onRenameChannel = (e) => {
+    e.stopPropagation();
+    channelModalOpen("RENAME", { currentChannelName: name, channelId: _id });
+  };
+
   return (
     <ChannelItemComp
       onClick={() => setSelectedChannel(_id, project._id)}
@@ -110,8 +120,11 @@ const ChannelItem = (props) => {
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
       <Buttons>
-        <Button onClick={(e) => onDeleteChannel(e)}>
-          <i className="fa fa-minus"></i>
+        <Button onClick={(e) => onRenameChannel(e)}>
+          <i className="fa fa-pencil"></i>
+        </Button>
+        <Button onClick={(e) => onDeleteChannel(e)} color="red">
+          <i className="fa fa-times"></i>
         </Button>
       </Buttons>
     </ChannelItemComp>
@@ -124,6 +137,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setSelectedChannel(channel, project)),
     deleteChannel: (channel, projectName) =>
       dispatch(deleteChannel(channel, projectName)),
+    channelModalOpen: (modalType, data) =>
+      dispatch(channelModalOpen(modalType, data)),
   };
 };
 

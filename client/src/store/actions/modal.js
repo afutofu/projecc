@@ -5,9 +5,10 @@ import {
   PROJECT_MODAL_CLOSE,
 } from "./actions";
 
-export const channelModalOpen = () => {
+export const channelModalOpen = (type, data = {}) => {
   return {
     type: CHANNEL_MODAL_OPEN,
+    payload: { type, data },
   };
 };
 
@@ -17,9 +18,10 @@ export const channelModalClose = () => {
   };
 };
 
-export const projectModalOpen = () => {
+export const projectModalOpen = (type, data = {}) => {
   return {
     type: PROJECT_MODAL_OPEN,
+    payload: { type, data },
   };
 };
 

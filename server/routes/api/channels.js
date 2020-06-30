@@ -52,11 +52,13 @@ router.patch("/:channelId", async (req, res) => {
   const projectId = req.params.projectId;
   const channelId = req.params.channelId;
   const newChannelName = req.body.newChannelName;
+  let channelIndex = 0;
 
   Project.findById(projectId, (err, foundProject) => {
     if (err) return res.status(500).send(err);
-    const newChannels = foundProject.channels.map((channel) => {
+    const newChannels = foundProject.channels.map((channel, i) => {
       if (channel._id == channelId) {
+        channelIndex = i;
         channel.name = newChannelName;
       }
       return channel;
@@ -67,7 +69,7 @@ router.patch("/:channelId", async (req, res) => {
       { new: true },
       (err, updatedProject) => {
         if (err) return res.status(500).send(err);
-        res.status(200).send(updatedProject.channels);
+        res.status(200).send(updatedProject.channels[channelIndex]);
       }
     );
   });

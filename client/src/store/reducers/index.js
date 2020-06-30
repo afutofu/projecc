@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
 import authReducer from "./auth";
-import messageReducer from "./message";
+import messageReducer from "./message/";
 import modalReducer from "./modal";
 
 const allReducers = combineReducers({

@@ -3,16 +3,25 @@ export { setUsername } from "./auth";
 
 // MESSAGES
 export {
-  setSelectedChannel,
-  receiveMessage,
-  createChannel,
-  deleteChannel,
-  createProject,
-  setSelectedProject,
   fetchProjects,
+  setSelectedProject,
+  createProject,
+  renameProject,
+  deleteProject,
+} from "./message/project";
+
+export {
+  setSelectedChannel,
+  createChannel,
+  renameChannel,
+  deleteChannel,
+} from "./message/channel";
+
+export {
+  receiveMessage,
   createMessage,
   deleteMessage,
-} from "./message";
+} from "./message/message";
 
 // MODAL
 export {

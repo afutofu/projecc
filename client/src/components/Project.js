@@ -8,8 +8,8 @@ import axios from "axios";
 import ProjectBar from "./ProjectBar";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
-import ProjectAddModal from "./ProjectAddModal";
-import ChannelAddModal from "./ChannelAddModal";
+import ProjectModal from "./ProjectModal";
+import ChannelModal from "./ChannelModal";
 
 import { fetchProjects } from "../store/actions";
 
@@ -40,8 +40,8 @@ const Project = (props) => {
 
     return (
       <ProjectComp>
-        <ProjectAddModal />
-        <ChannelAddModal />
+        <ProjectModal />
+        <ChannelModal />
         <ProjectBar />
         <ContentBar />
         <Content />

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
-import io from "socket.io-client";
 
-import { createProject } from "../store/actions";
-import { projectModalClose } from "../store/actions";
+import { createChannel, renameChannel } from "../store/actions";
+import { channelModalClose } from "../store/actions";
 
 const modalFadeIn = keyframes`
   0% {
@@ -39,7 +38,7 @@ const modalFadeOut = keyframes`
 const ButtonContainerHeight = "80px";
 const horizontalPadding = "25px";
 
-const ProjectAddModalComp = styled.div`
+const ChannelAddModalComp = styled.div`
   position: relative;
   color: #ddd;
   position: absolute;
@@ -66,7 +65,7 @@ const Backdrop = styled.div`
   z-index: 150;
 `;
 
-const ChannelAddBox = styled.div`
+const ChannelBox = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
@@ -170,84 +169,127 @@ const CancelButton = styled.button`
   }
 `;
 
-let socket;
 let firstRender = true;
 const ChannelAddModal = (props) => {
-  const ENDPOINT = "localhost:5000";
-  const [projectName, setProjectName] = useState("");
-  const { modalOpen, createProject, projectModalClose, username } = props;
+  const {
+    modalOpen,
+    modalType,
+    modalData,
+    createChannel,
+    renameChannel,
+    channelModalClose,
+    selectedProject,
+  } = props;
+  const [channelName, setChannelName] = useState("");
 
   useEffect(() => {
-    // socket = io(ENDPOINT);
-    // socket.on("receiveCreatedProject", ({ createdProject }, callback) => {
-    //   callback();
-    // });
-  }, []);
+    switch (modalType) {
+      case "ADD":
+        setChannelName("");
+        break;
+      case "RENAME":
+        setChannelName(modalData.currentChannelName);
+        break;
+      default:
+        setChannelName("");
+        break;
+    }
+  }, [modalType]);
 
   if (modalOpen) firstRender = false;
 
-  const onCreateProject = () => {
-    createProject({ name: projectName, creatorName: username })
-      .then((createdProject) => {
-        console.log(createdProject);
-        // socket.emit("createProject", {
-        //   projectId: createdProject._id,
-        //   projectName,
-        //   creatorName: username,
-        // });
-        setProjectName("");
-        projectModalClose();
-      })
-      .catch((err) => {
-        console.log(err);
-        setProjectName("");
-      });
+  const onCreateChannel = () => {
+    createChannel(channelName, selectedProject._id);
+    setChannelName("");
+    channelModalClose();
   };
 
-  const onProjectModalClose = () => {
-    setProjectName("");
-    projectModalClose();
+  const onRenameChannel = () => {
+    renameChannel(channelName, modalData.channelId, selectedProject._id)
+      .then(() => {
+        setChannelName("");
+        channelModalClose();
+      })
+      .catch((err) => {});
+  };
+
+  const renderChannelBox = () => {
+    switch (modalType) {
+      case "ADD":
+        return (
+          <ChannelBox>
+            <Container>
+              <Title>create a channel</Title>
+              <Header>channel name</Header>
+              <Input
+                onChange={(e) => setChannelName(e.target.value)}
+                value={channelName}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") onCreateChannel();
+                }}
+              />
+            </Container>
+            <ButtonContainer>
+              <CreateButton onClick={() => onCreateChannel()}>
+                Create Channel
+              </CreateButton>
+              <CancelButton onClick={() => channelModalClose()}>
+                Cancel
+              </CancelButton>
+            </ButtonContainer>
+          </ChannelBox>
+        );
+      case "RENAME":
+        return (
+          <ChannelBox>
+            <Container>
+              <Title>rename channel</Title>
+              <Header>new channel name</Header>
+              <Input
+                onChange={(e) => setChannelName(e.target.value)}
+                value={channelName}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") onRenameChannel();
+                }}
+              />
+            </Container>
+            <ButtonContainer>
+              <CreateButton onClick={() => onRenameChannel()}>
+                Rename Channel
+              </CreateButton>
+              <CancelButton onClick={() => channelModalClose()}>
+                Cancel
+              </CancelButton>
+            </ButtonContainer>
+          </ChannelBox>
+        );
+    }
   };
 
   return (
-    <ProjectAddModalComp modalOpen={modalOpen} firstRender={firstRender}>
-      <Backdrop onClick={() => onProjectModalClose()} />
-      <ChannelAddBox>
-        <Container>
-          <Title>create a project</Title>
-          <Header>project name</Header>
-          <Input
-            onChange={(e) => setProjectName(e.target.value)}
-            value={projectName}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") onCreateProject();
-            }}
-          />
-        </Container>
-        <ButtonContainer>
-          <CreateButton onClick={() => onCreateProject()}>
-            Create Channel
-          </CreateButton>
-          <CancelButton onClick={() => onProjectModalClose()}>
-            Cancel
-          </CancelButton>
-        </ButtonContainer>
-      </ChannelAddBox>
-    </ProjectAddModalComp>
+    <ChannelAddModalComp modalOpen={modalOpen} firstRender={firstRender}>
+      <Backdrop onClick={() => channelModalClose()} />
+      {renderChannelBox()}
+    </ChannelAddModalComp>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    modalOpen: state.modal.projectModalOpen,
-    username: state.auth.username,
+    modalOpen: state.modal.channelModalOpen,
+    modalType: state.modal.channelModalType,
+    modalData: state.modal.modalData,
+    selectedProject: state.message.selectedProject,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createProject: (project) => dispatch(createProject(project)),
-    projectModalClose: () => dispatch(projectModalClose()),
+    createChannel: (channel, project) =>
+      dispatch(createChannel(channel, project)),
+    renameChannel: (newChannelName, channelId, projectId) =>
+      dispatch(renameChannel(newChannelName, channelId, projectId)),
+    channelModalClose: () => dispatch(channelModalClose()),
   };
 };
 

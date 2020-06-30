@@ -84,7 +84,7 @@ const ContentBar = (props) => {
           );
         })}
       </Container>
-      <AddChannelButton onClick={channelModalOpen}>
+      <AddChannelButton onClick={() => channelModalOpen("ADD")}>
         <i className="fa fa-plus"></i>
       </AddChannelButton>
     </ChannelBarComp>
@@ -105,7 +105,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    channelModalOpen: () => dispatch(channelModalOpen()),
+    channelModalOpen: (modalType) => dispatch(channelModalOpen(modalType)),
   };
 };
 

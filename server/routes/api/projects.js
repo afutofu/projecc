@@ -3,7 +3,6 @@ const router = express.Router();
 
 // Project Model
 const Project = require("../../models/Project");
-const { update } = require("../../models/Project");
 
 // @route   GET /api/projects
 // @desc    Get All Projects
@@ -42,7 +41,7 @@ router.post("/", (req, res) => {
   });
 });
 
-// @route   UPDATE /api/projects/:projectId
+// @route   PATCH /api/projects/:projectId
 // @desc    Delete a Project
 // @access  Public
 router.patch("/:projectId", (req, res) => {
