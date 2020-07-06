@@ -194,7 +194,7 @@ const ChannelAddModal = (props) => {
         setChannelName("");
         break;
     }
-  }, [modalType]);
+  }, [modalType, modalData]);
 
   if (modalOpen) firstRender = false;
 
@@ -263,6 +263,8 @@ const ChannelAddModal = (props) => {
             </ButtonContainer>
           </ChannelBox>
         );
+      default:
+        return null;
     }
   };
 

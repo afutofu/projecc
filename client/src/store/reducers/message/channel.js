@@ -75,7 +75,7 @@ export const renameChannelSuccess = (state, action) => {
     projects: state.projects.map((project) => {
       if (project._id === projectId) {
         project.channels = project.channels.map((channel) => {
-          if (channel._id == channelId) {
+          if (channel._id === channelId) {
             channel.name = newChannelName.name;
           }
           return channel;

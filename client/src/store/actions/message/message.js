@@ -1,29 +1,24 @@
 import axios from "axios";
 import {
-  RECEIVE_MESSAGE,
+  CREATE_MESSAGE_CLIENT,
   CREATE_MESSAGE_BEGIN,
   CREATE_MESSAGE_SUCCESS,
   CREATE_MESSAGE_FAIL,
+  DELETE_MESSAGE_CLIENT,
   DELETE_MESSAGE_BEGIN,
   DELETE_MESSAGE_SUCCESS,
   DELETE_MESSAGE_FAIL,
 } from "../actions";
 
-// RECEIVE MESSAGE
-export const receiveMessage = (newMessage, channelId, projectId) => {
+// CREATE MESSAGE
+export const createMessageClient = (newMessage, channelId, projectId) => {
   return {
-    type: RECEIVE_MESSAGE,
+    type: CREATE_MESSAGE_CLIENT,
     payload: { newMessage, channelId, projectId },
   };
 };
 
-// CREATE MESSAGE
 export const createMessage = (message, channelId, projectId) => (dispatch) => {
-  const messageObj = {
-    text: "text",
-    user: "user",
-  };
-
   return new Promise(function (resolve, reject) {
     dispatch(createMessageBegin());
     axios
@@ -33,7 +28,7 @@ export const createMessage = (message, channelId, projectId) => (dispatch) => {
       )
       .then((res) => {
         dispatch(createMessageSuccess(res.data, channelId, projectId));
-        resolve({ createdMessage: res.data, channelId, projectId });
+        resolve({ data: res.data, channelId, projectId });
       })
       .catch((err) => {
         dispatch(createMessageFail(err));
@@ -48,14 +43,14 @@ const createMessageBegin = () => {
   };
 };
 
-export const createMessageSuccess = (newMessage, channelId, projectId) => {
+const createMessageSuccess = (newMessage, channelId, projectId) => {
   return {
     type: CREATE_MESSAGE_SUCCESS,
     payload: { newMessage, channelId, projectId },
   };
 };
 
-export const createMessageFail = (err) => {
+const createMessageFail = (err) => {
   return {
     type: CREATE_MESSAGE_FAIL,
     payload: { err },
@@ -63,20 +58,31 @@ export const createMessageFail = (err) => {
 };
 
 // DELETE MESSAGE
+export const deleteMessageClient = (updatedChannel, channelId, projectId) => {
+  return {
+    type: DELETE_MESSAGE_CLIENT,
+    payload: { updatedChannel, channelId, projectId },
+  };
+};
+
 export const deleteMessage = (messageId, channelId, projectId) => (
   dispatch
 ) => {
-  dispatch(deleteMessageBegin());
-  axios
-    .delete(
-      `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`
-    )
-    .then((res) => {
-      dispatch(deleteMessageSuccess(res.data, channelId, projectId));
-    })
-    .catch((err) => {
-      dispatch(deleteMessageFail(err));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(deleteMessageBegin());
+    axios
+      .delete(
+        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`
+      )
+      .then((res) => {
+        dispatch(deleteMessageSuccess(res.data, channelId, projectId));
+        resolve({ data: res.data, channelId, projectId });
+      })
+      .catch((err) => {
+        dispatch(deleteMessageFail(err));
+        reject(err);
+      });
+  });
 };
 
 const deleteMessageBegin = () => {

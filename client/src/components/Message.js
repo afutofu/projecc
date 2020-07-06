@@ -1,9 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import { connect } from "react-redux";
-import { deleteMessage } from "../store/actions";
-
 const MessageComp = styled.div`
   display: relative;
   width: 100%;
@@ -101,11 +98,4 @@ const Message = (props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    deleteMessage: (messageId, channelId, projectId) =>
-      dispatch(deleteMessage(messageId, channelId, projectId)),
-  };
-};
-
-export default connect(null, mapDispatchToProps)(Message);
+export default Message;

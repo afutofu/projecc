@@ -93,7 +93,6 @@ const ChannelItem = (props) => {
     setSelectedChannel,
     deleteChannel,
     channelModalOpen,
-    projectName,
     selected,
     name,
     project,

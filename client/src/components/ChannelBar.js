@@ -7,30 +7,6 @@ import { channelModalOpen } from "../store/actions/modal";
 
 const ChannelBarComp = styled.div``;
 
-const ContentBarComp = styled.div`
-  position: relative;
-  width: 240px;
-  height: 100%;
-  background-color: #252525;
-  box-sizing: border-box;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  height: 50px;
-  border-bottom: 1px solid #1b1b1b;
-  color: #ddd;
-  padding: 10px 20px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  box-sizing: border-box;
-  font-family: "Montserrat", "san-serif";
-  font-weight: 600;
-  font-size: 16px;
-  cursor: default;
-`;
-
 const Container = styled.div`
   width: 100%;
   height: calc(100% - 50px);
@@ -65,9 +41,13 @@ const AddChannelButton = styled.button`
 `;
 
 const ContentBar = (props) => {
-  const { channelModalOpen, project, channels, selectedChannel } = props;
+  const {
+    channelModalOpen,
+    selectedProject,
+    channels,
+    selectedChannel,
+  } = props;
 
-  // const channels = Object.keys(project.channels);
   return (
     <ChannelBarComp>
       <Container>
@@ -77,9 +57,9 @@ const ContentBar = (props) => {
               key={channel._id}
               _id={channel._id}
               name={channel.name}
-              projectName={project.name}
-              project={project}
-              selected={channel._id == selectedChannel._id ? true : false}
+              projectName={selectedProject.name}
+              project={selectedProject}
+              selected={channel._id === selectedChannel._id ? true : false}
             />
           );
         })}
@@ -96,7 +76,7 @@ const mapStateToProps = (state) => {
 
   if (selectedProject) {
     return {
-      project: selectedProject,
+      selectedProject: selectedProject,
       channels: selectedProject.channels,
       selectedChannel: selectedProject.selectedChannel,
     };

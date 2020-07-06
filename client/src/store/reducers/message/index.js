@@ -27,10 +27,11 @@ import {
   DELETE_CHANNEL_FAIL,
 
   // MESSAGE
-  RECEIVE_MESSAGE,
+  CREATE_MESSAGE_CLIENT,
   CREATE_MESSAGE_BEGIN,
   CREATE_MESSAGE_SUCCESS,
   CREATE_MESSAGE_FAIL,
+  DELETE_MESSAGE_CLIENT,
   DELETE_MESSAGE_BEGIN,
   DELETE_MESSAGE_SUCCESS,
   DELETE_MESSAGE_FAIL,
@@ -66,10 +67,11 @@ import {
 } from "./channel";
 
 import {
-  receiveMessage,
+  createMessageClient,
   createMessageBegin,
   createMessageSuccess,
   createMessageFail,
+  deleteMessageClient,
   deleteMessageBegin,
   deleteMessageSuccess,
   deleteMessageFail,
@@ -135,14 +137,16 @@ const messageReducer = (state = initialState, action) => {
       return deleteChannelFail(state, action);
 
     // MESSAGE
-    case RECEIVE_MESSAGE:
-      return receiveMessage(state, action);
+    case CREATE_MESSAGE_CLIENT:
+      return createMessageClient(state, action);
     case CREATE_MESSAGE_BEGIN:
       return createMessageBegin(state, action);
     case CREATE_MESSAGE_SUCCESS:
       return createMessageSuccess(state, action);
     case CREATE_MESSAGE_FAIL:
       return createMessageFail(state, action);
+    case DELETE_MESSAGE_CLIENT:
+      return deleteMessageClient(state, action);
     case DELETE_MESSAGE_BEGIN:
       return deleteMessageBegin(state, action);
     case DELETE_MESSAGE_SUCCESS:

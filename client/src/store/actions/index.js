@@ -18,10 +18,10 @@ export {
 } from "./message/channel";
 
 export {
-  receiveMessage,
+  createMessageClient,
   createMessage,
+  deleteMessageClient,
   deleteMessage,
-  createMessageSuccess,
 } from "./message/message";
 
 // MODAL

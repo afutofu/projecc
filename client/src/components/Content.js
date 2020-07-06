@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
@@ -54,7 +54,7 @@ const CenterContainer = styled.div`
 `;
 
 const Content = (props) => {
-  const { selectedProject, projects } = props;
+  const { selectedProject } = props;
 
   if (selectedProject && selectedProject.selectedChannel) {
     return (
@@ -89,7 +89,6 @@ const Content = (props) => {
 const mapStateToProps = (state) => {
   return {
     selectedProject: state.message.selectedProject,
-    projects: state.message.projects,
     selectedChannel: state.message.selectedProject
       ? state.message.selectedProject.selectedChannel
       : null,

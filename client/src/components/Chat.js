@@ -4,7 +4,12 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 
 import Messages from "./Messages";
-import { receiveMessage, createMessage } from "../store/actions";
+import {
+  createMessage,
+  createMessageClient,
+  deleteMessage,
+  deleteMessageClient,
+} from "../store/actions";
 
 const ChatComp = styled.div`
   position: relative;
@@ -46,14 +51,14 @@ let socket;
 
 const Chat = (props) => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
   const {
     selectedProject,
     selectedChannel,
-    receiveMessage,
     username,
     createMessage,
-    createMessageSuccess,
+    createMessageClient,
+    deleteMessage,
+    deleteMessageClient,
   } = props;
 
   const ENDPOINT = `http://localhost:5000/${selectedProject._id}`;
@@ -64,11 +69,27 @@ const Chat = (props) => {
     if (username === "") return;
 
     // Listening for message from server
-    socket.on("message", ({ message, channelId, projectId }) => {
-      // Send message to redux store
-      receiveMessage(message, channelId, projectId);
+    socket.on("message", ({ type, data, channelId, projectId }) => {
+      switch (type) {
+        case "CREATE":
+          // Send message to redux store
+          createMessageClient(data, channelId, projectId);
+          break;
+        case "DELETE":
+          // Send updated channel to redux store
+          deleteMessageClient(data, channelId, projectId);
+          break;
+        default:
+          return null;
+      }
     });
-  }, [selectedProject._id]);
+  }, [
+    selectedProject._id,
+    username,
+    ENDPOINT,
+    createMessageClient,
+    deleteMessageClient,
+  ]);
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
@@ -81,20 +102,26 @@ const Chat = (props) => {
         selectedChannel._id,
         selectedProject._id
       )
-        .then(({ createdMessage, channelId, projectId }) => {
+        .then(({ data, channelId, projectId }) => {
           // Send message to server
-          socket.emit(
-            "sendMessage",
-            { message: createdMessage, channelId, projectId },
-            () => {
-              setMessage("");
-            }
-          );
+          socket.emit("sendMessage", { data, channelId, projectId }, () => {
+            setMessage("");
+          });
         })
         .catch((err) => {
           console.log(err);
         });
     }
+  };
+
+  const onDeleteMessage = (messageId, channelId, projectId) => {
+    deleteMessage(messageId, channelId, projectId)
+      .then(({ data, channelId, projectId }) => {
+        socket.emit("deleteMessage", { data, channelId, projectId });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -103,6 +130,7 @@ const Chat = (props) => {
         messages={selectedChannel.messages}
         channelId={selectedChannel._id}
         projectId={selectedProject._id}
+        deleteMessage={onDeleteMessage}
       />
       <Form onSubmit={onMessageSubmit}>
         <Input onChange={(e) => setMessage(e.target.value)} value={message} />
@@ -114,18 +142,19 @@ const Chat = (props) => {
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
-    // selectedChannel: state.message.selectedChannel,
-    // messages: state.message.channels[state.message.selectedChannel],
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    receiveMessage: (message) => dispatch(receiveMessage(message)),
     createMessage: (message, channelId, projectId) =>
       dispatch(createMessage(message, channelId, projectId)),
-    receiveMessage: (message, channelId, projectId) =>
-      dispatch(receiveMessage(message, channelId, projectId)),
+    createMessageClient: (message, channelId, projectId) =>
+      dispatch(createMessageClient(message, channelId, projectId)),
+    deleteMessage: (messageId, channelId, projectId) =>
+      dispatch(deleteMessage(messageId, channelId, projectId)),
+    deleteMessageClient: (updatedChannel, channelId, projectId) =>
+      dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
   };
 };
 

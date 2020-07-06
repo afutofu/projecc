@@ -1,8 +1,8 @@
-// RECEIVE MESSAGE
-export const receiveMessage = (state, action) => {
+// CREATE MESSAGE
+export const createMessageClient = (state, action) => {
   const { newMessage, channelId, projectId } = action.payload;
 
-  const sameProject = projectId == state.selectedProject._id;
+  const sameProject = projectId === state.selectedProject._id;
 
   let newSelectedProject = {
     ...state.selectedProject,
@@ -11,11 +11,12 @@ export const receiveMessage = (state, action) => {
   return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project._id == projectId) {
+      if (project._id === projectId) {
         project.channels.map((channel) => {
-          if (channel._id == channelId) {
+          if (channel._id === channelId) {
             channel.messages.push(newMessage);
           }
+          return channel;
         });
         if (sameProject) {
           newSelectedProject = project;
@@ -28,7 +29,6 @@ export const receiveMessage = (state, action) => {
   };
 };
 
-// CREATE MESSAGE
 export const createMessageBegin = (state, action) => {
   return {
     ...state,
@@ -46,11 +46,12 @@ export const createMessageSuccess = (state, action) => {
   return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project._id == projectId) {
-        project.channels.map((channel) => {
-          if (channel._id == channelId) {
+      if (project._id === projectId) {
+        project.channels = project.channels.map((channel) => {
+          if (channel._id === channelId) {
             channel.messages.push(newMessage);
           }
+          return channel;
         });
         newSelectedProject = project;
       }
@@ -72,6 +73,39 @@ export const createMessageFail = (state, action) => {
 };
 
 // DELETE MESSAGE
+export const deleteMessageClient = (state, action) => {
+  const { updatedChannel, channelId, projectId } = action.payload;
+
+  const sameProject = projectId === state.selectedProject._id;
+
+  let newSelectedProject = {
+    ...state.selectedProject,
+  };
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === projectId) {
+        project.channels = project.channels.map((channel) => {
+          if (channel._id === channelId) {
+            return { ...updatedChannel };
+          }
+          return channel;
+        });
+        if (sameProject) {
+          project.selectedChannel = { ...updatedChannel };
+          newSelectedProject = project;
+        }
+      }
+      return project;
+    }),
+    loading: false,
+    selectedProject: {
+      ...newSelectedProject,
+    },
+  };
+};
+
 export const deleteMessageBegin = (state, action) => {
   return {
     ...state,
@@ -85,12 +119,10 @@ export const deleteMessageSuccess = (state, action) => {
   return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project._id == projectId) {
-        project.channels.map((channel) => {
-          if (channel._id == channelId) {
-            channel = {
-              ...updatedChannel,
-            };
+      if (project._id === projectId) {
+        project.channels = project.channels.map((channel) => {
+          if (channel._id === channelId) {
+            return { ...updatedChannel };
           }
           return channel;
         });

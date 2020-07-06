@@ -82,7 +82,7 @@ export const renameProjectSuccess = (state, action) => {
   return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project._id == renamedProject._id) {
+      if (project._id === renamedProject._id) {
         project.name = renamedProject.name;
       }
       return project;
@@ -115,7 +115,7 @@ export const deleteProjectSuccess = (state, action) => {
   return {
     ...state,
     projects: state.projects.filter(
-      (project) => project._id != deletedProject._id
+      (project) => project._id !== deletedProject._id
     ),
     selectedProject: null,
     loading: false,

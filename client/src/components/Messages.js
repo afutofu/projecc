@@ -8,8 +8,6 @@ const MessagesComp = styled.div`
   height: calc(100% - 65px);
   display: flex;
   flex-direction: column-reverse;
-  /* justify-content: flex-end; */
-  /* align-items: flex-start; */
   overflow-y: auto;
   padding: 0 20px;
   box-sizing: border-box;
@@ -20,7 +18,8 @@ const TopSpace = styled.div`
   margin-bottom: 20px;
 `;
 
-const Messages = ({ messages, channelId, projectId }) => {
+const Messages = (props) => {
+  const { messages, channelId, projectId, deleteMessage } = props;
   let newMessages = [];
 
   if (messages !== undefined) {
@@ -32,13 +31,13 @@ const Messages = ({ messages, channelId, projectId }) => {
   return (
     <MessagesComp>
       {newMessages.map((message) => {
-        console.log(message);
         return (
           <Message
             key={message._id}
             message={message}
             channelId={channelId}
             projectId={projectId}
+            deleteMessage={deleteMessage}
           />
         );
       })}

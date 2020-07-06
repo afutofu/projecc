@@ -1,3 +1,5 @@
+const { initMessageListeners } = require("./messages");
+
 // Initialize all projects with listeners
 const initProjects = (io, projects) => {
   projects.forEach((project) => {
@@ -30,24 +32,8 @@ const initProject = (io, project) => {
       socket.join(channel._id);
     });
 
-    // Listening for message from client
-    socket.on("sendMessage", ({ message, channelId, projectId }, callback) => {
-      const messageObject = {
-        _id: 131313,
-        user: "John Doe",
-        text: "Yo wassup",
-        date: "7/4/2020 12:11",
-      };
-
-      console.log("\tNew message in", channelId);
-
-      // Emits message to other clients in same namespace and room
-      socket.broadcast
-        .to(channelId)
-        .emit("message", { message, channelId, projectId });
-
-      callback();
-    });
+    // Initialize message listeners
+    initMessageListeners(socket);
   });
 };
 

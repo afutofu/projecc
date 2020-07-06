@@ -3,8 +3,6 @@ import styled from "styled-components";
 import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
-
 import ProjectBar from "./ProjectBar";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
@@ -28,17 +26,17 @@ const Project = (props) => {
   const ENDPOINT = "localhost:5000";
   const [redirect, setRedirect] = useState(false);
 
-  const { fetchProjects } = props;
+  const { isLogged, fetchProjects } = props;
 
   useEffect(() => {
-    if (props.isLogged == false) setRedirect(true);
+    if (isLogged === false) setRedirect(true);
     fetchProjects()
       .then((projects) => {
         socket = io(ENDPOINT);
         socket.emit("initProjects", projects);
       })
       .catch((err) => {});
-  }, []);
+  }, [isLogged, fetchProjects]);
 
   const render = () => {
     if (redirect) return <Redirect to="/" />;
