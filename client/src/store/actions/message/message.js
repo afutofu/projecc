@@ -10,11 +10,10 @@ import {
 } from "../actions";
 
 // RECEIVE MESSAGE
-export const receiveMessage = (message) => {
-  const { user, msg, projectName, channel } = message;
+export const receiveMessage = (newMessage, channelId, projectId) => {
   return {
     type: RECEIVE_MESSAGE,
-    payload: { user, msg, projectName, channel },
+    payload: { newMessage, channelId, projectId },
   };
 };
 
@@ -25,18 +24,22 @@ export const createMessage = (message, channelId, projectId) => (dispatch) => {
     user: "user",
   };
 
-  dispatch(createMessageBegin());
-  axios
-    .post(
-      `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages`,
-      message
-    )
-    .then((res) => {
-      dispatch(createMessageSuccess(res.data, channelId, projectId));
-    })
-    .catch((err) => {
-      dispatch(createMessageFail(err));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(createMessageBegin());
+    axios
+      .post(
+        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages`,
+        message
+      )
+      .then((res) => {
+        dispatch(createMessageSuccess(res.data, channelId, projectId));
+        resolve({ createdMessage: res.data, channelId, projectId });
+      })
+      .catch((err) => {
+        dispatch(createMessageFail(err));
+        reject(err);
+      });
+  });
 };
 
 const createMessageBegin = () => {
@@ -45,14 +48,14 @@ const createMessageBegin = () => {
   };
 };
 
-const createMessageSuccess = (newMessage, channelId, projectId) => {
+export const createMessageSuccess = (newMessage, channelId, projectId) => {
   return {
     type: CREATE_MESSAGE_SUCCESS,
     payload: { newMessage, channelId, projectId },
   };
 };
 
-const createMessageFail = (err) => {
+export const createMessageFail = (err) => {
   return {
     type: CREATE_MESSAGE_FAIL,
     payload: { err },

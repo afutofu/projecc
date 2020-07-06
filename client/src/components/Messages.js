@@ -32,6 +32,7 @@ const Messages = ({ messages, channelId, projectId }) => {
   return (
     <MessagesComp>
       {newMessages.map((message) => {
+        console.log(message);
         return (
           <Message
             key={message._id}

@@ -25,15 +25,19 @@ export const setSelectedProject = (project) => {
 
 // FETCH PROJECT
 export const fetchProjects = () => (dispatch) => {
-  dispatch(fetchProjectsBegin());
-  axios
-    .get("http://localhost:5000/api/projects")
-    .then((res) => {
-      dispatch(fetchProjectsSuccess(res.data));
-    })
-    .catch((err) => {
-      dispatch(fetchProjectsFail(err));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(fetchProjectsBegin());
+    axios
+      .get("http://localhost:5000/api/projects")
+      .then((res) => {
+        dispatch(fetchProjectsSuccess(res.data));
+        resolve(res.data);
+      })
+      .catch((err) => {
+        dispatch(fetchProjectsFail(err));
+        reject(err);
+      });
+  });
 };
 
 const fetchProjectsBegin = () => {

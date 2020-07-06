@@ -21,6 +21,7 @@ export {
   receiveMessage,
   createMessage,
   deleteMessage,
+  createMessageSuccess,
 } from "./message/message";
 
 // MODAL

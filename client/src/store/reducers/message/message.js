@@ -1,21 +1,31 @@
 // RECEIVE MESSAGE
 export const receiveMessage = (state, action) => {
-  const { user, msg, projectName, channel } = action.payload;
+  const { newMessage, channelId, projectId } = action.payload;
 
-  let newState = { ...state };
+  const sameProject = projectId == state.selectedProject._id;
 
-  newState.projects.map((project) => {
-    if (project.name === projectName) {
-      project.channels = {
-        ...project.channels,
-        [channel]: [...project.channels[channel], { user, msg }],
-      };
+  let newSelectedProject = {
+    ...state.selectedProject,
+  };
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id == projectId) {
+        project.channels.map((channel) => {
+          if (channel._id == channelId) {
+            channel.messages.push(newMessage);
+          }
+        });
+        if (sameProject) {
+          newSelectedProject = project;
+        }
+      }
       return project;
-    }
-    return project;
-  });
-
-  return newState;
+    }),
+    loading: false,
+    selectedProject: { ...newSelectedProject },
+  };
 };
 
 // CREATE MESSAGE

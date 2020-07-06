@@ -53,52 +53,26 @@ const Chat = (props) => {
     receiveMessage,
     username,
     createMessage,
+    createMessageSuccess,
   } = props;
-  const ENDPOINT = `localhost:5000/${selectedProject.name}`;
 
-  // useEffect(() => {
-  //   socket = io(ENDPOINT);
+  const ENDPOINT = `http://localhost:5000/${selectedProject._id}`;
 
-  //   if (username === "") return;
+  useEffect(() => {
+    socket = io(ENDPOINT);
 
-  //   // Join channel
-  //   socket.emit(
-  //     "joinChannel",
-  //     { name: username, channel: selectedChannel },
-  //     () => {
-  //       // console.log("Joined channel");
-  //     }
-  //   );
+    if (username === "") return;
 
-  //   // Listening for message from server
-  //   socket.on("message", (message) => {
-  //     // Send message to redux store
-  //     receiveMessage(message);
-  //     setMessages([...messages, message]);
-  //   });
-
-  //   return () => {
-  //     // Leave channel
-  //     socket.emit("disconnect");
-  //     socket.close();
-  //   };
-  // }, []);
+    // Listening for message from server
+    socket.on("message", ({ message, channelId, projectId }) => {
+      // Send message to redux store
+      receiveMessage(message, channelId, projectId);
+    });
+  }, [selectedProject._id]);
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
     if (message) {
-      // Send message to server
-      // socket.emit(
-      //   "sendMessage",
-      //   {
-      //     msg: message,
-      //     projectName: selectedProject.name,
-      //     channel: selectedChannel,
-      //   },
-      //   () => {
-      //     setMessage("");
-      //   }
-      // );
       createMessage(
         {
           text: message,
@@ -106,10 +80,23 @@ const Chat = (props) => {
         },
         selectedChannel._id,
         selectedProject._id
-      );
-      setMessage("");
+      )
+        .then(({ createdMessage, channelId, projectId }) => {
+          // Send message to server
+          socket.emit(
+            "sendMessage",
+            { message: createdMessage, channelId, projectId },
+            () => {
+              setMessage("");
+            }
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
+
   return (
     <ChatComp>
       <Messages
@@ -137,6 +124,8 @@ const mapDispatchToProps = (dispatch) => {
     receiveMessage: (message) => dispatch(receiveMessage(message)),
     createMessage: (message, channelId, projectId) =>
       dispatch(createMessage(message, channelId, projectId)),
+    receiveMessage: (message, channelId, projectId) =>
+      dispatch(receiveMessage(message, channelId, projectId)),
   };
 };
 

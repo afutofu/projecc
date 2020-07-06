@@ -150,7 +150,7 @@ const Join = (props) => {
                   type="password"
                   placeholder="Password"
                 />
-                <Button>Sign In</Button>
+                <Button onClick={onLogin}>Sign In</Button>
               </Form>
             </JoinBoxContainer>
           </JoinBox>

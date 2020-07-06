@@ -55,7 +55,7 @@ const AddChannelButton = styled.button`
 
   i {
     color: #888;
-    font-size: 18px;
+    font-size: 16px;
     transition: 0.2s;
   }
 

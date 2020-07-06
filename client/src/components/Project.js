@@ -32,7 +32,12 @@ const Project = (props) => {
 
   useEffect(() => {
     if (props.isLogged == false) setRedirect(true);
-    fetchProjects();
+    fetchProjects()
+      .then((projects) => {
+        socket = io(ENDPOINT);
+        socket.emit("initProjects", projects);
+      })
+      .catch((err) => {});
   }, []);
 
   const render = () => {
