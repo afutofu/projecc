@@ -16,10 +16,10 @@ import {
 } from "../actions";
 
 // SELECT PROJECT
-export const setSelectedProject = (project) => {
+export const setSelectedProject = (projectId) => {
   return {
     type: SET_SELECTED_PROJECT,
-    payload: { project },
+    payload: { projectId },
   };
 };
 

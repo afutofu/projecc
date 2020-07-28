@@ -2,6 +2,24 @@
 export const createMessageClient = (state, action) => {
   const { newMessage, channelId, projectId } = action.payload;
 
+  if (!state.selectedProject) {
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels.map((channel) => {
+            if (channel._id === channelId) {
+              channel.messages.push(newMessage);
+            }
+            return channel;
+          });
+        }
+        return project;
+      }),
+      loading: false,
+    };
+  }
+
   const sameProject = projectId === state.selectedProject._id;
 
   let newSelectedProject = {
@@ -76,7 +94,29 @@ export const createMessageFail = (state, action) => {
 export const deleteMessageClient = (state, action) => {
   const { updatedChannel, channelId, projectId } = action.payload;
 
-  const sameProject = projectId === state.selectedProject._id;
+  if (!state.selectedProject) {
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels = project.channels.map((channel) => {
+            if (channel._id === channelId) {
+              return { ...updatedChannel };
+            }
+            return channel;
+          });
+
+          if (project.selectedChannel._id == channelId) {
+            project.selectedChannel = { ...updatedChannel };
+          }
+        }
+        return project;
+      }),
+      loading: false,
+    };
+  }
+
+  const sameChannel = channelId === state.selectedProject.selectedChannel._id;
 
   let newSelectedProject = {
     ...state.selectedProject,
@@ -92,7 +132,7 @@ export const deleteMessageClient = (state, action) => {
           }
           return channel;
         });
-        if (sameProject) {
+        if (sameChannel) {
           project.selectedChannel = { ...updatedChannel };
           newSelectedProject = project;
         }
@@ -126,6 +166,10 @@ export const deleteMessageSuccess = (state, action) => {
           }
           return channel;
         });
+
+        if (project.selectedChannel._id == channelId) {
+          project.selectedChannel = { ...updatedChannel };
+        }
       }
       return project;
     }),

@@ -74,6 +74,8 @@ const ContentBar = (props) => {
     deleteProject(selectedProject._id);
   };
 
+  // Render the name of the project
+  // If project name is too long (over 15 chars), will end with first 15 chars followed by ellipses
   const renderName = () => {
     const maxNameLength = 15;
 
@@ -105,12 +107,6 @@ const ContentBar = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    selectedProject: state.message.selectedProject,
-  };
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     projectModalOpen: (type, data) => dispatch(projectModalOpen(type, data)),
@@ -118,4 +114,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentBar);
+export default connect(null, mapDispatchToProps)(ContentBar);

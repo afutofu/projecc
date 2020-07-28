@@ -31,3 +31,6 @@ export {
   projectModalOpen,
   projectModalClose,
 } from "./modal";
+
+// SOCKET
+export { setSocket } from "./socket";

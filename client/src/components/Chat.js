@@ -47,7 +47,7 @@ const Input = styled.input.attrs((props) => ({
   margin: 0;
 `;
 
-let socket;
+// let socket;
 
 const Chat = (props) => {
   const [message, setMessage] = useState("");
@@ -59,37 +59,38 @@ const Chat = (props) => {
     createMessageClient,
     deleteMessage,
     deleteMessageClient,
+    socket,
   } = props;
 
-  const ENDPOINT = `http://localhost:5000/${selectedProject._id}`;
+  // const ENDPOINT = `http://localhost:5000/`;
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
+  // useEffect(() => {
+  //   // socket = io(ENDPOINT);
 
-    if (username === "") return;
+  //   if (username === "") return;
 
-    // Listening for message from server
-    socket.on("message", ({ type, data, channelId, projectId }) => {
-      switch (type) {
-        case "CREATE":
-          // Send message to redux store
-          createMessageClient(data, channelId, projectId);
-          break;
-        case "DELETE":
-          // Send updated channel to redux store
-          deleteMessageClient(data, channelId, projectId);
-          break;
-        default:
-          return null;
-      }
-    });
-  }, [
-    selectedProject._id,
-    username,
-    ENDPOINT,
-    createMessageClient,
-    deleteMessageClient,
-  ]);
+  //   // Listening for message from server
+  //   socket.on("message", ({ type, data, channelId, projectId }) => {
+  //     switch (type) {
+  //       case "CREATE":
+  //         // Send message to redux store
+  //         createMessageClient(data, channelId, projectId);
+  //         break;
+  //       case "DELETE":
+  //         // Send updated channel to redux store
+  //         deleteMessageClient(data, channelId, projectId);
+  //         break;
+  //       default:
+  //         return null;
+  //     }
+  //   });
+  // }, [
+  //   selectedProject._id,
+  //   username,
+  //   // ENDPOINT,
+  //   createMessageClient,
+  //   deleteMessageClient,
+  // ]);
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
@@ -142,6 +143,7 @@ const Chat = (props) => {
 const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
+    socket: state.socket.socket,
   };
 };
 

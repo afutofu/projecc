@@ -1,8 +1,19 @@
 // SET SELECTED PROJECT
 export const setSelectedProject = (state, action) => {
+  const { projectId } = action.payload;
+
+  if (projectId == null) {
+    return {
+      ...state,
+      selectedProject: null,
+    };
+  }
+
   return {
     ...state,
-    selectedProject: action.payload.project,
+    selectedProject: state.projects.filter((project) => {
+      return project._id == projectId;
+    })[0],
   };
 };
 

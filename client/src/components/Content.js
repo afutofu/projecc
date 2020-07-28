@@ -89,9 +89,6 @@ const Content = (props) => {
 const mapStateToProps = (state) => {
   return {
     selectedProject: state.message.selectedProject,
-    selectedChannel: state.message.selectedProject
-      ? state.message.selectedProject.selectedChannel
-      : null,
   };
 };
 

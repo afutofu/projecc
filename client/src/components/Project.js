@@ -4,12 +4,16 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import ProjectBar from "./ProjectBar";
-import ContentBar from "./ContentBar";
-import Content from "./Content";
+import ProjectContent from "./ProjectContent";
 import ProjectModal from "./ProjectModal";
 import ChannelModal from "./ChannelModal";
 
-import { fetchProjects } from "../store/actions";
+import {
+  fetchProjects,
+  setSocket,
+  createMessageClient,
+  deleteMessageClient,
+} from "../store/actions";
 
 const ProjectComp = styled.div`
   position: relative;
@@ -26,14 +30,38 @@ const Project = (props) => {
   const ENDPOINT = "localhost:5000";
   const [redirect, setRedirect] = useState(false);
 
-  const { isLogged, fetchProjects } = props;
+  const {
+    isLogged,
+    fetchProjects,
+    setSocket,
+    createMessageClient,
+    deleteMessageClient,
+  } = props;
 
   useEffect(() => {
     if (isLogged === false) setRedirect(true);
     fetchProjects()
       .then((projects) => {
         socket = io(ENDPOINT);
-        socket.emit("initProjects", projects);
+        socket.emit("initSockets");
+        setSocket(socket);
+        // Listening for message from server
+        socket.on("message", ({ type, data, channelId, projectId }) => {
+          console.log("Message from server");
+          switch (type) {
+            case "CREATE":
+              // Send message to redux store
+              createMessageClient(data, channelId, projectId);
+              break;
+            case "DELETE":
+              console.log(data.messages);
+              // Send updated channel to redux store
+              deleteMessageClient(data, channelId, projectId);
+              break;
+            default:
+              return null;
+          }
+        });
       })
       .catch((err) => {});
   }, [isLogged, fetchProjects]);
@@ -46,8 +74,7 @@ const Project = (props) => {
         <ProjectModal />
         <ChannelModal />
         <ProjectBar />
-        <ContentBar />
-        <Content />
+        <ProjectContent />
       </ProjectComp>
     );
   };
@@ -64,6 +91,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
+    setSocket: (socket) => dispatch(setSocket(socket)),
+    createMessageClient: (message, channelId, projectId) =>
+      dispatch(createMessageClient(message, channelId, projectId)),
+    deleteMessageClient: (updatedChannel, channelId, projectId) =>
+      dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
   };
 };
 

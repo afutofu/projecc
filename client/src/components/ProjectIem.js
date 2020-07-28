@@ -33,7 +33,7 @@ const ProjectItem = (props) => {
   return (
     <ProjectItemComp
       selected={selected}
-      onClick={() => setSelectedProject(project)}
+      onClick={() => setSelectedProject(project._id)}
     ></ProjectItemComp>
   );
 };
