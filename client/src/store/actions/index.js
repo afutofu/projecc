@@ -12,6 +12,7 @@ export {
 
 export {
   setSelectedChannel,
+  createChannelClient,
   createChannel,
   renameChannel,
   deleteChannel,

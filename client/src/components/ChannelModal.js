@@ -179,6 +179,7 @@ const ChannelAddModal = (props) => {
     renameChannel,
     channelModalClose,
     selectedProject,
+    socket,
   } = props;
   const [channelName, setChannelName] = useState("");
 
@@ -199,7 +200,15 @@ const ChannelAddModal = (props) => {
   if (modalOpen) firstRender = false;
 
   const onCreateChannel = () => {
-    createChannel(channelName, selectedProject._id);
+    createChannel(channelName, selectedProject._id)
+      .then(({ data, projectId }) => {
+        // Send channel metadata to server
+        socket.emit("createChannel", { data, projectId });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     setChannelName("");
     channelModalClose();
   };
@@ -282,6 +291,7 @@ const mapStateToProps = (state) => {
     modalType: state.modal.channelModalType,
     modalData: state.modal.modalData,
     selectedProject: state.message.selectedProject,
+    socket: state.socket.socket,
   };
 };
 

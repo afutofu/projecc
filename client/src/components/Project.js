@@ -13,6 +13,7 @@ import {
   setSocket,
   createMessageClient,
   deleteMessageClient,
+  createChannelClient,
 } from "../store/actions";
 
 const ProjectComp = styled.div`
@@ -36,6 +37,7 @@ const Project = (props) => {
     setSocket,
     createMessageClient,
     deleteMessageClient,
+    createChannelClient,
   } = props;
 
   useEffect(() => {
@@ -45,6 +47,8 @@ const Project = (props) => {
         socket = io(ENDPOINT);
         socket.emit("initSockets");
         setSocket(socket);
+
+        // MESSAGE CLIENT EVENT LISTENERS
         // Listening for message from server
         socket.on("message", ({ type, data, channelId, projectId }) => {
           console.log("Message from server");
@@ -62,6 +66,30 @@ const Project = (props) => {
               return null;
           }
         });
+
+        // CHANNEL CLIENT EVENT LISTENERS
+        // Listening for channel from server
+        socket.on("channel", ({ type, data, channelId, projectId }) => {
+          console.log("Channel from server");
+          switch (type) {
+            case "CREATE":
+              // Send new channel to redux store
+              console.log("Create new channel");
+              createChannelClient(data, projectId);
+              break;
+            case "RENAME":
+              break;
+            case "DELETE":
+              console.log(data.messages);
+              // Send updated channel to redux store
+              // deleteMessageClient(data, channelId, projectId);
+              break;
+            default:
+              return null;
+          }
+        });
+
+        // PROJECT CLIENT EVENT LISTENERS
       })
       .catch((err) => {});
   }, [isLogged, fetchProjects]);
@@ -92,10 +120,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
     setSocket: (socket) => dispatch(setSocket(socket)),
-    createMessageClient: (message, channelId, projectId) =>
-      dispatch(createMessageClient(message, channelId, projectId)),
+    createMessageClient: (newMessage, channelId, projectId) =>
+      dispatch(createMessageClient(newMessage, channelId, projectId)),
     deleteMessageClient: (updatedChannel, channelId, projectId) =>
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
+    createChannelClient: (newChannel, projectId) =>
+      dispatch(createChannelClient(newChannel, projectId)),
   };
 };
 

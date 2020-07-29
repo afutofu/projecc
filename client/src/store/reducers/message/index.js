@@ -16,6 +16,7 @@ import {
 
   // CHANNEL
   SET_SELECTED_CHANNEL,
+  CREATE_CHANNEL_CLIENT,
   CREATE_CHANNEL_BEGIN,
   CREATE_CHANNEL_SUCCESS,
   CREATE_CHANNEL_FAIL,
@@ -55,6 +56,7 @@ import {
 
 import {
   setSelectedChannel,
+  createChannelClient,
   createChannelBegin,
   createChannelSuccess,
   createChannelFail,
@@ -117,6 +119,8 @@ const messageReducer = (state = initialState, action) => {
     // CHANNEL
     case SET_SELECTED_CHANNEL:
       return setSelectedChannel(state, action);
+    case CREATE_CHANNEL_CLIENT:
+      return createChannelClient(state, action);
     case CREATE_CHANNEL_BEGIN:
       return createChannelBegin(state, action);
     case CREATE_CHANNEL_SUCCESS:

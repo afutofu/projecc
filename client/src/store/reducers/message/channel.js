@@ -27,6 +27,42 @@ export const setSelectedChannel = (state, action) => {
 };
 
 // CREATE CHANNEL
+export const createChannelClient = (state, action) => {
+  const { newChannel, projectId } = action.payload;
+
+  if (state.selectedProject._id == projectId) {
+    let newChannels = [...state.selectedProject.channels];
+
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id == projectId) {
+          newChannels.push(newChannel);
+          return {
+            ...project,
+            channels: newChannels,
+          };
+        }
+        return project;
+      }),
+      selectedProject: {
+        ...state.selectedProject,
+        channels: newChannels,
+      },
+    };
+  }
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id == projectId) {
+        project.channels.push(newChannel);
+      }
+      return project;
+    }),
+  };
+};
+
 export const createChannelBegin = (state, action) => {
   return {
     ...state,
@@ -37,6 +73,32 @@ export const createChannelBegin = (state, action) => {
 export const createChannelSuccess = (state, action) => {
   const createdChannel = action.payload.channel;
   const projectId = action.payload.projectId;
+
+  if (state.selectedProject._id == projectId) {
+    let newChannels = [...state.selectedProject.channels];
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels.push(createdChannel);
+          newChannels = project.channels;
+          project.selectedChannel = createdChannel;
+          return {
+            ...project,
+            channels: newChannels,
+            selectedChannel: createdChannel,
+          };
+        }
+        return project;
+      }),
+      selectedProject: {
+        ...state.selectedProject,
+        channels: newChannels,
+        selectedChannel: createdChannel,
+      },
+      loading: false,
+    };
+  }
 
   return {
     ...state,

@@ -20,6 +20,8 @@ const connectSocket = (server) => {
         });
       });
 
+      // MESSAGE EVENT LISTENERS
+
       // Listening for message from client
       socket.on("sendMessage", ({ data, channelId, projectId }, callback) => {
         const messageObject = {
@@ -31,7 +33,7 @@ const connectSocket = (server) => {
 
         console.log("\tNew message in", channelId);
 
-        // Emits message to other clients in same room
+        // Emits message to other clients in same room to be created in frontend
         socket.broadcast.emit("message", {
           type: "CREATE",
           data,
@@ -51,6 +53,75 @@ const connectSocket = (server) => {
           type: "DELETE",
           data,
           channelId,
+          projectId,
+        });
+      });
+
+      // CHANNEL EVENT LISTENERS
+      socket.on("createChannel", ({ data, projectId }) => {
+        console.log("\tNew channel in", projectId);
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("channel", {
+          type: "CREATE",
+          data,
+          projectId,
+        });
+      });
+
+      socket.on("renameChannel", ({ data, channelId, projectId }) => {
+        console.log("\tRenamed channel", channelId);
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("channel", {
+          type: "RENAME",
+          data,
+          channelId,
+          projectId,
+        });
+      });
+
+      socket.on("deleteChannel", ({ data, channelId, projectId }) => {
+        console.log("\tDeleted channel in", projectId);
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("channel", {
+          type: "DELETE",
+          data,
+          channelId,
+          projectId,
+        });
+      });
+
+      // PROJECT EVENT LISTENERS
+      socket.on("createProject", ({ data }) => {
+        console.log("\tNew project");
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("project", {
+          type: "CREATE",
+          data,
+        });
+      });
+
+      socket.on("renameProject", ({ data, projectId }) => {
+        console.log("\tRenamed project", projectId);
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("project", {
+          type: "RENAME",
+          data,
+          projectId,
+        });
+      });
+
+      socket.on("deleteProject", ({ data, projectId }) => {
+        console.log("\tDeleted project");
+
+        // Emits message to other clients in same room to create channel in frontend
+        socket.broadcast.emit("project", {
+          type: "DELETE",
+          data,
           projectId,
         });
       });

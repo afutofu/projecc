@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   SET_SELECTED_CHANNEL,
+  CREATE_CHANNEL_CLIENT,
   CREATE_CHANNEL_BEGIN,
   CREATE_CHANNEL_SUCCESS,
   CREATE_CHANNEL_FAIL,
@@ -21,18 +22,29 @@ export const setSelectedChannel = (channelId, projectId) => {
 };
 
 // CREATE CHANNEL
+export const createChannelClient = (newChannel, projectId) => {
+  return {
+    type: CREATE_CHANNEL_CLIENT,
+    payload: { newChannel, projectId },
+  };
+};
+
 export const createChannel = (channelName, projectId) => (dispatch) => {
-  dispatch(createChannelBegin());
-  axios
-    .post(`http://localhost:5000/api/projects/${projectId}/channels`, {
-      channelName,
-    })
-    .then((res) => {
-      dispatch(createChannelSuccess(res.data, projectId));
-    })
-    .catch((err) => {
-      dispatch(createChannelFail(err));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(createChannelBegin());
+    axios
+      .post(`http://localhost:5000/api/projects/${projectId}/channels`, {
+        channelName,
+      })
+      .then((res) => {
+        dispatch(createChannelSuccess(res.data, projectId));
+        resolve({ data: res.data, projectId });
+      })
+      .catch((err) => {
+        dispatch(createChannelFail(err));
+        reject(err);
+      });
+  });
 };
 
 const createChannelBegin = () => {
