@@ -71,7 +71,7 @@ const connectSocket = (server) => {
         callback();
       });
 
-      socket.on("renameChannel", ({ data, channelId, projectId }) => {
+      socket.on("renameChannel", ({ data, channelId, projectId }, callback) => {
         console.log("\tRenamed channel", channelId);
 
         // Emits message to other clients in same room to create channel in frontend
@@ -81,6 +81,8 @@ const connectSocket = (server) => {
           channelId,
           projectId,
         });
+
+        callback();
       });
 
       socket.on("deleteChannel", ({ channelId, projectId }) => {

@@ -89,7 +89,7 @@ export const renameChannel = (newChannelName, channelId, projectId) => (
       )
       .then((res) => {
         dispatch(renameChannelSuccess(res.data, channelId, projectId));
-        resolve(res.data);
+        resolve({ data: res.data, channelId, projectId });
       })
       .catch((err) => {
         dispatch(renameChannelFail(err));
@@ -104,10 +104,10 @@ const renameChannelBegin = () => {
   };
 };
 
-const renameChannelSuccess = (newChannelName, channelId, projectId) => {
+const renameChannelSuccess = (renamedChannel, channelId, projectId) => {
   return {
     type: RENAME_CHANNEL_SUCCESS,
-    payload: { newChannelName, channelId, projectId },
+    payload: { renamedChannel, channelId, projectId },
   };
 };
 

@@ -40,6 +40,7 @@ const Project = (props) => {
     createMessageClient,
     deleteMessageClient,
     createChannelClient,
+    renameChannelClient,
     deleteChannelClient,
   } = props;
 
@@ -76,14 +77,17 @@ const Project = (props) => {
           console.log("Channel from server");
           switch (type) {
             case "CREATE":
-              // Send new channel to redux store
+              // Send new channel to store
               console.log("Create new channel");
               createChannelClient(data, projectId);
               break;
             case "RENAME":
+              // Send renamed channel to store
+              console.log("Renamed channel");
+              renameChannelClient(data, channelId, projectId);
               break;
             case "DELETE":
-              // Send updated channel to redux store
+              // Send channelId to be deleted to store
               console.log("Delete channel");
               deleteChannelClient(channelId, projectId);
               break;
@@ -129,6 +133,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
     createChannelClient: (newChannel, projectId) =>
       dispatch(createChannelClient(newChannel, projectId)),
+    renameChannelClient: (renamedChannel, channelId, projectId) =>
+      dispatch(renameChannelClient(renamedChannel, channelId, projectId)),
     deleteChannelClient: (channelId, projectId) =>
       dispatch(deleteChannelClient(channelId, projectId)),
   };

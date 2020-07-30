@@ -215,11 +215,16 @@ const ChannelAddModal = (props) => {
 
   const onRenameChannel = () => {
     renameChannel(channelName, modalData.channelId, selectedProject._id)
-      .then(() => {
-        setChannelName("");
-        channelModalClose();
+      .then(({ data, channelId, projectId }) => {
+        // Send channel metadata to server
+        socket.emit("renameChannel", { data, channelId, projectId }, () => {
+          setChannelName("");
+          channelModalClose();
+        });
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const renderChannelBox = () => {

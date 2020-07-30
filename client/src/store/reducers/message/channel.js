@@ -125,8 +125,59 @@ export const createChannelFail = (state, action) => {
 
 // RENAME CHANNEL
 export const renameChannelClient = (state, action) => {
+  const { renamedChannel, channelId, projectId } = action.payload;
+
+  // If client not in same project as deleted channel
+  if (!state.selectedProject || state.selectedProject._id != projectId) {
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels = project.channels.map((channel) => {
+            if (channel._id === channelId) {
+              return renamedChannel;
+            }
+            return channel;
+          });
+          return project;
+        }
+        return project;
+      }),
+    };
+  }
+
+  // If client in same project as renamed channel
+  let newChannels = [];
+  let newSelectedChannel = null;
+
   return {
     ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === projectId) {
+        newChannels = project.channels.map((channel) => {
+          if (channel._id === channelId) {
+            return renamedChannel;
+          }
+          return channel;
+        });
+        if (project.selectedChannel._id === channelId) {
+          // If client selected channel is same as renamed channel, new selected channel will be the renamed channel
+          newSelectedChannel = renamedChannel;
+        } else {
+          // If client selected channel is not the same as renamed channel, new selected channel will be the same as old selected channel
+          newSelectedChannel = project.selectedChannel;
+        }
+
+        project.channels = newChannels;
+        project.selectedChannel = newSelectedChannel;
+      }
+      return project;
+    }),
+    selectedProject: {
+      ...state.selectedProject,
+      channels: newChannels,
+      selectedChannel: newSelectedChannel,
+    },
   };
 };
 
@@ -138,22 +189,39 @@ export const renameChannelBegin = (state, action) => {
 };
 
 export const renameChannelSuccess = (state, action) => {
-  const { newChannelName, channelId, projectId } = action.payload;
+  const { renamedChannel, channelId, projectId } = action.payload;
+
+  let newChannels = [];
+  let newSelectedChannel = null;
 
   return {
     ...state,
     projects: state.projects.map((project) => {
       if (project._id === projectId) {
-        project.channels = project.channels.map((channel) => {
+        newChannels = project.channels.map((channel) => {
           if (channel._id === channelId) {
-            channel.name = newChannelName.name;
+            return renamedChannel;
           }
           return channel;
         });
+        if (project.selectedChannel._id === channelId) {
+          // If client selected channel is same as renamed channel, new selected channel will be the renamed channel
+          newSelectedChannel = renamedChannel;
+        } else {
+          // If client selected channel is not the same as renamed channel, new selected channel will be the same as old selected channel
+          newSelectedChannel = project.selectedChannel;
+        }
+
+        project.channels = newChannels;
+        project.selectedChannel = newSelectedChannel;
       }
       return project;
     }),
-    loading: false,
+    selectedProject: {
+      ...state.selectedProject,
+      channels: newChannels,
+      selectedChannel: newSelectedChannel,
+    },
   };
 };
 
