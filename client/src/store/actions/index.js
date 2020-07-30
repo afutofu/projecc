@@ -14,7 +14,9 @@ export {
   setSelectedChannel,
   createChannelClient,
   createChannel,
+  renameChannelClient,
   renameChannel,
+  deleteChannelClient,
   deleteChannel,
 } from "./message/channel";
 

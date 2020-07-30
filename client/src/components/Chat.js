@@ -93,8 +93,6 @@ const Chat = (props) => {
       });
   };
 
-  console.log(selectedChannel);
-
   return (
     <ChatComp>
       <Messages

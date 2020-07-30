@@ -106,7 +106,7 @@ export const deleteMessageClient = (state, action) => {
             return channel;
           });
 
-          if (project.selectedChannel._id == channelId) {
+          if (project.selectedChannel._id === channelId) {
             project.selectedChannel = { ...updatedChannel };
           }
         }
@@ -167,7 +167,7 @@ export const deleteMessageSuccess = (state, action) => {
           return channel;
         });
 
-        if (project.selectedChannel._id == channelId) {
+        if (project.selectedChannel._id === channelId) {
           project.selectedChannel = { ...updatedChannel };
         }
       }

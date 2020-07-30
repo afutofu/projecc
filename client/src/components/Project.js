@@ -14,6 +14,8 @@ import {
   createMessageClient,
   deleteMessageClient,
   createChannelClient,
+  renameChannelClient,
+  deleteChannelClient,
 } from "../store/actions";
 
 const ProjectComp = styled.div`
@@ -38,6 +40,7 @@ const Project = (props) => {
     createMessageClient,
     deleteMessageClient,
     createChannelClient,
+    deleteChannelClient,
   } = props;
 
   useEffect(() => {
@@ -80,9 +83,9 @@ const Project = (props) => {
             case "RENAME":
               break;
             case "DELETE":
-              console.log(data.messages);
               // Send updated channel to redux store
-              // deleteMessageClient(data, channelId, projectId);
+              console.log("Delete channel");
+              deleteChannelClient(channelId, projectId);
               break;
             default:
               return null;
@@ -126,6 +129,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
     createChannelClient: (newChannel, projectId) =>
       dispatch(createChannelClient(newChannel, projectId)),
+    deleteChannelClient: (channelId, projectId) =>
+      dispatch(deleteChannelClient(channelId, projectId)),
   };
 };
 

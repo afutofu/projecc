@@ -5,9 +5,11 @@ import {
   CREATE_CHANNEL_BEGIN,
   CREATE_CHANNEL_SUCCESS,
   CREATE_CHANNEL_FAIL,
+  RENAME_CHANNEL_CLIENT,
   RENAME_CHANNEL_BEGIN,
   RENAME_CHANNEL_SUCCESS,
   RENAME_CHANNEL_FAIL,
+  DELETE_CHANNEL_CLIENT,
   DELETE_CHANNEL_BEGIN,
   DELETE_CHANNEL_SUCCESS,
   DELETE_CHANNEL_FAIL,
@@ -67,6 +69,14 @@ const createChannelFail = (err) => {
   };
 };
 
+// RENAME CHANNEL
+export const renameChannelClient = (renamedChannel, channelId, projectId) => {
+  return {
+    type: RENAME_CHANNEL_CLIENT,
+    payload: { renamedChannel, channelId, projectId },
+  };
+};
+
 export const renameChannel = (newChannelName, channelId, projectId) => (
   dispatch
 ) => {
@@ -109,18 +119,29 @@ const renameChannelFail = (err) => {
 };
 
 // DELETE CHANNEL
+export const deleteChannelClient = (channelId, projectId) => {
+  return {
+    type: DELETE_CHANNEL_CLIENT,
+    payload: { channelId, projectId },
+  };
+};
+
 export const deleteChannel = (channelId, projectId) => (dispatch) => {
-  dispatch(deleteChannelBegin());
-  axios
-    .delete(
-      `http://localhost:5000/api/projects/${projectId}/channels/${channelId}`
-    )
-    .then((res) => {
-      dispatch(deleteChannelSuccess(res.data));
-    })
-    .catch((err) => {
-      dispatch(deleteChannelFail(err));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(deleteChannelBegin());
+    axios
+      .delete(
+        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}`
+      )
+      .then((res) => {
+        dispatch(deleteChannelSuccess(res.data));
+        resolve({ channelId, projectId });
+      })
+      .catch((err) => {
+        dispatch(deleteChannelFail(err));
+        reject(err);
+      });
+  });
 };
 
 const deleteChannelBegin = () => {

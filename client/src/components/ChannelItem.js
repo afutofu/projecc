@@ -97,11 +97,18 @@ const ChannelItem = (props) => {
     name,
     project,
     _id,
+    socket,
   } = props;
 
   const onDeleteChannel = (e) => {
     e.stopPropagation();
-    deleteChannel(_id, project._id);
+    deleteChannel(_id, project._id)
+      .then(({ channelId, projectId }) => {
+        socket.emit("deleteChannel", { channelId, projectId });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onRenameChannel = (e) => {
@@ -130,6 +137,12 @@ const ChannelItem = (props) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    socket: state.socket.socket,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setSelectedChannel: (channel, project) =>
@@ -141,4 +154,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(ChannelItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ChannelItem);

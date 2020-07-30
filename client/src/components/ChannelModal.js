@@ -203,14 +203,14 @@ const ChannelAddModal = (props) => {
     createChannel(channelName, selectedProject._id)
       .then(({ data, projectId }) => {
         // Send channel metadata to server
-        socket.emit("createChannel", { data, projectId });
+        socket.emit("createChannel", { data, projectId }, () => {
+          setChannelName("");
+          channelModalClose();
+        });
       })
       .catch((err) => {
         console.log(err);
       });
-
-    setChannelName("");
-    channelModalClose();
   };
 
   const onRenameChannel = () => {

@@ -30,36 +30,38 @@ export const setSelectedChannel = (state, action) => {
 export const createChannelClient = (state, action) => {
   const { newChannel, projectId } = action.payload;
 
-  if (state.selectedProject._id == projectId) {
-    let newChannels = [...state.selectedProject.channels];
-
+  // If client not in same project as new channel
+  if (!state.selectedProject || state.selectedProject._id != projectId) {
     return {
       ...state,
       projects: state.projects.map((project) => {
-        if (project._id == projectId) {
-          newChannels.push(newChannel);
-          return {
-            ...project,
-            channels: newChannels,
-          };
+        if (project._id === projectId) {
+          project.channels.push(newChannel);
         }
         return project;
       }),
-      selectedProject: {
-        ...state.selectedProject,
-        channels: newChannels,
-      },
     };
   }
+
+  // If client in same project as new channel
+  let newChannels = [...state.selectedProject.channels];
 
   return {
     ...state,
     projects: state.projects.map((project) => {
-      if (project._id == projectId) {
-        project.channels.push(newChannel);
+      if (project._id === projectId) {
+        newChannels.push(newChannel);
+        return {
+          ...project,
+          channels: newChannels,
+        };
       }
       return project;
     }),
+    selectedProject: {
+      ...state.selectedProject,
+      channels: newChannels,
+    },
   };
 };
 
@@ -74,7 +76,7 @@ export const createChannelSuccess = (state, action) => {
   const createdChannel = action.payload.channel;
   const projectId = action.payload.projectId;
 
-  if (state.selectedProject._id == projectId) {
+  if (state.selectedProject._id === projectId) {
     let newChannels = [...state.selectedProject.channels];
     return {
       ...state,
@@ -122,6 +124,12 @@ export const createChannelFail = (state, action) => {
 };
 
 // RENAME CHANNEL
+export const renameChannelClient = (state, action) => {
+  return {
+    ...state,
+  };
+};
+
 export const renameChannelBegin = (state, action) => {
   return {
     ...state,
@@ -158,6 +166,62 @@ export const renameChannelFail = (state, action) => {
 };
 
 // DELETE CHANNEL
+export const deleteChannelClient = (state, action) => {
+  const { channelId, projectId } = action.payload;
+
+  // If client not in same project as deleted channel
+  if (!state.selectedProject || state.selectedProject._id != projectId) {
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels = project.channels.filter(
+            (channel) => channel._id != channelId
+          );
+        }
+        return project;
+      }),
+    };
+  }
+
+  // If client in same project as deleted channel
+  let newChannels = [];
+  let newSelectedChannel = null;
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === projectId) {
+        newChannels = project.channels.filter(
+          (channel) => channel._id != channelId
+        );
+        if (
+          project.selectedChannel._id === channelId &&
+          newChannels.length > 0
+        ) {
+          // If client selected channel is same as deleted channel, new selected channel will be the first channel in the project
+          newSelectedChannel = newChannels[0];
+        } else if (project.selectedChannel._id === channelId) {
+          // If client selected channel is same as deleted channel but there is no channels in the project, new selected channel will be null
+          newSelectedChannel = null;
+        } else {
+          // If client selected channel is not the same as deleted channel, new selected channel will be the same as old selected channel
+          newSelectedChannel = project.selectedChannel;
+        }
+
+        project.channels = newChannels;
+        project.selectedChannel = newSelectedChannel;
+      }
+      return project;
+    }),
+    selectedProject: {
+      ...state.selectedProject,
+      channels: newChannels,
+      selectedChannel: newSelectedChannel,
+    },
+  };
+};
+
 export const deleteChannelBegin = (state, action) => {
   return {
     ...state,

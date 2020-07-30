@@ -12,7 +12,7 @@ export const setSelectedProject = (state, action) => {
   return {
     ...state,
     selectedProject: state.projects.filter((project) => {
-      return project._id == projectId;
+      return project._id === projectId;
     })[0],
   };
 };

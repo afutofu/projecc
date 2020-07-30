@@ -58,7 +58,7 @@ const connectSocket = (server) => {
       });
 
       // CHANNEL EVENT LISTENERS
-      socket.on("createChannel", ({ data, projectId }) => {
+      socket.on("createChannel", ({ data, projectId }, callback) => {
         console.log("\tNew channel in", projectId);
 
         // Emits message to other clients in same room to create channel in frontend
@@ -67,6 +67,8 @@ const connectSocket = (server) => {
           data,
           projectId,
         });
+
+        callback();
       });
 
       socket.on("renameChannel", ({ data, channelId, projectId }) => {
@@ -81,13 +83,12 @@ const connectSocket = (server) => {
         });
       });
 
-      socket.on("deleteChannel", ({ data, channelId, projectId }) => {
+      socket.on("deleteChannel", ({ channelId, projectId }) => {
         console.log("\tDeleted channel in", projectId);
 
         // Emits message to other clients in same room to create channel in frontend
         socket.broadcast.emit("channel", {
           type: "DELETE",
-          data,
           channelId,
           projectId,
         });

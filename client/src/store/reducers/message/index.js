@@ -20,9 +20,11 @@ import {
   CREATE_CHANNEL_BEGIN,
   CREATE_CHANNEL_SUCCESS,
   CREATE_CHANNEL_FAIL,
+  RENAME_CHANNEL_CLIENT,
   RENAME_CHANNEL_BEGIN,
   RENAME_CHANNEL_SUCCESS,
   RENAME_CHANNEL_FAIL,
+  DELETE_CHANNEL_CLIENT,
   DELETE_CHANNEL_BEGIN,
   DELETE_CHANNEL_SUCCESS,
   DELETE_CHANNEL_FAIL,
@@ -60,9 +62,11 @@ import {
   createChannelBegin,
   createChannelSuccess,
   createChannelFail,
+  renameChannelClient,
   renameChannelBegin,
   renameChannelSuccess,
   renameChannelFail,
+  deleteChannelClient,
   deleteChannelBegin,
   deleteChannelSuccess,
   deleteChannelFail,
@@ -127,12 +131,16 @@ const messageReducer = (state = initialState, action) => {
       return createChannelSuccess(state, action);
     case CREATE_CHANNEL_FAIL:
       return createChannelFail(state, action);
+    case RENAME_CHANNEL_CLIENT:
+      return renameChannelClient(state, action);
     case RENAME_CHANNEL_BEGIN:
       return renameChannelBegin(state, action);
     case RENAME_CHANNEL_SUCCESS:
       return renameChannelSuccess(state, action);
     case RENAME_CHANNEL_FAIL:
       return renameChannelFail(state, action);
+    case DELETE_CHANNEL_CLIENT:
+      return deleteChannelClient(state, action);
     case DELETE_CHANNEL_BEGIN:
       return deleteChannelBegin(state, action);
     case DELETE_CHANNEL_SUCCESS:

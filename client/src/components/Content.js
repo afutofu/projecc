@@ -57,8 +57,6 @@ const Content = (props) => {
   const { selectedProject } = props;
 
   if (selectedProject && selectedProject.selectedChannel) {
-    console.log(selectedProject.selectedChannel);
-
     return (
       <ContentComp>
         <Header>
