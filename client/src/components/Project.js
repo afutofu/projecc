@@ -16,6 +16,9 @@ import {
   createChannelClient,
   renameChannelClient,
   deleteChannelClient,
+  createProjectClient,
+  renameProjectClient,
+  deleteProjectClient,
 } from "../store/actions";
 
 const ProjectComp = styled.div`
@@ -42,6 +45,9 @@ const Project = (props) => {
     createChannelClient,
     renameChannelClient,
     deleteChannelClient,
+    createProjectClient,
+    renameProjectClient,
+    deleteProjectClient,
   } = props;
 
   useEffect(() => {
@@ -63,7 +69,7 @@ const Project = (props) => {
               break;
             case "DELETE":
               console.log(data.messages);
-              // Send updated channel to redux store
+              // Send updated Project to redux store
               deleteMessageClient(data, channelId, projectId);
               break;
             default:
@@ -97,6 +103,29 @@ const Project = (props) => {
         });
 
         // PROJECT CLIENT EVENT LISTENERS
+        // Listening for project from server
+        socket.on("project", ({ type, data, projectId }) => {
+          console.log("Project from server");
+          switch (type) {
+            case "CREATE":
+              // Send new project to store
+              console.log("Create new project");
+              createProjectClient(data);
+              break;
+            case "RENAME":
+              // Send renamed project to store
+              console.log("Renamed project");
+              renameProjectClient(data, projectId);
+              break;
+            case "DELETE":
+              // Send projectId to be deleted to store
+              console.log("Delete project");
+              deleteProjectClient(projectId);
+              break;
+            default:
+              return null;
+          }
+        });
       })
       .catch((err) => {});
   }, [isLogged, fetchProjects]);
@@ -127,16 +156,28 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchProjects: () => dispatch(fetchProjects()),
     setSocket: (socket) => dispatch(setSocket(socket)),
+
+    // MESSAGE
     createMessageClient: (newMessage, channelId, projectId) =>
       dispatch(createMessageClient(newMessage, channelId, projectId)),
     deleteMessageClient: (updatedChannel, channelId, projectId) =>
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
+
+    // CHANNEL
     createChannelClient: (newChannel, projectId) =>
       dispatch(createChannelClient(newChannel, projectId)),
     renameChannelClient: (renamedChannel, channelId, projectId) =>
       dispatch(renameChannelClient(renamedChannel, channelId, projectId)),
     deleteChannelClient: (channelId, projectId) =>
       dispatch(deleteChannelClient(channelId, projectId)),
+
+    // PROJECT
+    createProjectClient: (newProject) =>
+      dispatch(createProjectClient(newProject)),
+    renameProjectClient: (renamedProject, projectId) =>
+      dispatch(renameProjectClient(renamedProject, projectId)),
+    deleteProjectClient: (projectId) =>
+      dispatch(deleteProjectClient(projectId)),
   };
 };
 

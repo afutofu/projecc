@@ -5,8 +5,11 @@ export { setUsername } from "./auth";
 export {
   fetchProjects,
   setSelectedProject,
+  createProjectClient,
   createProject,
+  renameProjectClient,
   renameProject,
+  deleteProjectClient,
   deleteProject,
 } from "./message/project";
 

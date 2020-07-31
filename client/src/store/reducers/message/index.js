@@ -4,12 +4,15 @@ import {
   FETCH_PROJECTS_BEGIN,
   FETCH_PROJECTS_SUCCESS,
   FETCH_PROJECTS_FAIL,
+  CREATE_PROJECT_CLIENT,
   CREATE_PROJECT_BEGIN,
   CREATE_PROJECT_SUCCESS,
   CREATE_PROJECT_FAIL,
+  RENAME_PROJECT_CLIENT,
   RENAME_PROJECT_BEGIN,
   RENAME_PROJECT_SUCCESS,
   RENAME_PROJECT_FAIL,
+  DELETE_PROJECT_CLIENT,
   DELETE_PROJECT_BEGIN,
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAIL,
@@ -45,12 +48,15 @@ import {
   fetchProjectsBegin,
   fetchProjectsSuccess,
   fetchProjectsFail,
+  createProjectClient,
   createProjectBegin,
   createProjectSuccess,
   createProjectFail,
+  renameProjectClient,
   renameProjectBegin,
   renameProjectSuccess,
   renameProjectFail,
+  deleteProjectClient,
   deleteProjectBegin,
   deleteProjectSuccess,
   deleteProjectFail,
@@ -93,26 +99,41 @@ let initialState = {
 const messageReducer = (state = initialState, action) => {
   switch (action.type) {
     // PROJECT
+
     case SET_SELECTED_PROJECT:
       return setSelectedProject(state, action);
+
+    // Fetch
     case FETCH_PROJECTS_BEGIN:
       return fetchProjectsBegin(state, action);
     case FETCH_PROJECTS_SUCCESS:
       return fetchProjectsSuccess(state, action);
     case FETCH_PROJECTS_FAIL:
       return fetchProjectsFail(state, action);
+
+    // Create
+    case CREATE_PROJECT_CLIENT:
+      return createProjectClient(state, action);
     case CREATE_PROJECT_BEGIN:
       return createProjectBegin(state, action);
     case CREATE_PROJECT_SUCCESS:
       return createProjectSuccess(state, action);
     case CREATE_PROJECT_FAIL:
       return createProjectFail(state, action);
+
+    // Rename
+    case RENAME_PROJECT_CLIENT:
+      return renameProjectClient(state, action);
     case RENAME_PROJECT_BEGIN:
       return renameProjectBegin(state, action);
     case RENAME_PROJECT_SUCCESS:
       return renameProjectSuccess(state, action);
     case RENAME_PROJECT_FAIL:
       return renameProjectFail(state, action);
+
+    // Delete
+    case DELETE_PROJECT_CLIENT:
+      return deleteProjectClient(state, action);
     case DELETE_PROJECT_BEGIN:
       return deleteProjectBegin(state, action);
     case DELETE_PROJECT_SUCCESS:

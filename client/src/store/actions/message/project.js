@@ -4,12 +4,15 @@ import {
   FETCH_PROJECTS_BEGIN,
   FETCH_PROJECTS_SUCCESS,
   FETCH_PROJECTS_FAIL,
+  CREATE_PROJECT_CLIENT,
   CREATE_PROJECT_BEGIN,
   CREATE_PROJECT_SUCCESS,
   CREATE_PROJECT_FAIL,
+  RENAME_PROJECT_CLIENT,
   RENAME_PROJECT_BEGIN,
   RENAME_PROJECT_SUCCESS,
   RENAME_PROJECT_FAIL,
+  DELETE_PROJECT_CLIENT,
   DELETE_PROJECT_BEGIN,
   DELETE_PROJECT_SUCCESS,
   DELETE_PROJECT_FAIL,
@@ -61,6 +64,13 @@ const fetchProjectsFail = (err) => {
 };
 
 // CREATE PROJECT
+export const createProjectClient = (createdProject) => {
+  return {
+    type: CREATE_PROJECT_CLIENT,
+    payload: { createdProject },
+  };
+};
+
 export const createProject = ({ name, creatorName }) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(createProjectBegin());
@@ -68,7 +78,7 @@ export const createProject = ({ name, creatorName }) => (dispatch) => {
       .post("http://localhost:5000/api/projects", { name, creatorName })
       .then((res) => {
         dispatch(createProjectSuccess(res.data));
-        resolve(res.data);
+        resolve({ data: res.data });
       })
       .catch((err) => {
         dispatch(createProjectFail(err));
@@ -98,6 +108,13 @@ const createProjectFail = (err) => {
 };
 
 // RENAME PROJECT
+export const renameProjectClient = (renamedProject, projectId) => {
+  return {
+    type: RENAME_PROJECT_CLIENT,
+    payload: { renamedProject, projectId },
+  };
+};
+
 export const renameProject = ({ newName, projectId }) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(renameProjectBegin());
@@ -107,7 +124,7 @@ export const renameProject = ({ newName, projectId }) => (dispatch) => {
       })
       .then((res) => {
         dispatch(renameProjectSuccess(res.data));
-        resolve(res.data);
+        resolve({ data: res.data, projectId });
       })
       .catch((err) => {
         dispatch(renameProjectFail(err));
@@ -137,6 +154,13 @@ const renameProjectFail = (err) => {
 };
 
 // DELETE PROJECT
+export const deleteProjectClient = (projectId) => {
+  return {
+    type: DELETE_PROJECT_CLIENT,
+    payload: { projectId },
+  };
+};
+
 export const deleteProject = (projectId) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteProjectBegin());
@@ -144,7 +168,7 @@ export const deleteProject = (projectId) => (dispatch) => {
       .delete(`http://localhost:5000/api/projects/${projectId}`)
       .then((res) => {
         dispatch(deleteProjectSuccess(res.data));
-        resolve(res.data);
+        resolve({ data: res.data, projectId });
       })
       .catch((err) => {
         dispatch(deleteProjectFail(err));

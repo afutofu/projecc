@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
-import { createProject, renameProject } from "../store/actions";
+import {
+  createProjectClient,
+  createProject,
+  renameProjectClient,
+  renameProject,
+} from "../store/actions";
 import { projectModalClose } from "../store/actions";
 
 const modalFadeIn = keyframes`
@@ -180,6 +185,7 @@ const ChannelAddModal = (props) => {
     renameProject,
     projectModalClose,
     username,
+    socket,
   } = props;
 
   useEffect(() => {
@@ -200,14 +206,11 @@ const ChannelAddModal = (props) => {
 
   const onCreateProject = () => {
     createProject({ name: projectName, creatorName: username })
-      .then((createdProject) => {
-        // socket.emit("createProject", {
-        //   projectId: createdProject._id,
-        //   projectName,
-        //   creatorName: username,
-        // });
-        setProjectName("");
-        projectModalClose();
+      .then(({ data }) => {
+        socket.emit("createProject", { data }, () => {
+          setProjectName("");
+          projectModalClose();
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -217,9 +220,11 @@ const ChannelAddModal = (props) => {
 
   const onRenameProject = () => {
     renameProject({ newName: projectName, projectId: modalData.projectId })
-      .then((renamedProject) => {
-        setProjectName("");
-        projectModalClose();
+      .then(({ data, projectId }) => {
+        socket.emit("renameProject", { data, projectId }, () => {
+          setProjectName("");
+          projectModalClose();
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -301,6 +306,7 @@ const mapStateToProps = (state) => {
     modalType: state.modal.projectModalType,
     modalData: state.modal.modalData,
     username: state.auth.username,
+    socket: state.socket.socket,
   };
 };
 

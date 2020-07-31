@@ -61,7 +61,7 @@ const Button = styled.div`
 `;
 
 const ContentBar = (props) => {
-  const { selectedProject, projectModalOpen, deleteProject } = props;
+  const { selectedProject, projectModalOpen, deleteProject, socket } = props;
 
   const onRenameProject = () => {
     projectModalOpen("RENAME", {
@@ -71,7 +71,13 @@ const ContentBar = (props) => {
   };
 
   const onDeleteProject = () => {
-    deleteProject(selectedProject._id);
+    deleteProject(selectedProject._id)
+      .then(({ projectId }) => {
+        socket.emit("deleteProject", { projectId });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   // Render the name of the project
@@ -107,6 +113,12 @@ const ContentBar = (props) => {
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    socket: state.socket.socket,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     projectModalOpen: (type, data) => dispatch(projectModalOpen(type, data)),
@@ -114,4 +126,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(ContentBar);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentBar);

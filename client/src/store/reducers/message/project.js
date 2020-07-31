@@ -49,6 +49,20 @@ export const fetchProjectsFail = (state, action) => {
 };
 
 // CREATE PROJECT
+export const createProjectClient = (state, action) => {
+  const { createdProject } = action.payload;
+
+  let newProject = {
+    ...createdProject,
+    selectedChannel: createdProject.channels[0],
+  };
+
+  return {
+    ...state,
+    projects: [...state.projects, newProject],
+  };
+};
+
 export const createProjectBegin = (state, action) => {
   return {
     ...state,
@@ -80,6 +94,36 @@ export const createProjectFail = (state, action) => {
 };
 
 // RENAME PROJECT
+export const renameProjectClient = (state, action) => {
+  const { renamedProject, projectId } = action.payload;
+
+  if (!state.selectedProject || state.selectedProject._id != projectId) {
+    return {
+      ...state,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.name = renamedProject.name;
+        }
+        return project;
+      }),
+    };
+  }
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === renamedProject._id) {
+        project.name = renamedProject.name;
+      }
+      return project;
+    }),
+    selectedProject: {
+      ...state.selectedProject,
+      name: renamedProject.name,
+    },
+  };
+};
+
 export const renameProjectBegin = (state, action) => {
   return {
     ...state,
@@ -113,6 +157,23 @@ export const renameProjectFail = (state, action) => {
 };
 
 // DELETE PROJECT
+export const deleteProjectClient = (state, action) => {
+  const { projectId } = action.payload;
+
+  if (!state.selectedProject || state.selectedProject._id != projectId) {
+    return {
+      ...state,
+      projects: state.projects.filter((project) => project._id != projectId),
+    };
+  }
+
+  return {
+    ...state,
+    projects: state.projects.filter((project) => project._id !== projectId),
+    selectedProject: null,
+  };
+};
+
 export const deleteProjectBegin = (state, action) => {
   return {
     ...state,

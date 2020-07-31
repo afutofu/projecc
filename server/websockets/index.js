@@ -97,7 +97,7 @@ const connectSocket = (server) => {
       });
 
       // PROJECT EVENT LISTENERS
-      socket.on("createProject", ({ data }) => {
+      socket.on("createProject", ({ data }, callback) => {
         console.log("\tNew project");
 
         // Emits message to other clients in same room to create channel in frontend
@@ -105,9 +105,11 @@ const connectSocket = (server) => {
           type: "CREATE",
           data,
         });
+
+        callback();
       });
 
-      socket.on("renameProject", ({ data, projectId }) => {
+      socket.on("renameProject", ({ data, projectId }, callback) => {
         console.log("\tRenamed project", projectId);
 
         // Emits message to other clients in same room to create channel in frontend
@@ -116,15 +118,16 @@ const connectSocket = (server) => {
           data,
           projectId,
         });
+
+        callback();
       });
 
-      socket.on("deleteProject", ({ data, projectId }) => {
-        console.log("\tDeleted project");
+      socket.on("deleteProject", ({ projectId }) => {
+        console.log("\tDeleted project", projectId);
 
         // Emits message to other clients in same room to create channel in frontend
         socket.broadcast.emit("project", {
           type: "DELETE",
-          data,
           projectId,
         });
       });
