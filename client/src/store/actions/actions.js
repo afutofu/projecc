@@ -1,5 +1,16 @@
 // AUTH
 export const SET_USERNAME = "SET_USERNAME";
+export const FETCH_USER_BEGIN = "FETCH_USER_BEGIN";
+export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
+export const FETCH_USER_FAIL = "FETCH_USER_FAIL";
+
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAIL = "REGISTER_FAIL";
+
+export const LOGOUT = "LOGOUT";
 
 // MESSAGES
 // Projects

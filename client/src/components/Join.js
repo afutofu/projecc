@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled, { keyframes, css } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setUsername } from "../store/actions";
+import { setUsername, fetchUser, register } from "../store/actions";
+
+const fadeIn = keyframes`
+  from {opacity:0}
+  to {opacity:1}
+`;
 
 const JoinComp = styled.div`
   position: relative;
@@ -53,6 +58,14 @@ const JoinBox = styled.div`
 `;
 
 const JoinBoxContainer = styled.div`
+  width: 300px;
+  height: 100%;
+`;
+
+const LoginBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   padding: 20px;
@@ -62,6 +75,23 @@ const JoinBoxContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-content: center;
+
+  animation: ${fadeIn} 1.5s forwards;
+`;
+
+const RegisterBox = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+
+  animation: ${fadeIn} 1.5s forwards;
 `;
 
 const Header = styled.h1`
@@ -73,6 +103,25 @@ const Header = styled.h1`
   box-sizing: border-box;
   margin-bottom: 20px;
   font-size: 29px;
+`;
+
+const ErrorBox = styled.div`
+  width: 100%;
+  height: 45px;
+  margin-bottom: 20px;
+  font-family: "Raleway", sans-serif;
+  box-sizing: border-box;
+  outline: none;
+  font-size: 17px;
+  letter-spacing: 1px;
+  background: #ff3d3d;
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation: ${fadeIn} 1.5s forwards;
 `;
 
 const Form = styled.form`
@@ -99,7 +148,7 @@ const Input = styled.input.attrs((props) => ({
 
 const Button = styled.button`
   height: 45px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   padding-left: 10px;
   text-transform: uppercase;
   font-family: "Montserrat", sans-serif;
@@ -122,37 +171,122 @@ const Button = styled.button`
   }
 `;
 
+const SwitchText = styled.p`
+  color: white;
+  font-size: 13px;
+  align-self: center;
+
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
+`;
+
 const Join = (props) => {
-  const [username, setUsername] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(true);
+  const [loginErrorMsg, setLoginErrorMsg] = useState(null);
+  const [registerErrorMsg, setRegisterErrorMsg] = useState(null);
+
+  const { isAuthenticated, error, fetchUser, register } = props;
+
+  useEffect(() => {
+    // fetchUser();
+  }, []);
+
+  // useEffect(() => {
+  //   if (isAuthenticated === true) {
+  //     setRedirect(true);
+  //   }
+  // }, [isAuthenticated]);
+
+  useEffect(() => {
+    // Check for register error
+    if (error && error.id === "REGISTER_ERROR") {
+      setRegisterErrorMsg(error.msg);
+    } else {
+      setRegisterErrorMsg(null);
+    }
+  }, [error]);
 
   const onLogin = (e) => {
     e.preventDefault();
-    props.setUsername(username);
-    setRedirect(true);
+  };
+
+  const onRegister = (e) => {
+    e.preventDefault();
+    register(name, email, password);
+  };
+
+  const switchIsLogin = () => {
+    setUsername("");
+    setEmail("");
+    setPassword("");
+
+    setIsLogin(!isLogin);
   };
 
   const render = () => {
     if (redirect) return <Redirect to="/projects" />;
+
+    const loginError = <ErrorBox>{loginErrorMsg}</ErrorBox>;
+    const registerError = <ErrorBox>{registerErrorMsg}</ErrorBox>;
+
+    const login = (
+      <LoginBox>
+        <Header>Login</Header>
+        <Form onSubmit={onLogin}>
+          {loginErrorMsg ? loginError : null}
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email"
+          />
+          <Input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+          />
+          <Button onClick={onLogin}>Login</Button>
+          <SwitchText onClick={switchIsLogin}>
+            or create a new account
+          </SwitchText>
+        </Form>
+      </LoginBox>
+    );
+
+    const register = (
+      <RegisterBox>
+        <Header>Register</Header>
+        <Form onSubmit={onRegister}>
+          {registerErrorMsg ? registerError : null}
+          <Input onChange={(e) => setName(e.target.value)} />
+          <Input
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email"
+          />
+          <Input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+          />
+          <Button onClick={onRegister}>Register</Button>
+          <SwitchText onClick={switchIsLogin}>or sign back in</SwitchText>
+        </Form>
+      </RegisterBox>
+    );
 
     return (
       <JoinComp>
         <Container>
           <Display />
           <JoinBox>
-            <JoinBoxContainer>
-              <Header>Sign In</Header>
-              <Form onSubmit={onLogin}>
-                <Input onChange={(e) => setUsername(e.target.value)} />
-                <Input
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  placeholder="Password"
-                />
-                <Button onClick={onLogin}>Sign In</Button>
-              </Form>
-            </JoinBoxContainer>
+            <JoinBoxContainer>{isLogin ? login : register}</JoinBoxContainer>
           </JoinBox>
         </Container>
       </JoinComp>
@@ -162,10 +296,20 @@ const Join = (props) => {
   return render();
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
   return {
-    setUsername: (username) => dispatch(setUsername(username)),
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.auth.error,
   };
 };
 
-export default connect(null, mapDispatchToProps)(Join);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUsername: (username) => dispatch(setUsername(username)),
+    fetchUser: () => dispatch(fetchUser()),
+    register: (name, email, password) =>
+      dispatch(register(name, email, password)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Join);
