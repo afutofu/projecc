@@ -1,6 +1,6 @@
 const socketio = require("socket.io");
 
-const Project = require("../models/Project");
+const Project = require("./models/Project");
 
 const connectSocket = (server) => {
   const io = socketio(server);

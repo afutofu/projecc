@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
+const auth = require("../../middleware/auth");
 
 const ObjectId = require("bson-objectid");
 
@@ -8,7 +9,7 @@ const Project = require("../../models/Project");
 
 // @route   GET /api/projects/:projectId/channels/:channelId/messages
 // @desc    Get all messages from a channel
-// @access  PUBLIC
+// @access  Public
 router.get("/", (req, res) => {
   const { projectId, channelId } = req.params;
 
@@ -24,8 +25,8 @@ router.get("/", (req, res) => {
 
 // @route   POST /api/projects/:projectId/channels/:channelId/messages
 // @desc    Create a message in a channel
-// @access  PUBLIC
-router.post("/", (req, res) => {
+// @access  Private
+router.post("/", auth, (req, res) => {
   const { projectId, channelId } = req.params;
 
   const dateObj = new Date();
@@ -78,8 +79,8 @@ router.post("/", (req, res) => {
 });
 
 // @route   DEL /api/projects/:projectId/channels/:channelId/messages/:messageId
-// @desc    Get all messages from a channel
-// @access  PUBLIC
+// @desc    Delete a messages from a channel
+// @access  Private
 router.delete("/:messageId", (req, res) => {
   const { projectId, channelId, messageId } = req.params;
 
