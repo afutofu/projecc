@@ -3,6 +3,7 @@ import styled from "styled-components";
 import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+
 import ProjectBar from "./ProjectBar";
 import ProjectContent from "./ProjectContent";
 import ProjectModal from "./ProjectModal";
@@ -19,6 +20,7 @@ import {
   createProjectClient,
   renameProjectClient,
   deleteProjectClient,
+  fetchUser,
 } from "../store/actions";
 
 const ProjectComp = styled.div`
@@ -38,6 +40,7 @@ const Project = (props) => {
 
   const {
     isAuthenticated,
+    fetchUser,
     fetchProjects,
     setSocket,
     createMessageClient,
@@ -52,10 +55,12 @@ const Project = (props) => {
 
   useEffect(() => {
     if (isAuthenticated === false) {
-      setRedirect(true);
+      fetchUser().catch(() => {
+        setRedirect(true);
+      });
     } else {
       fetchProjects()
-        .then((projects) => {
+        .then(() => {
           socket = io(ENDPOINT);
           socket.emit("initSockets");
           setSocket(socket);
@@ -157,6 +162,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchUser: () => dispatch(fetchUser()),
     fetchProjects: () => dispatch(fetchProjects()),
     setSocket: (socket) => dispatch(setSocket(socket)),
 

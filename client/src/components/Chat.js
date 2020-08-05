@@ -55,6 +55,7 @@ const Chat = (props) => {
     selectedProject,
     selectedChannel,
     username,
+    userId,
     createMessage,
     deleteMessage,
     socket,
@@ -66,7 +67,8 @@ const Chat = (props) => {
       createMessage(
         {
           text: message,
-          user: username,
+          username,
+          userId,
         },
         selectedChannel._id,
         selectedProject._id
@@ -110,7 +112,8 @@ const Chat = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    username: state.auth.username,
+    username: state.auth.user.name,
+    userId: state.auth.user._id,
     socket: state.socket.socket,
   };
 };

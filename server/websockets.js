@@ -26,7 +26,8 @@ const connectSocket = (server) => {
       socket.on("sendMessage", ({ data, channelId, projectId }, callback) => {
         const messageObject = {
           _id: 131313,
-          user: "John Doe",
+          username: "John Doe",
+          userId: "2r2v4t2vq",
           text: "Yo wassup",
           date: "7/4/2020 12:11",
         };

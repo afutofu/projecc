@@ -5,6 +5,7 @@ import {
   FETCH_USER_FAIL,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  LOGIN_BEGIN,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
@@ -22,6 +23,7 @@ const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USERNAME:
       return { ...state, isLogged: true, username: action.payload.username };
+    case LOGIN_BEGIN:
     case FETCH_USER_BEGIN:
       return {
         ...state,
@@ -29,7 +31,6 @@ const authReducer = (state = initialState, action) => {
         isLoading: true,
       };
     case FETCH_USER_SUCCESS:
-      localStorage.setItem("token", action.payload.token);
       return {
         ...state,
         isAuthenticated: true,
@@ -39,6 +40,7 @@ const authReducer = (state = initialState, action) => {
       };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
+      localStorage.setItem("token", action.payload.data.token);
       return {
         ...state,
         ...action.payload.data,

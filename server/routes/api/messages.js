@@ -28,6 +28,7 @@ router.get("/", (req, res) => {
 // @access  Private
 router.post("/", auth, (req, res) => {
   const { projectId, channelId } = req.params;
+  const { text, username, userId } = req.body;
 
   const dateObj = new Date();
   const date =
@@ -43,8 +44,9 @@ router.post("/", auth, (req, res) => {
 
   const newMessage = {
     _id: ObjectId(),
-    text: req.body.text,
-    user: req.body.user,
+    text,
+    username,
+    userId,
     date: dateTime,
   };
 
@@ -81,7 +83,7 @@ router.post("/", auth, (req, res) => {
 // @route   DEL /api/projects/:projectId/channels/:channelId/messages/:messageId
 // @desc    Delete a messages from a channel
 // @access  Private
-router.delete("/:messageId", (req, res) => {
+router.delete("/:messageId", auth, (req, res) => {
   const { projectId, channelId, messageId } = req.params;
 
   Project.findById(projectId, (err, foundProject) => {

@@ -78,13 +78,13 @@ const Button = styled.div`
 
 const Message = (props) => {
   const { message, channelId, projectId, deleteMessage } = props;
-  const { _id, user, date, text } = message;
+  const { _id, username, date, text } = message;
 
   return (
     <MessageComp>
       <TopRow>
         <NameDate>
-          <Name>{user}</Name>
+          <Name>{username}</Name>
           <DateComp>{date}</DateComp>
         </NameDate>
         <Buttons>

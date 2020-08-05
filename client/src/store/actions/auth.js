@@ -6,6 +6,7 @@ import {
   FETCH_USER_FAIL,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  LOGIN_BEGIN,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
@@ -20,18 +21,21 @@ export const setUsername = (username) => {
 
 // Check token & fetch user
 export const fetchUser = () => (dispatch, getState) => {
-  dispatch(fetchUserBegin());
-
-  axios
-    .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
-    .then((res) => {
-      const { token, user } = res.data;
-      dispatch(fetchUserSuccess(user));
-    })
-    .catch((err) => {
-      console.log(err.response.data.msg);
-      dispatch(fetchUserFail(err.response.data.msg));
-    });
+  return new Promise(function (resolve, reject) {
+    dispatch(fetchUserBegin());
+    axios
+      .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
+      .then((res) => {
+        const { user } = res.data;
+        dispatch(fetchUserSuccess(user));
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err.response.data.msg);
+        dispatch(fetchUserFail(err.response.data.msg));
+        reject();
+      });
+  });
 };
 
 const fetchUserBegin = () => {
@@ -70,7 +74,6 @@ export const register = (name, email, password) => (dispatch) => {
       dispatch(registerSuccess(res.data));
     })
     .catch((err) => {
-      console.log(err.response.data.msg);
       dispatch(registerFail(err.response.data.msg));
     });
 };
@@ -89,6 +92,49 @@ export const registerFail = (msg) => {
   };
 };
 
+// Login user
+export const login = (email, password) => (dispatch) => {
+  dispatch(loginBegin());
+  // Headers
+  const config = {
+    "Content-Type": "application/json",
+  };
+
+  // Request body
+  const body = { email, password };
+
+  axios
+    .post("http://localhost:5000/api/auth", body, config)
+    .then((res) => {
+      console.log(res.data);
+      dispatch(loginSuccess(res.data));
+    })
+    .catch((err) => {
+      dispatch(loginFail(err.response.data.msg));
+    });
+};
+
+const loginBegin = () => {
+  return {
+    type: LOGIN_BEGIN,
+  };
+};
+
+const loginSuccess = (data) => {
+  return {
+    type: LOGIN_SUCCESS,
+    payload: { data },
+  };
+};
+
+const loginFail = (msg) => {
+  return {
+    type: LOGIN_FAIL,
+    payload: { id: "LOGIN_ERROR", msg },
+  };
+};
+
+// Logout user
 export const logout = () => {
   return {
     type: LOGOUT,

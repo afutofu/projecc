@@ -9,6 +9,7 @@ import {
   DELETE_MESSAGE_SUCCESS,
   DELETE_MESSAGE_FAIL,
 } from "../actions";
+import { tokenConfig } from "../auth";
 
 // CREATE MESSAGE
 export const createMessageClient = (newMessage, channelId, projectId) => {
@@ -18,13 +19,17 @@ export const createMessageClient = (newMessage, channelId, projectId) => {
   };
 };
 
-export const createMessage = (message, channelId, projectId) => (dispatch) => {
+export const createMessage = (message, channelId, projectId) => (
+  dispatch,
+  getState
+) => {
   return new Promise(function (resolve, reject) {
     dispatch(createMessageBegin());
     axios
       .post(
         `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages`,
-        message
+        message,
+        tokenConfig(getState)
       )
       .then((res) => {
         dispatch(createMessageSuccess(res.data, channelId, projectId));
@@ -66,13 +71,15 @@ export const deleteMessageClient = (updatedChannel, channelId, projectId) => {
 };
 
 export const deleteMessage = (messageId, channelId, projectId) => (
-  dispatch
+  dispatch,
+  getState
 ) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteMessageBegin());
     axios
       .delete(
-        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`
+        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`,
+        tokenConfig(getState)
       )
       .then((res) => {
         dispatch(deleteMessageSuccess(res.data, channelId, projectId));

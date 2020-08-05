@@ -3,7 +3,7 @@ import styled, { keyframes, css } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setUsername, fetchUser, register } from "../store/actions";
+import { setUsername, register, login } from "../store/actions";
 
 const fadeIn = keyframes`
   from {opacity:0}
@@ -192,11 +192,7 @@ const Join = (props) => {
   const [loginErrorMsg, setLoginErrorMsg] = useState(null);
   const [registerErrorMsg, setRegisterErrorMsg] = useState(null);
 
-  const { isAuthenticated, error, fetchUser, register } = props;
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const { isAuthenticated, error, fetchUser, register, login } = props;
 
   useEffect(() => {
     if (isAuthenticated === true) {
@@ -206,8 +202,17 @@ const Join = (props) => {
 
   useEffect(() => {
     // Check for register error
-    if (error && error.id === "REGISTER_ERROR") {
-      setRegisterErrorMsg(error.msg);
+    if (error) {
+      switch (error.id) {
+        case "REGISTER_ERROR":
+          setRegisterErrorMsg(error.msg);
+          break;
+        case "LOGIN_ERROR":
+          setLoginErrorMsg(error.msg);
+          break;
+        default:
+          break;
+      }
     } else {
       setRegisterErrorMsg(null);
     }
@@ -215,6 +220,7 @@ const Join = (props) => {
 
   const onLogin = (e) => {
     e.preventDefault();
+    login(email, password);
   };
 
   const onRegister = (e) => {
@@ -230,6 +236,10 @@ const Join = (props) => {
     setIsLogin(!isLogin);
   };
 
+  const clearLoginErrorMsg = () => {
+    setLoginErrorMsg(null);
+  };
+
   const clearRegisterErrorMsg = () => {
     setRegisterErrorMsg(null);
   };
@@ -237,7 +247,10 @@ const Join = (props) => {
   const render = () => {
     if (redirect) return <Redirect to="/projects" />;
 
-    const loginError = <ErrorBox>{loginErrorMsg}</ErrorBox>;
+    const loginError = (
+      <ErrorBox onClick={clearLoginErrorMsg}>{loginErrorMsg}</ErrorBox>
+    );
+
     const registerError = (
       <ErrorBox onClick={clearRegisterErrorMsg}>{registerErrorMsg}</ErrorBox>
     );
@@ -312,9 +325,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setUsername: (username) => dispatch(setUsername(username)),
-    fetchUser: () => dispatch(fetchUser()),
     register: (name, email, password) =>
       dispatch(register(name, email, password)),
+    login: (email, password) => dispatch(login(email, password)),
   };
 };
 
