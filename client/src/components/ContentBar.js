@@ -2,13 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
+import HomeBar from "./HomeBar";
 import ChannelBar from "./ChannelBar";
 import { projectModalOpen, deleteProject } from "../store/actions";
 
 const ContentBarComp = styled.div`
   position: relative;
-  width: ${({ selectedProject }) =>
-    selectedProject === null ? "0px" : "240px"};
+  /* width: ${({ selectedProject }) =>
+    selectedProject === null ? "0px" : "240px"}; */
+    width: 240px;
   height: 100%;
   background-color: #252525;
   box-sizing: border-box;
@@ -95,7 +97,7 @@ const ContentBar = (props) => {
     return null;
   };
 
-  return (
+  const withSelectedProject = (
     <ContentBarComp selectedProject={selectedProject}>
       <Header>
         {renderName()}
@@ -108,9 +110,22 @@ const ContentBar = (props) => {
           </Button>
         </Buttons>
       </Header>
-      {selectedProject === null ? null : <ChannelBar />}
+      <ChannelBar />
     </ContentBarComp>
   );
+
+  const withoutSelectedProject = (
+    <ContentBarComp>
+      <Header>Home</Header>
+      <HomeBar />
+    </ContentBarComp>
+  );
+
+  if (selectedProject) {
+    return withSelectedProject;
+  } else {
+    return withoutSelectedProject;
+  }
 };
 
 const mapStateToProps = (state) => {

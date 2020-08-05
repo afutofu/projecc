@@ -188,21 +188,21 @@ const Join = (props) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(true);
+  const [redirect, setRedirect] = useState(false);
   const [loginErrorMsg, setLoginErrorMsg] = useState(null);
   const [registerErrorMsg, setRegisterErrorMsg] = useState(null);
 
   const { isAuthenticated, error, fetchUser, register } = props;
 
   useEffect(() => {
-    // fetchUser();
+    fetchUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (isAuthenticated === true) {
-  //     setRedirect(true);
-  //   }
-  // }, [isAuthenticated]);
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      setRedirect(true);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Check for register error
@@ -230,11 +230,17 @@ const Join = (props) => {
     setIsLogin(!isLogin);
   };
 
+  const clearRegisterErrorMsg = () => {
+    setRegisterErrorMsg(null);
+  };
+
   const render = () => {
     if (redirect) return <Redirect to="/projects" />;
 
     const loginError = <ErrorBox>{loginErrorMsg}</ErrorBox>;
-    const registerError = <ErrorBox>{registerErrorMsg}</ErrorBox>;
+    const registerError = (
+      <ErrorBox onClick={clearRegisterErrorMsg}>{registerErrorMsg}</ErrorBox>
+    );
 
     const login = (
       <LoginBox>

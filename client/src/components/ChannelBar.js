@@ -10,7 +10,7 @@ const ChannelBarComp = styled.div``;
 const Container = styled.div`
   width: 100%;
   height: calc(100% - 50px);
-  padding: 20px 10px;
+  padding: 10px 10px;
   box-sizing: border-box;
 `;
 

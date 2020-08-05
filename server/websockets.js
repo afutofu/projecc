@@ -132,10 +132,16 @@ const connectSocket = (server) => {
         });
       });
 
+      // Listening for client force diconnect on app
+      socket.on("forceDisconnect", () => {
+        socket.disconnect();
+      });
+
       // Listening for client diconnect on app
       socket.on("disconnect", () => {
         console.log(socket.id, "has disconnected");
         socket.removeAllListeners("connection");
+        socket.disconnect();
       });
     });
   });

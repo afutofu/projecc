@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 
 import Chat from "./Chat";
+import ProfileContent from "./ProfileContent";
 
 const ContentComp = styled.div`
   position: relative;
@@ -15,6 +16,7 @@ const ChatPrefix = styled.span`
   :before {
     content: "~";
   }
+  width: 15px;
   color: #555;
   font-size: 25px;
   padding-right: 8px;
@@ -81,7 +83,9 @@ const Content = (props) => {
 
   return (
     <ContentComp>
-      <CenterContainer>No Project Selected</CenterContainer>
+      <CenterContainer>
+        <ProfileContent />
+      </CenterContainer>
     </ContentComp>
   );
 };

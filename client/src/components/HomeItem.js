@@ -2,15 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import {
-  setSelectedChannel,
-  deleteChannel,
-  channelModalOpen,
-} from "../store/actions";
+import {} from "../store/actions";
 
 const ChannelItemComp = styled.div`
   width: 100%;
-  height: 35px;
+  height: 45px;
   font-family: "Montserrat", "san-serif";
   display: flex;
   align-items: center;
@@ -32,7 +28,7 @@ const ChannelItemComp = styled.div`
 
 const ChatPrefix = styled.span`
   :before {
-    content: "~";
+    content: "-";
   }
   width: 15px;
   color: #555;
@@ -90,69 +86,24 @@ const Button = styled.div`
 `;
 
 const ChannelItem = (props) => {
-  const {
-    setSelectedChannel,
-    deleteChannel,
-    channelModalOpen,
-    selected,
-    name,
-    project,
-    _id,
-    socket,
-  } = props;
-
-  const onDeleteChannel = (e) => {
-    e.stopPropagation();
-    deleteChannel(_id, project._id)
-      .then(({ channelId, projectId }) => {
-        socket.emit("deleteChannel", { channelId, projectId });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const onRenameChannel = (e) => {
-    e.stopPropagation();
-    channelModalOpen("RENAME", { currentChannelName: name, channelId: _id });
-  };
+  const { selected, name, icon } = props;
 
   return (
-    <ChannelItemComp
-      onClick={() => setSelectedChannel(_id, project._id)}
-      selected={selected}
-    >
+    <ChannelItemComp selected={selected}>
       <ItemContainer>
-        <ChatPrefix />
+        {icon ? <ChatPrefix /> : null}
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
-      <Buttons>
-        <Button onClick={(e) => onRenameChannel(e)}>
-          <i className="fa fa-pencil"></i>
-        </Button>
-        <Button onClick={(e) => onDeleteChannel(e)} color="red">
-          <i className="fa fa-times"></i>
-        </Button>
-      </Buttons>
     </ChannelItemComp>
   );
 };
 
 const mapStateToProps = (state) => {
-  return {
-    socket: state.socket.socket,
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    setSelectedChannel: (channel, project) =>
-      dispatch(setSelectedChannel(channel, project)),
-    deleteChannel: (channel, projectName) =>
-      dispatch(deleteChannel(channel, projectName)),
-    channelModalOpen: (modalType, data) =>
-      dispatch(channelModalOpen(modalType, data)),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChannelItem);

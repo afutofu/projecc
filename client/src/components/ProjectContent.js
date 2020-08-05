@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import io from "socket.io-client";
 import { connect } from "react-redux";
 
+import { logout } from "../store/actions";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
 
@@ -12,7 +12,6 @@ const ProjectContentComp = styled.div`
   display: flex;
 `;
 
-let socket;
 const ProjectContent = ({ selectedProject }) => {
   return (
     <ProjectContentComp>
