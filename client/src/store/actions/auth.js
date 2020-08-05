@@ -26,12 +26,11 @@ export const fetchUser = () => (dispatch, getState) => {
     axios
       .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
       .then((res) => {
-        const { user } = res.data;
+        const user = res.data;
         dispatch(fetchUserSuccess(user));
         resolve();
       })
       .catch((err) => {
-        console.log(err.response.data.msg);
         dispatch(fetchUserFail(err.response.data.msg));
         reject();
       });
@@ -60,22 +59,25 @@ const fetchUserFail = (msg) => {
 
 // Register new user
 export const register = (name, email, password) => (dispatch) => {
-  // Headers
-  const config = {
-    "Content-Type": "application/json",
-  };
+  return new Promise(function (resolve, reject) {
+    // Headers
+    const config = {
+      "Content-Type": "application/json",
+    };
 
-  // Request body
-  const body = { name, email, password };
+    // Request body
+    const body = { name, email, password };
 
-  axios
-    .post("http://localhost:5000/api/users", body, config)
-    .then((res) => {
-      dispatch(registerSuccess(res.data));
-    })
-    .catch((err) => {
-      dispatch(registerFail(err.response.data.msg));
-    });
+    axios
+      .post("http://localhost:5000/api/users", body, config)
+      .then((res) => {
+        dispatch(registerSuccess(res.data));
+        resolve(res.data.user);
+      })
+      .catch((err) => {
+        dispatch(registerFail(err.response.data.msg));
+      });
+  });
 };
 
 export const registerSuccess = (data) => {
@@ -94,24 +96,26 @@ export const registerFail = (msg) => {
 
 // Login user
 export const login = (email, password) => (dispatch) => {
-  dispatch(loginBegin());
-  // Headers
-  const config = {
-    "Content-Type": "application/json",
-  };
+  return new Promise(function (resolve, reject) {
+    dispatch(loginBegin());
+    // Headers
+    const config = {
+      "Content-Type": "application/json",
+    };
 
-  // Request body
-  const body = { email, password };
+    // Request body
+    const body = { email, password };
 
-  axios
-    .post("http://localhost:5000/api/auth", body, config)
-    .then((res) => {
-      console.log(res.data);
-      dispatch(loginSuccess(res.data));
-    })
-    .catch((err) => {
-      dispatch(loginFail(err.response.data.msg));
-    });
+    axios
+      .post("http://localhost:5000/api/auth", body, config)
+      .then((res) => {
+        dispatch(loginSuccess(res.data));
+        resolve(res.data.user);
+      })
+      .catch((err) => {
+        dispatch(loginFail(err.response.data.msg));
+      });
+  });
 };
 
 const loginBegin = () => {

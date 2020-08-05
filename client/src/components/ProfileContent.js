@@ -9,8 +9,16 @@ const ProfileContentComp = styled.div`
   height: 100%;
   padding: 10px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const UserDisplay = styled.h1`
+  font-size: 20px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 30px;
 `;
 
 const LogoutButon = styled.button`
@@ -40,7 +48,7 @@ const LogoutButon = styled.button`
 `;
 
 const ProfileContent = (props) => {
-  const { socket, logout } = props;
+  const { socket, user, logout } = props;
 
   const onLogout = () => {
     console.log("logout");
@@ -50,6 +58,7 @@ const ProfileContent = (props) => {
 
   return (
     <ProfileContentComp>
+      {user ? <UserDisplay>{user.name}</UserDisplay> : null}
       <LogoutButon onClick={onLogout}>Logout</LogoutButon>
     </ProfileContentComp>
   );
@@ -58,6 +67,7 @@ const ProfileContent = (props) => {
 const mapStateToProps = (state) => {
   return {
     socket: state.socket.socket,
+    user: state.auth.user,
   };
 };
 

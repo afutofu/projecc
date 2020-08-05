@@ -3,7 +3,7 @@ import styled, { keyframes, css } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setUsername, register, login } from "../store/actions";
+import { setUsername, fetchUser, register, login } from "../store/actions";
 
 const fadeIn = keyframes`
   from {opacity:0}
@@ -154,15 +154,15 @@ const Button = styled.button`
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   color: white;
-  background: #1a8cff;
+  background: ${(props) => (props.success ? "#0eb514" : "#1a8cff")};
   border: none;
   border-radius: 4px;
   outline: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.success ? "auto" : "pointer")};
 
   transition: background-color 0.25s;
   :hover {
-    background: #0073e6;
+    background: ${(props) => (props.success ? "#0eb514" : "#0073e6")};
   }
 
   a {
@@ -191,14 +191,18 @@ const Join = (props) => {
   const [redirect, setRedirect] = useState(false);
   const [loginErrorMsg, setLoginErrorMsg] = useState(null);
   const [registerErrorMsg, setRegisterErrorMsg] = useState(null);
+  const [loginWelcomeMsg, setLoginWelcomeMsg] = useState(null);
+  const [registerWelcomeMsg, setRegisterWelcomeMsg] = useState(null);
 
   const { isAuthenticated, error, fetchUser, register, login } = props;
 
   useEffect(() => {
     if (isAuthenticated === true) {
       setRedirect(true);
+    } else {
+      fetchUser().then(() => setRedirect(true));
     }
-  }, [isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     // Check for register error
@@ -220,12 +224,22 @@ const Join = (props) => {
 
   const onLogin = (e) => {
     e.preventDefault();
-    login(email, password);
+    login(email, password).then((user) => {
+      setLoginWelcomeMsg(`Welcome back, ${user.name}`);
+      setTimeout(() => {
+        setRedirect(true);
+      }, 1500);
+    });
   };
 
   const onRegister = (e) => {
     e.preventDefault();
-    register(name, email, password);
+    register(name, email, password).then((user) => {
+      setRegisterWelcomeMsg(`Welcome, ${user.name}`);
+      setTimeout(() => {
+        setRedirect(true);
+      }, 1500);
+    });
   };
 
   const switchIsLogin = () => {
@@ -255,6 +269,8 @@ const Join = (props) => {
       <ErrorBox onClick={clearRegisterErrorMsg}>{registerErrorMsg}</ErrorBox>
     );
 
+    const loginSuccess = loginWelcomeMsg !== null;
+
     const login = (
       <LoginBox>
         <Header>Login</Header>
@@ -270,13 +286,17 @@ const Join = (props) => {
             type="password"
             placeholder="Password"
           />
-          <Button onClick={onLogin}>Login</Button>
+          <Button onClick={onLogin} success={loginSuccess}>
+            {loginSuccess ? loginWelcomeMsg : "Login"}
+          </Button>
           <SwitchText onClick={switchIsLogin}>
             or create a new account
           </SwitchText>
         </Form>
       </LoginBox>
     );
+
+    const registerSuccess = registerWelcomeMsg !== null;
 
     const register = (
       <RegisterBox>
@@ -294,7 +314,9 @@ const Join = (props) => {
             type="password"
             placeholder="Password"
           />
-          <Button onClick={onRegister}>Register</Button>
+          <Button onClick={onRegister} success={registerSuccess}>
+            {registerSuccess ? registerWelcomeMsg : "Register"}
+          </Button>
           <SwitchText onClick={switchIsLogin}>or sign back in</SwitchText>
         </Form>
       </RegisterBox>
@@ -325,6 +347,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setUsername: (username) => dispatch(setUsername(username)),
+    fetchUser: () => dispatch(fetchUser()),
     register: (name, email, password) =>
       dispatch(register(name, email, password)),
     login: (email, password) => dispatch(login(email, password)),
