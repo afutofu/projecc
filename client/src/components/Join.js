@@ -135,6 +135,7 @@ const Form = styled.form`
 const Input = styled.input.attrs((props) => ({
   type: props.type || "text",
   placeholder: props.placeholder || "Name",
+  name: props.name,
 }))`
   height: 45px;
   margin-bottom: 20px;
@@ -279,11 +280,13 @@ const Join = (props) => {
           <Input
             onChange={(e) => setEmail(e.target.value)}
             type="email"
+            name="email"
             placeholder="Email"
           />
           <Input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            name="password"
             placeholder="Password"
           />
           <Button onClick={onLogin} success={loginSuccess}>
@@ -303,15 +306,17 @@ const Join = (props) => {
         <Header>Register</Header>
         <Form onSubmit={onRegister}>
           {registerErrorMsg ? registerError : null}
-          <Input onChange={(e) => setName(e.target.value)} />
+          <Input onChange={(e) => setName(e.target.value)} name="username" />
           <Input
             onChange={(e) => setEmail(e.target.value)}
             type="email"
+            name="email"
             placeholder="Email"
           />
           <Input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            name="password"
             placeholder="Password"
           />
           <Button onClick={onRegister} success={registerSuccess}>
