@@ -56,8 +56,10 @@ const CenterContainer = styled.div`
 `;
 
 const Content = (props) => {
-  const { selectedProject } = props;
+  const { selectedProject, homeItem } = props;
 
+  // PROJECT
+  // If there is a selected project and selected channel
   if (selectedProject && selectedProject.selectedChannel) {
     return (
       <ContentComp>
@@ -73,6 +75,7 @@ const Content = (props) => {
         </Container>
       </ContentComp>
     );
+    // If there is a selected project and no selected channel
   } else if (selectedProject) {
     return (
       <ContentComp>
@@ -81,18 +84,45 @@ const Content = (props) => {
     );
   }
 
-  return (
-    <ContentComp>
-      <CenterContainer>
-        <ProfileContent />
-      </CenterContainer>
-    </ContentComp>
-  );
+  // HOME
+  // If selected profile
+  switch (homeItem) {
+    case "profile":
+      return (
+        <ContentComp>
+          <CenterContainer>
+            <ProfileContent />
+          </CenterContainer>
+        </ContentComp>
+      );
+    // If selected schedule
+    case "schedule":
+      return (
+        <ContentComp>
+          <CenterContainer>Work In Progress :3</CenterContainer>
+        </ContentComp>
+      );
+    // If selected friends
+    case "friends":
+      return (
+        <ContentComp>
+          <CenterContainer>Work In Progress :3</CenterContainer>
+        </ContentComp>
+      );
+    // If selected friend for messaging
+    default:
+      return (
+        <ContentComp>
+          <CenterContainer>Work In Progress :3</CenterContainer>
+        </ContentComp>
+      );
+  }
 };
 
 const mapStateToProps = (state) => {
   return {
     selectedProject: state.project.selectedProject,
+    homeItem: state.home.homeItem,
   };
 };
 

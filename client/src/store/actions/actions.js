@@ -13,7 +13,7 @@ export const REGISTER_FAIL = "REGISTER_FAIL";
 
 export const LOGOUT = "LOGOUT";
 
-// MESSAGES
+// PROJECTS
 // Projects
 export const SET_SELECTED_PROJECT = "SET_SELECTED_PROJECT";
 
@@ -74,3 +74,6 @@ export const PROJECT_MODAL_CLOSE = "PROJECT_MODAL_CLOSE";
 
 // SOCKET
 export const SET_SOCKET = "SET_SOCKET";
+
+// HOME
+export const SET_HOME_ITEM = "SET_HOME_ITEM";

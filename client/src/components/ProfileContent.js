@@ -42,8 +42,11 @@ const UserDisplay = styled.h1`
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #ddd;
+  padding: 7px;
+  border: rgba(0, 0, 0, 0) 1px solid;
+  box-sizing: border-box;
 `;
 
 const EmailDisplay = styled.h3`
@@ -52,6 +55,9 @@ const EmailDisplay = styled.h3`
   margin: 0;
   margin-bottom: 20px;
   color: #ddd;
+  padding: 7px;
+  border: rgba(0, 0, 0, 0) 1px solid;
+  box-sizing: border-box;
 `;
 
 const IdDisplay = styled.p`
@@ -59,6 +65,7 @@ const IdDisplay = styled.p`
   color: #888;
   margin: 0;
   margin-bottom: 20px;
+  font-family: "Montserrat", sans-serif;
 `;
 
 const FileInput = styled.input.attrs((props) => ({
@@ -102,12 +109,12 @@ const UserEdit = styled.input.attrs((props) => ({
   max-width: 300px;
   text-align: center;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   background-color: #222;
   color: #ddd;
-  padding: 15px;
+  padding: 7px;
   box-sizing: border-box;
   outline: unset;
   border: #222 1px solid;
@@ -134,7 +141,7 @@ const EmailEdit = styled.input.attrs((props) => ({
   margin-bottom: 20px;
   background-color: #222;
   color: #ddd;
-  padding: 15px;
+  padding: 7px;
   box-sizing: border-box;
   outline: unset;
   border: #222 1px solid;
@@ -172,11 +179,12 @@ const Button = styled.button`
   }
 `;
 
-const CancelButton = styled.button`
+const CancelButton = styled.p`
   border: none;
   outline: none;
   background: none;
   color: #ddd;
+  margin: 0;
   margin-bottom: 20px;
   font-family: "Montserrat", sans-serif;
   font-size: 14px;

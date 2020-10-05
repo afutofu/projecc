@@ -40,3 +40,6 @@ export {
 
 // SOCKET
 export { setSocket } from "./socket";
+
+// HOME
+export { setHomeItem } from "./home";

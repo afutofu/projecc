@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import {} from "../store/actions";
 
-const ChannelItemComp = styled.div`
+const HomeItemComp = styled.div`
   width: 100%;
   height: 45px;
   font-family: "Montserrat", "san-serif";
@@ -44,7 +44,7 @@ const ItemName = styled.h3`
   font-weight: 600;
 
   transition: 0.1s;
-  ${ChannelItemComp}:hover & {
+  ${HomeItemComp}:hover & {
     color: ${(props) => (props.selected ? "#ddd" : "#bbb")};
   }
 `;
@@ -66,7 +66,7 @@ const Buttons = styled.div`
   opacity: 0;
 
   transition: 0.2s;
-  ${ChannelItemComp}:hover & {
+  ${HomeItemComp}:hover & {
     transition: 0.5s;
     opacity: 1;
   }
@@ -85,16 +85,16 @@ const Button = styled.div`
   }
 `;
 
-const ChannelItem = (props) => {
-  const { selected, name, icon } = props;
+const HomeItem = (props) => {
+  const { selected, id, name, icon, setHomeItem } = props;
 
   return (
-    <ChannelItemComp selected={selected}>
+    <HomeItemComp selected={selected} onClick={() => setHomeItem(id)}>
       <ItemContainer>
         {icon ? <ChatPrefix /> : null}
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
-    </ChannelItemComp>
+    </HomeItemComp>
   );
 };
 
@@ -106,4 +106,4 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChannelItem);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeItem);

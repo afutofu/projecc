@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
+import { setHomeItem } from "../store/actions";
 import HomeItem from "./HomeItem";
 
 const HomeBarComp = styled.div``;
@@ -14,25 +15,47 @@ const Container = styled.div`
 `;
 
 const HomeBar = (props) => {
-  const {} = props;
+  const { homeItem, setHomeItem } = props;
 
   return (
     <HomeBarComp>
       <Container>
-        <HomeItem selected={true} name="Profile" icon />
-        <HomeItem selected={false} name="Schedule" icon />
-        <HomeItem selected={false} name="Friends" icon />
+        <HomeItem
+          selected={homeItem === "profile"}
+          id="profile"
+          name="Profile"
+          icon
+          setHomeItem={setHomeItem}
+        />
+        <HomeItem
+          selected={homeItem === "schedule"}
+          id="schedule"
+          name="Schedule"
+          icon
+          setHomeItem={setHomeItem}
+        />
+        <HomeItem
+          selected={homeItem === "friends"}
+          id="friends"
+          name="Friends"
+          icon
+          setHomeItem={setHomeItem}
+        />
       </Container>
     </HomeBarComp>
   );
 };
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    homeItem: state.home.homeItem,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    setHomeItem: (homeItem) => dispatch(setHomeItem(homeItem)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeBar);
