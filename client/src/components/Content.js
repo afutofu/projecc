@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 
 import Chat from "./Chat";
-import ProfileContent from "./ProfileContent";
+import Profile from "./Profile";
+import Friends from "./Friends";
 
 const ContentComp = styled.div`
   position: relative;
@@ -91,7 +92,7 @@ const Content = (props) => {
       return (
         <ContentComp>
           <CenterContainer>
-            <ProfileContent />
+            <Profile />
           </CenterContainer>
         </ContentComp>
       );
@@ -99,6 +100,7 @@ const Content = (props) => {
     case "schedule":
       return (
         <ContentComp>
+          <Header>Schedule</Header>
           <CenterContainer>Work In Progress :3</CenterContainer>
         </ContentComp>
       );
@@ -106,7 +108,7 @@ const Content = (props) => {
     case "friends":
       return (
         <ContentComp>
-          <CenterContainer>Work In Progress :3</CenterContainer>
+          <Friends />
         </ContentComp>
       );
     // If selected friend for messaging

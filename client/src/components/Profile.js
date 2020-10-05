@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { logout } from "../store/actions";
 
-const ProfileContentComp = styled.div`
+const ProfileComp = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px;
@@ -42,7 +42,7 @@ const UserDisplay = styled.h1`
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   color: #ddd;
   padding: 7px;
   border: rgba(0, 0, 0, 0) 1px solid;
@@ -53,7 +53,7 @@ const EmailDisplay = styled.h3`
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #ddd;
   padding: 7px;
   border: rgba(0, 0, 0, 0) 1px solid;
@@ -106,12 +106,12 @@ const UserEdit = styled.input.attrs((props) => ({
   type: "text",
 }))`
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   text-align: center;
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   background-color: #222;
   color: #ddd;
   padding: 7px;
@@ -133,12 +133,12 @@ const EmailEdit = styled.input.attrs((props) => ({
   type: "text",
 }))`
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   text-align: center;
   font-size: 18px;
   font-weight: 500;
   margin: 0;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   background-color: #222;
   color: #ddd;
   padding: 7px;
@@ -214,7 +214,7 @@ const LogoutButton = styled.button`
   }
 `;
 
-const ProfileContent = (props) => {
+const Profile = (props) => {
   const { socket, user, logout } = props;
 
   let fileInput = useRef(null);
@@ -258,7 +258,7 @@ const ProfileContent = (props) => {
 
   if (editable) {
     return (
-      <ProfileContentComp>
+      <ProfileComp>
         <AvatarDisplay>
           <FileInput
             onChange={onProfileImageSelect}
@@ -285,12 +285,12 @@ const ProfileContent = (props) => {
         ) : null}
         <CancelButton onClick={onEditExit}>Cancel</CancelButton>
         <Button onClick={onEditSave}>Save</Button>
-      </ProfileContentComp>
+      </ProfileComp>
     );
   }
 
   return (
-    <ProfileContentComp>
+    <ProfileComp>
       <AvatarDisplay>
         <AvatarImage src={profileImage} />
       </AvatarDisplay>
@@ -299,7 +299,7 @@ const ProfileContent = (props) => {
       {user ? <IdDisplay>{user._id}</IdDisplay> : null}
       <Button onClick={onEdit}>Edit</Button>
       <LogoutButton onClick={onLogout}>Logout</LogoutButton>
-    </ProfileContentComp>
+    </ProfileComp>
   );
 };
 
@@ -316,4 +316,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileContent);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
