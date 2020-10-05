@@ -1,13 +1,13 @@
 import { combineReducers } from "redux";
 
 import authReducer from "./auth";
-import messageReducer from "./message/";
+import projectReducer from "./project/";
 import modalReducer from "./modal";
 import socketReducer from "./socket";
 
 const allReducers = combineReducers({
   auth: authReducer,
-  message: messageReducer,
+  project: projectReducer,
   modal: modalReducer,
   socket: socketReducer,
 });

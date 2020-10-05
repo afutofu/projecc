@@ -295,7 +295,7 @@ const mapStateToProps = (state) => {
     modalOpen: state.modal.channelModalOpen,
     modalType: state.modal.channelModalType,
     modalData: state.modal.modalData,
-    selectedProject: state.message.selectedProject,
+    selectedProject: state.project.selectedProject,
     socket: state.socket.socket,
   };
 };

@@ -11,7 +11,7 @@ export {
   renameProject,
   deleteProjectClient,
   deleteProject,
-} from "./message/project";
+} from "./project/project";
 
 export {
   setSelectedChannel,
@@ -21,14 +21,14 @@ export {
   renameChannel,
   deleteChannelClient,
   deleteChannel,
-} from "./message/channel";
+} from "./project/channel";
 
 export {
   createMessageClient,
   createMessage,
   deleteMessageClient,
   deleteMessage,
-} from "./message/message";
+} from "./project/message";
 
 // MODAL
 export {

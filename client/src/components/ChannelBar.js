@@ -72,7 +72,7 @@ const ContentBar = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { selectedProject } = state.message;
+  const { selectedProject } = state.project;
 
   if (selectedProject) {
     return {

@@ -96,7 +96,7 @@ let initialState = {
   selectedProject: null,
 };
 
-const messageReducer = (state = initialState, action) => {
+const projectReducer = (state = initialState, action) => {
   switch (action.type) {
     // PROJECT
 
@@ -192,4 +192,4 @@ const messageReducer = (state = initialState, action) => {
   }
 };
 
-export default messageReducer;
+export default projectReducer;

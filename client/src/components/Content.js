@@ -92,7 +92,7 @@ const Content = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    selectedProject: state.message.selectedProject,
+    selectedProject: state.project.selectedProject,
   };
 };
 

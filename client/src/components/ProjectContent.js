@@ -23,7 +23,7 @@ const ProjectContent = ({ selectedProject }) => {
 
 const mapStateToProps = (state) => {
   return {
-    selectedProject: state.message.selectedProject,
+    selectedProject: state.project.selectedProject,
   };
 };
 

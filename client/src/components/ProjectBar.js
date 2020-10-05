@@ -112,8 +112,8 @@ const ProjectBar = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    projects: state.message.projects,
-    selectedProject: state.message.selectedProject,
+    projects: state.project.projects,
+    selectedProject: state.project.selectedProject,
   };
 };
 
