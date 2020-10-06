@@ -41,6 +41,10 @@ router.post("/", (req, res) => {
               name: user.name,
               email: user.email,
             },
+            friends: {
+              friends: user.friends,
+              pendingFriends: user.pendingFriends,
+            },
           });
         }
       );
@@ -55,7 +59,19 @@ router.get("/user", auth, (req, res) => {
   User.findById(req.user._id)
     .select("-password")
     .then((user) => {
-      res.json(user);
+      if (!user) return res.status(400).json({ msg: "User does not exist" });
+
+      res.json({
+        user: {
+          _id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+        friends: {
+          friends: user.friends,
+          pendingFriends: user.pendingFriends,
+        },
+      });
     });
 });
 

@@ -14,6 +14,14 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  friends: {
+    type: Array,
+    default: [],
+  },
+  pendingFriends: {
+    type: Array,
+    default: [],
+  },
   registerDate: {
     type: Date,
     default: Date.now,

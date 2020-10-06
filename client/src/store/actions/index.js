@@ -36,6 +36,8 @@ export {
   channelModalClose,
   projectModalOpen,
   projectModalClose,
+  friendModalOpen,
+  friendModalClose,
 } from "./modal";
 
 // SOCKET
@@ -43,3 +45,6 @@ export { setSocket } from "./socket";
 
 // HOME
 export { setHomeItem } from "./home";
+
+// FRIEND
+export { storeFriends } from "./friend";

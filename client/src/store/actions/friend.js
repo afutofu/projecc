@@ -8,7 +8,7 @@ import {
   DELETE_FRIEND_FAIL,
 } from "./actions";
 
-const storeFriends = (friends) => {
+export const storeFriends = (friends) => {
   return {
     type: STORE_FRIENDS,
     payload: { friends },

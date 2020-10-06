@@ -11,7 +11,6 @@ import {
 const initialState = {
   friends: [],
   pendingFriends: [],
-  selectedFriend: "",
   isLoading: false,
   error: null,
 };
@@ -21,6 +20,7 @@ const friendReducer = (state = initialState, action) => {
     case STORE_FRIENDS:
       return {
         ...state,
+        ...action.payload.friends,
       };
     case SEND_FRIEND_REQUEST_BEGIN:
     case DELETE_FRIEND_BEGIN:

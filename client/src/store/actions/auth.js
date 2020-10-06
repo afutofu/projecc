@@ -11,6 +11,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
 } from "./actions";
+import { storeFriends } from "./index";
 
 export const setUsername = (username) => {
   return {
@@ -26,9 +27,10 @@ export const fetchUser = () => (dispatch, getState) => {
     axios
       .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
       .then((res) => {
-        const user = res.data;
+        const { user, friends } = res.data;
         dispatch(fetchUserSuccess(user));
-        resolve();
+        dispatch(storeFriends(friends));
+        resolve(res.data);
       })
       .catch((err) => {
         dispatch(fetchUserFail(err.response.data.msg));
@@ -109,8 +111,9 @@ export const login = (email, password) => (dispatch) => {
     axios
       .post("http://localhost:5000/api/auth", body, config)
       .then((res) => {
-        dispatch(loginSuccess(res.data));
-        resolve(res.data.user);
+        const user = res.data.user;
+        dispatch(loginSuccess(user));
+        resolve(user);
       })
       .catch((err) => {
         dispatch(loginFail(err.response.data.msg));

@@ -3,6 +3,8 @@ import {
   CHANNEL_MODAL_CLOSE,
   PROJECT_MODAL_OPEN,
   PROJECT_MODAL_CLOSE,
+  FRIEND_MODAL_OPEN,
+  FRIEND_MODAL_CLOSE,
 } from "./actions";
 
 export const channelModalOpen = (type, data = {}) => {
@@ -28,5 +30,18 @@ export const projectModalOpen = (type, data = {}) => {
 export const projectModalClose = () => {
   return {
     type: PROJECT_MODAL_CLOSE,
+  };
+};
+
+export const friendModalOpen = (type, data = {}) => {
+  return {
+    type: FRIEND_MODAL_OPEN,
+    payload: { type, data },
+  };
+};
+
+export const friendModalClose = () => {
+  return {
+    type: FRIEND_MODAL_CLOSE,
   };
 };

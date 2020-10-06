@@ -8,6 +8,7 @@ import ProjectBar from "./ProjectBar";
 import ProjectContent from "./ProjectContent";
 import ProjectModal from "./ProjectModal";
 import ChannelModal from "./ChannelModal";
+import FriendModal from "./FriendModal";
 
 import {
   fetchProjects,
@@ -145,6 +146,7 @@ const Project = (props) => {
       <ProjectComp>
         <ProjectModal />
         <ChannelModal />
+        <FriendModal />
         <ProjectBar />
         <ProjectContent />
       </ProjectComp>

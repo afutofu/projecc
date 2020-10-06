@@ -1,5 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
+
+import { friendModalOpen } from "../store/actions";
 
 const FriendsComp = styled.div`
   width: 100%;
@@ -52,16 +55,30 @@ const AddFriendButton = styled.button`
   }
 `;
 
-const Friends = () => {
+const Friends = (props) => {
+  const { friendModalOpen } = props;
+
   return (
     <FriendsComp>
       <Header>
         Friends
-        <AddFriendButton>Add Friend</AddFriendButton>
+        <AddFriendButton onClick={() => friendModalOpen("ADD")}>
+          Add Friend
+        </AddFriendButton>
       </Header>
       <Container>FriendsList</Container>
     </FriendsComp>
   );
 };
 
-export default Friends;
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    friendModalOpen: (type) => dispatch(friendModalOpen(type)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Friends);

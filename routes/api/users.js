@@ -49,6 +49,10 @@ router.post("/", (req, res) => {
                   name: user.name,
                   email: user.email,
                 },
+                friends: {
+                  friends: user.friends,
+                  pendingFriends: user.pendingFriends,
+                },
               });
             }
           );
