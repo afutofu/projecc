@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { friendModalOpen } from "../store/actions";
+import { setFriendStatusDisplay, friendModalOpen } from "../store/actions";
 
 const FriendsComp = styled.div`
   width: 100%;
@@ -17,7 +17,7 @@ const Header = styled.div`
   color: #ddd;
   padding: 10px 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
   font-family: "Montserrat", "san-serif";
@@ -28,11 +28,38 @@ const Header = styled.div`
   background-color: #2b2b2b;
 `;
 
+const Title = styled.h3`
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 50px;
+`;
+
 const Container = styled.div`
   position: relative;
   height: calc(100% - 50px);
   padding: 10px 20px;
   box-sizing: border-box;
+`;
+
+const FriendStatusButton = styled.button`
+  padding: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: "Montserrat", "san-serif";
+  box-sizing: border-box;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  color: ${(props) => (props.selected ? "#ddd" : "#777")};
+  background: unset;
+  margin-right: 40px;
+
+  transition: 0.2s;
+
+  :hover {
+    color: ${(props) => (props.selected ? "#ddd" : "#aaa")};
+  }
 `;
 
 const AddFriendButton = styled.button`
@@ -47,7 +74,6 @@ const AddFriendButton = styled.button`
   outline: none;
   background-color: #1a8cff;
   color: #ddd;
-  margin-right: 20px;
 
   transition: 0.2s;
   :hover {
@@ -56,12 +82,28 @@ const AddFriendButton = styled.button`
 `;
 
 const Friends = (props) => {
-  const { friendModalOpen } = props;
+  const {
+    friendStatusDisplay,
+    setFriendStatusDisplay,
+    friendModalOpen,
+  } = props;
 
   return (
     <FriendsComp>
       <Header>
-        Friends
+        <Title>Friends</Title>
+        <FriendStatusButton
+          onClick={() => setFriendStatusDisplay("all")}
+          selected={friendStatusDisplay === "all"}
+        >
+          All
+        </FriendStatusButton>
+        <FriendStatusButton
+          onClick={() => setFriendStatusDisplay("pending")}
+          selected={friendStatusDisplay === "pending"}
+        >
+          Pending
+        </FriendStatusButton>
         <AddFriendButton onClick={() => friendModalOpen("ADD")}>
           Add Friend
         </AddFriendButton>
@@ -72,11 +114,15 @@ const Friends = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    friendStatusDisplay: state.friend.statusDisplay,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    setFriendStatusDisplay: (friendStatusDisplay) =>
+      dispatch(setFriendStatusDisplay(friendStatusDisplay)),
     friendModalOpen: (type) => dispatch(friendModalOpen(type)),
   };
 };

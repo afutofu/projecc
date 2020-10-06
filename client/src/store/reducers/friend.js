@@ -1,4 +1,5 @@
 import {
+  SET_FRIEND_STATUS_DISPLAY,
   STORE_FRIENDS,
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
@@ -11,12 +12,18 @@ import {
 const initialState = {
   friends: [],
   requests: [],
+  statusDisplay: "all",
   isLoading: false,
   error: null,
 };
 
 const friendReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_FRIEND_STATUS_DISPLAY:
+      return {
+        ...state,
+        statusDisplay: action.payload.friendStatusDisplay,
+      };
     case STORE_FRIENDS:
       return {
         ...state,

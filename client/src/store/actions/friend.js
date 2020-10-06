@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  SET_FRIEND_STATUS_DISPLAY,
   STORE_FRIENDS,
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
@@ -9,6 +10,13 @@ import {
   DELETE_FRIEND_FAIL,
 } from "./actions";
 import { tokenConfig } from "../../shared/utils";
+
+export const setFriendStatusDisplay = (friendStatusDisplay) => {
+  return {
+    type: SET_FRIEND_STATUS_DISPLAY,
+    payload: { friendStatusDisplay },
+  };
+};
 
 export const storeFriends = (friends) => {
   return {

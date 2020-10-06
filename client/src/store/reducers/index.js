@@ -12,8 +12,8 @@ const allReducers = combineReducers({
   project: projectReducer,
   friend: friendReducer,
   modal: modalReducer,
-  socket: socketReducer,
   home: homeReducer,
+  socket: socketReducer,
 });
 
 export default allReducers;
