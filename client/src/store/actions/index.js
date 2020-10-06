@@ -47,4 +47,4 @@ export { setSocket } from "./socket";
 export { setHomeItem } from "./home";
 
 // FRIEND
-export { storeFriends } from "./friend";
+export { storeFriends, sendFriendRequest } from "./friend";

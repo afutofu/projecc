@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   STORE_FRIENDS,
   SEND_FRIEND_REQUEST_BEGIN,
@@ -7,6 +8,7 @@ import {
   DELETE_FRIEND_SUCCESS,
   DELETE_FRIEND_FAIL,
 } from "./actions";
+import { tokenConfig } from "../../shared/utils";
 
 export const storeFriends = (friends) => {
   return {
@@ -15,16 +17,39 @@ export const storeFriends = (friends) => {
   };
 };
 
+export const sendFriendRequest = (userId, friendId) => (dispatch, getState) => {
+  return new Promise(function (resolve, reject) {
+    dispatch(sendFriendRequestBegin());
+    axios
+      .post(
+        `http://localhost:5000/api/users/${userId}/friends`,
+        {
+          friendId,
+        },
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        const { request } = res.data;
+        dispatch(sendFriendRequestSuccess(request));
+        resolve(request);
+      })
+      .catch((error) => {
+        dispatch(sendFriendRequestFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
 const sendFriendRequestBegin = () => {
   return {
     type: SEND_FRIEND_REQUEST_BEGIN,
   };
 };
 
-const sendFriendRequestSuccess = (requestedUser) => {
+const sendFriendRequestSuccess = (newRequest) => {
   return {
     type: SEND_FRIEND_REQUEST_SUCCESS,
-    payload: { requestedUser },
+    payload: { newRequest },
   };
 };
 

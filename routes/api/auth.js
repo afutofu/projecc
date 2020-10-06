@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
             },
             friends: {
               friends: user.friends,
-              pendingFriends: user.pendingFriends,
+              requests: user.requests,
             },
           });
         }
@@ -69,7 +69,7 @@ router.get("/user", auth, (req, res) => {
         },
         friends: {
           friends: user.friends,
-          pendingFriends: user.pendingFriends,
+          requests: user.requests,
         },
       });
     });

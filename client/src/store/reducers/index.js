@@ -10,10 +10,10 @@ import friendReducer from "./friend";
 const allReducers = combineReducers({
   auth: authReducer,
   project: projectReducer,
+  friend: friendReducer,
   modal: modalReducer,
   socket: socketReducer,
   home: homeReducer,
-  friend: friendReducer,
 });
 
 export default allReducers;

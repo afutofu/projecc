@@ -9,7 +9,7 @@ import {
   DELETE_MESSAGE_SUCCESS,
   DELETE_MESSAGE_FAIL,
 } from "../actions";
-import { tokenConfig } from "../auth";
+import { tokenConfig } from "../../../shared/utils";
 
 // CREATE MESSAGE
 export const createMessageClient = (newMessage, channelId, projectId) => {

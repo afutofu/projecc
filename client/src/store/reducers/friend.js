@@ -10,13 +10,13 @@ import {
 
 const initialState = {
   friends: [],
-  pendingFriends: [],
+  requests: [],
   isLoading: false,
   error: null,
 };
 
 const friendReducer = (state = initialState, action) => {
-  switch (action.payload) {
+  switch (action.type) {
     case STORE_FRIENDS:
       return {
         ...state,
@@ -31,6 +31,7 @@ const friendReducer = (state = initialState, action) => {
     case SEND_FRIEND_REQUEST_SUCCESS:
       return {
         ...state,
+        requests: [...state.requests, action.payload.newRequest],
         isLoading: false,
       };
     case DELETE_FRIEND_SUCCESS:

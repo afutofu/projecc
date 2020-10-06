@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
-import { friendModalClose } from "../store/actions";
+import { friendModalClose, sendFriendRequest } from "../store/actions";
 
 const modalFadeIn = keyframes`
   0% {
@@ -103,6 +103,12 @@ const Header = styled.h3`
   font-weight: 500;
 `;
 
+const ErrorMessage = styled.p`
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: red;
+`;
+
 const Input = styled.input.attrs((props) => ({
   placeholder: "Example: 5f7c6dc296a3c22f107d2a03",
 }))`
@@ -149,13 +155,13 @@ const ButtonContainer = styled.div`
 const AddButton = styled.button`
   border: none;
   outline: none;
-  background-color: #1a8cff;
+  background: ${(props) => (props.success ? "#0eb514" : "#1a8cff")};
   color: #ddd;
   margin-right: 20px;
 
   transition: 0.2s;
   :hover {
-    background-color: #0073e6;
+    background: ${(props) => (props.success ? "#0eb514" : "#0073e6")};
   }
 `;
 
@@ -173,7 +179,17 @@ const CancelButton = styled.button`
 let firstRender = true;
 const FriendModal = (props) => {
   const [friendId, setFriendId] = useState("");
-  const { modalOpen, modalType, modalData, friendModalClose, socket } = props;
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const {
+    modalOpen,
+    modalType,
+    modalData,
+    friendModalClose,
+    sendFriendRequest,
+    user,
+    socket,
+  } = props;
 
   useEffect(() => {
     switch (modalType) {
@@ -200,11 +216,21 @@ const FriendModal = (props) => {
     //     console.log(err);
     //     setFriendId("");
     //   });
-    console.log("sent friend request");
+    sendFriendRequest(user._id, friendId)
+      .then((res) => {
+        setSuccess(true);
+        setTimeout(() => {
+          friendModalClose();
+        }, 1500);
+      })
+      .catch((error) => {
+        setErrorMsg(error);
+      });
   };
 
   const onFriendModalClose = () => {
     setFriendId("");
+    setErrorMsg("");
     friendModalClose();
   };
 
@@ -216,6 +242,7 @@ const FriendModal = (props) => {
             <Container>
               <Title>add a friend</Title>
               <Header>friend id</Header>
+              {errorMsg !== "" && <ErrorMessage>{errorMsg}</ErrorMessage>}
               <Input
                 onChange={(e) => setFriendId(e.target.value)}
                 value={friendId}
@@ -225,8 +252,8 @@ const FriendModal = (props) => {
               />
             </Container>
             <ButtonContainer>
-              <AddButton onClick={() => onAddFriend()}>
-                Send Friend Request
+              <AddButton onClick={() => onAddFriend()} success={success}>
+                {success ? "Friend Request Sent" : "Send Friend Request"}
               </AddButton>
               <CancelButton onClick={() => onFriendModalClose()}>
                 Cancel
@@ -252,6 +279,7 @@ const mapStateToProps = (state) => {
     modalOpen: state.modal.friendModalOpen,
     modalType: state.modal.friendModalType,
     modalData: state.modal.modalData,
+    user: state.auth.user,
     socket: state.socket.socket,
   };
 };
@@ -259,6 +287,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     friendModalClose: () => dispatch(friendModalClose()),
+    sendFriendRequest: (userId, friendId) =>
+      dispatch(sendFriendRequest(userId, friendId)),
   };
 };
 

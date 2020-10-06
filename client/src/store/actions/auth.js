@@ -12,6 +12,7 @@ import {
   LOGOUT,
 } from "./actions";
 import { storeFriends } from "./index";
+import { tokenConfig } from "../../shared/utils";
 
 export const setUsername = (username) => {
   return {
@@ -27,14 +28,14 @@ export const fetchUser = () => (dispatch, getState) => {
     axios
       .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
       .then((res) => {
-        const { user, friends } = res.data;
+        const { token, user, friends } = res.data;
         dispatch(fetchUserSuccess(user));
         dispatch(storeFriends(friends));
         resolve(res.data);
       })
       .catch((err) => {
         dispatch(fetchUserFail(err.response.data.msg));
-        reject();
+        reject(err.response.data.msg);
       });
   });
 };
@@ -73,8 +74,10 @@ export const register = (name, email, password) => (dispatch) => {
     axios
       .post("http://localhost:5000/api/users", body, config)
       .then((res) => {
-        dispatch(registerSuccess(res.data));
-        resolve(res.data.user);
+        const { token, user, friends } = res.data;
+        dispatch(registerSuccess({ token, user }));
+        dispatch(storeFriends(friends));
+        resolve(user);
       })
       .catch((err) => {
         dispatch(registerFail(err.response.data.msg));
@@ -111,8 +114,9 @@ export const login = (email, password) => (dispatch) => {
     axios
       .post("http://localhost:5000/api/auth", body, config)
       .then((res) => {
-        const user = res.data.user;
-        dispatch(loginSuccess(user));
+        const { token, user, friends } = res.data;
+        dispatch(loginSuccess({ token, user }));
+        dispatch(storeFriends(friends));
         resolve(user);
       })
       .catch((err) => {
@@ -146,24 +150,4 @@ export const logout = () => {
   return {
     type: LOGOUT,
   };
-};
-
-// Setup config/headers and token
-export const tokenConfig = (getState) => {
-  // Get token from localstorage
-  const token = getState().auth.token;
-
-  // Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  // If token, add to headers
-  if (token) {
-    config.headers["x-auth-token"] = token;
-  }
-
-  return config;
 };

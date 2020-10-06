@@ -51,7 +51,7 @@ router.post("/", (req, res) => {
                 },
                 friends: {
                   friends: user.friends,
-                  pendingFriends: user.pendingFriends,
+                  requests: user.requests,
                 },
               });
             }

@@ -201,7 +201,9 @@ const Join = (props) => {
     if (isAuthenticated === true) {
       setRedirect(true);
     } else {
-      fetchUser().then(() => setRedirect(true));
+      fetchUser()
+        .then(() => setRedirect(true))
+        .catch((err) => console.log(err));
     }
   }, []);
 

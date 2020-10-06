@@ -201,7 +201,7 @@ const LogoutButton = styled.button`
   margin-bottom: 20px;
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
-  color: #d42222;
+  color: red;
   border: none;
   background: unset;
   border-radius: 4px;

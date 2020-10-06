@@ -18,7 +18,7 @@ const UserSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
-  pendingFriends: {
+  requests: {
     type: Array,
     default: [],
   },
