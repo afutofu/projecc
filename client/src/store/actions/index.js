@@ -51,4 +51,5 @@ export {
   setFriendStatusDisplay,
   storeFriends,
   sendFriendRequest,
+  deleteFriendRequest,
 } from "./friend";

@@ -5,6 +5,9 @@ import {
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
   SEND_FRIEND_REQUEST_FAIL,
+  DELETE_FRIEND_REQUEST_BEGIN,
+  DELETE_FRIEND_REQUEST_SUCCESS,
+  DELETE_FRIEND_REQUEST_FAIL,
   DELETE_FRIEND_BEGIN,
   DELETE_FRIEND_SUCCESS,
   DELETE_FRIEND_FAIL,
@@ -30,10 +33,8 @@ export const sendFriendRequest = (userId, friendId) => (dispatch, getState) => {
     dispatch(sendFriendRequestBegin());
     axios
       .post(
-        `http://localhost:5000/api/users/${userId}/friends`,
-        {
-          friendId,
-        },
+        `http://localhost:5000/api/users/${userId}/friends/${friendId}/requests`,
+        {},
         tokenConfig(getState)
       )
       .then((res) => {
@@ -68,22 +69,44 @@ const sendFriendRequestFail = (error) => {
   };
 };
 
-const deleteFriendBegin = () => {
+export const deleteFriendRequest = (userId, friendId) => (
+  dispatch,
+  getState
+) => {
+  return new Promise(function (resolve, reject) {
+    dispatch(deleteFriendRequestBegin());
+    axios
+      .delete(
+        `http://localhost:5000/api/users/${userId}/friends/${friendId}/requests`,
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        dispatch(deleteFriendRequestSuccess(friendId));
+        resolve(res.data);
+      })
+      .catch((error) => {
+        dispatch(deleteFriendRequestFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
+const deleteFriendRequestBegin = () => {
   return {
-    type: DELETE_FRIEND_BEGIN,
+    type: DELETE_FRIEND_REQUEST_BEGIN,
   };
 };
 
-const deleteFriendSuccess = (deletedUser) => {
+const deleteFriendRequestSuccess = (friendId) => {
   return {
-    type: DELETE_FRIEND_SUCCESS,
-    payload: { deletedUser },
+    type: DELETE_FRIEND_REQUEST_SUCCESS,
+    payload: { friendId },
   };
 };
 
-const deleteFriendFail = (error) => {
+const deleteFriendRequestFail = (error) => {
   return {
-    type: DELETE_FRIEND_FAIL,
+    type: DELETE_FRIEND_REQUEST_FAIL,
     payload: { error },
   };
 };

@@ -4,9 +4,9 @@ import {
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
   SEND_FRIEND_REQUEST_FAIL,
-  DELETE_FRIEND_BEGIN,
-  DELETE_FRIEND_SUCCESS,
-  DELETE_FRIEND_FAIL,
+  DELETE_FRIEND_REQUEST_BEGIN,
+  DELETE_FRIEND_REQUEST_SUCCESS,
+  DELETE_FRIEND_REQUEST_FAIL,
 } from "../actions/actions";
 
 const initialState = {
@@ -30,7 +30,7 @@ const friendReducer = (state = initialState, action) => {
         ...action.payload.friends,
       };
     case SEND_FRIEND_REQUEST_BEGIN:
-    case DELETE_FRIEND_BEGIN:
+    case DELETE_FRIEND_REQUEST_BEGIN:
       return {
         ...state,
         isLoading: true,
@@ -41,13 +41,17 @@ const friendReducer = (state = initialState, action) => {
         requests: [...state.requests, action.payload.newRequest],
         isLoading: false,
       };
-    case DELETE_FRIEND_SUCCESS:
+    case DELETE_FRIEND_REQUEST_SUCCESS:
+      const { friendId } = action.payload;
       return {
         ...state,
+        requests: state.requests.filter((request) => {
+          if (request.friendId !== friendId) return request;
+        }),
         isLoading: false,
       };
     case SEND_FRIEND_REQUEST_FAIL:
-    case DELETE_FRIEND_FAIL:
+    case DELETE_FRIEND_REQUEST_FAIL:
       return {
         ...state,
         error: action.payload.error,
