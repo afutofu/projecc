@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 require("dotenv/config");
 const jwt = require("jsonwebtoken");
+const auth = require("../../middleware/auth");
 
 // User Model
 const User = require("../../models/User");
@@ -58,6 +59,22 @@ router.post("/", (req, res) => {
           );
         });
       });
+    });
+  });
+});
+
+// @route   GET /api/users/:userId
+// @desc    Fetch User Data
+// @access  Private
+router.get("/:userId", auth, (req, res) => {
+  const userId = req.params.userId;
+
+  User.findById(userId, (err, foundUser) => {
+    if (err) return res.status(400).json({ msg: "User not found" });
+
+    res.status(200).json({
+      _id: foundUser.id,
+      name: foundUser.name,
     });
   });
 });

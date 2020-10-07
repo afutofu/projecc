@@ -21,13 +21,13 @@ router.post("/", auth, (req, res) => {
       foundUser.requests.unshift({
         type: "SENT",
         friendId,
-        timeCreated: Date.now,
+        timeCreated: Date.now(),
       });
 
       foundFriend.requests.unshift({
         type: "RECEIVED",
         friendId: userId,
-        timeCreated: Date.now,
+        timeCreated: Date.now(),
       });
 
       foundUser.save();

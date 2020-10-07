@@ -29,11 +29,12 @@ export const fetchUser = () => (dispatch, getState) => {
       .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
       .then((res) => {
         const { token, user, friends } = res.data;
-        dispatch(fetchUserSuccess(user));
+        dispatch(fetchUserSuccess({ token, user }));
         dispatch(storeFriends(friends));
         resolve(res.data);
       })
       .catch((err) => {
+        console.log(err);
         dispatch(fetchUserFail(err.response.data.msg));
         reject(err.response.data.msg);
       });
@@ -46,10 +47,10 @@ const fetchUserBegin = () => {
   };
 };
 
-const fetchUserSuccess = (user) => {
+const fetchUserSuccess = (data) => {
   return {
     type: FETCH_USER_SUCCESS,
-    payload: { user },
+    payload: { data },
   };
 };
 

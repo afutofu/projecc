@@ -31,13 +31,6 @@ const authReducer = (state = initialState, action) => {
         isLoading: true,
       };
     case FETCH_USER_SUCCESS:
-      return {
-        ...state,
-        isAuthenticated: true,
-        user: action.payload.user,
-        error: null,
-        isLoading: false,
-      };
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
       localStorage.setItem("token", action.payload.data.token);

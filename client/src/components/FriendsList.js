@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+
+import { fetchUserData } from "../shared/utils";
 
 const FriendsListComp = styled.div`
   width: 100%;
@@ -45,13 +47,82 @@ const FriendItem = styled.div`
 
   transition: 0.2s;
   :hover {
-    background-color: #444;
+    background-color: #3d3d3d;
     color: #ddd;
   }
 `;
 
+const Name = styled.span`
+  color: #aaa;
+  margin-right: 20px;
+  font-weight: 500;
+
+  transition: 0.2s;
+  ${FriendItem}:hover & {
+    color: #ddd;
+  }
+`;
+
+const Id = styled.span`
+  color: #888;
+
+  transition: 0.2s;
+  ${FriendItem}:hover & {
+    color: #aaa;
+  }
+`;
+
 const FriendsList = (props) => {
-  const { statusDisplay, friends, requests } = props;
+  const { statusDisplay, friends, requests, fetchUserData } = props;
+
+  const [sentRequests, setSentRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const fetchRequests = () => {
+    let sent = [],
+      received = [];
+
+    requests.forEach((request, i) => {
+      switch (request.type) {
+        case "SENT":
+          fetchUserData(request.friendId)
+            .then((user) => {
+              sent.unshift(
+                <FriendItem key={i}>
+                  <Name>{user.name}</Name>
+                  <Id>{user._id}</Id>
+                </FriendItem>
+              );
+              setSentRequests([...sent]);
+            })
+            .catch(() => {
+              return null;
+            });
+          break;
+        case "RECEIVED":
+          fetchUserData(request.friendId)
+            .then((user) => {
+              received.unshift(
+                <FriendItem key={i}>
+                  <Name>{user.name}</Name>
+                  <Id>{user._id}</Id>
+                </FriendItem>
+              );
+              setReceivedRequests([...received]);
+            })
+            .catch(() => {
+              return null;
+            });
+          break;
+        default:
+          return;
+      }
+    });
+  };
 
   const renderFriends = () => {
     switch (statusDisplay) {
@@ -60,37 +131,21 @@ const FriendsList = (props) => {
           return <FriendItem>Friend</FriendItem>;
         });
       case "pending":
-        let sent = [],
-          received = [];
-
-        requests.forEach((request) => {
-          switch (request.type) {
-            case "SENT":
-              sent.unshift(<FriendItem>{request.friendId}</FriendItem>);
-              break;
-            case "RECEIVED":
-              received.unshift(<FriendItem>{request.friendId}</FriendItem>);
-              break;
-            default:
-              return;
-          }
-        });
-
         return (
           <React.Fragment>
             <RequestArea>
-              {sent.length > 0 && (
+              {sentRequests.length > 0 && (
                 <React.Fragment>
                   <Title>sent</Title>
-                  {sent}
+                  {sentRequests}
                 </React.Fragment>
               )}
             </RequestArea>
             <RequestArea>
-              {received.length > 0 && (
+              {receivedRequests.length > 0 && (
                 <React.Fragment>
                   <Title>received</Title>
-                  {received}
+                  {receivedRequests}
                 </React.Fragment>
               )}
             </RequestArea>
@@ -113,4 +168,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(FriendsList);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchUserData: (userId) => dispatch(fetchUserData(userId)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FriendsList);
