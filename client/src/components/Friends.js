@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 
 import { setFriendStatusDisplay, friendModalOpen } from "../store/actions";
+import FriendsList from "./FriendsList";
 
 const FriendsComp = styled.div`
   width: 100%;
@@ -37,7 +38,6 @@ const Title = styled.h3`
 const Container = styled.div`
   position: relative;
   height: calc(100% - 50px);
-  padding: 10px 20px;
   box-sizing: border-box;
 `;
 
@@ -108,7 +108,9 @@ const Friends = (props) => {
           Add Friend
         </AddFriendButton>
       </Header>
-      <Container>FriendsList</Container>
+      <Container>
+        <FriendsList />
+      </Container>
     </FriendsComp>
   );
 };
