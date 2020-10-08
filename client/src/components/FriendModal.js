@@ -188,6 +188,8 @@ const FriendModal = (props) => {
     friendModalClose,
     sendFriendRequest,
     user,
+    friends,
+    requests,
     socket,
   } = props;
 
@@ -205,27 +207,46 @@ const FriendModal = (props) => {
   if (modalOpen) firstRender = false;
 
   const onAddFriend = () => {
-    // createProject({ name: friendId, creatorName: username })
-    //   .then(({ data }) => {
-    //     socket.emit("createProject", { data }, () => {
-    //       setFriendId("");
-    //       friendModalClose();
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setFriendId("");
-    //   });
-    sendFriendRequest(user._id, friendId)
-      .then((res) => {
-        setSuccess(true);
-        setTimeout(() => {
-          friendModalClose();
-        }, 1500);
-      })
-      .catch((error) => {
-        setErrorMsg(error);
-      });
+    // Validation to check if there is already a request/friend with the same id
+    let error = false;
+
+    for (let i = 0; i < friends.length; i++) {
+      const friend = friends[i];
+      if (friend.friendId === friendId) {
+        setFriendId("");
+        setErrorMsg("You are already friends with this user");
+        error = true;
+        break;
+      }
+    }
+
+    if (!error) {
+      for (let i = 0; i < requests.length; i++) {
+        const request = requests[i];
+        if (request.friendId === friendId) {
+          setFriendId("");
+          if (request.type === "SENT")
+            setErrorMsg("You have already sent a request to this user");
+          if (request.type === "RECEIVED")
+            setErrorMsg("You already have pending request from this user");
+          error = true;
+          break;
+        }
+      }
+    }
+
+    if (!error) {
+      sendFriendRequest(user._id, friendId)
+        .then((res) => {
+          setSuccess(true);
+          setTimeout(() => {
+            friendModalClose();
+          }, 1500);
+        })
+        .catch((error) => {
+          setErrorMsg(error);
+        });
+    }
   };
 
   const onFriendModalClose = () => {
@@ -280,6 +301,8 @@ const mapStateToProps = (state) => {
     modalType: state.modal.friendModalType,
     modalData: state.modal.modalData,
     user: state.auth.user,
+    friends: state.friend.friends,
+    requests: state.friend.requests,
     socket: state.socket.socket,
   };
 };
