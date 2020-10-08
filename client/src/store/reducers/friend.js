@@ -10,6 +10,9 @@ import {
   ADD_FRIEND_BEGIN,
   ADD_FRIEND_SUCCESS,
   ADD_FRIEND_FAIL,
+  DELETE_FRIEND_BEGIN,
+  DELETE_FRIEND_SUCCESS,
+  DELETE_FRIEND_FAIL,
 } from "../actions/actions";
 
 const initialState = {
@@ -35,6 +38,7 @@ const friendReducer = (state = initialState, action) => {
     case SEND_FRIEND_REQUEST_BEGIN:
     case DELETE_FRIEND_REQUEST_BEGIN:
     case ADD_FRIEND_BEGIN:
+    case DELETE_FRIEND_BEGIN:
       return {
         ...state,
         isLoading: true,
@@ -45,7 +49,7 @@ const friendReducer = (state = initialState, action) => {
         requests: [...state.requests, action.payload.newRequest],
         isLoading: false,
       };
-    case DELETE_FRIEND_REQUEST_SUCCESS:
+    case DELETE_FRIEND_REQUEST_SUCCESS: {
       const { friendId } = action.payload;
       return {
         ...state,
@@ -54,19 +58,32 @@ const friendReducer = (state = initialState, action) => {
         }),
         isLoading: false,
       };
-    case ADD_FRIEND_SUCCESS:
+    }
+    case ADD_FRIEND_SUCCESS: {
       const { friend } = action.payload;
       return {
         ...state,
-        friend: [friend, ...state.friend],
+        friends: [friend, ...state.friends],
         requests: state.requests.filter((request) => {
-          if (request.friendId !== friendId) return request;
+          if (request.friendId !== friend.friendId) return request;
         }),
         isLoading: false,
       };
+    }
+    case DELETE_FRIEND_SUCCESS: {
+      const { friendId } = action.payload;
+      return {
+        ...state,
+        friends: state.friends.filter((friend) => {
+          if (friend.friendId !== friendId) return friend;
+        }),
+        isLoading: false,
+      };
+    }
     case SEND_FRIEND_REQUEST_FAIL:
     case DELETE_FRIEND_REQUEST_FAIL:
     case ADD_FRIEND_FAIL:
+    case DELETE_FRIEND_FAIL:
       return {
         ...state,
         error: action.payload.error,

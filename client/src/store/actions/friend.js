@@ -11,6 +11,9 @@ import {
   ADD_FRIEND_BEGIN,
   ADD_FRIEND_SUCCESS,
   ADD_FRIEND_FAIL,
+  DELETE_FRIEND_BEGIN,
+  DELETE_FRIEND_SUCCESS,
+  DELETE_FRIEND_FAIL,
 } from "./actions";
 import { tokenConfig } from "../../shared/utils";
 
@@ -151,6 +154,47 @@ const addFriendSuccess = (friend) => {
 const addFriendFail = (error) => {
   return {
     type: ADD_FRIEND_FAIL,
+    payload: { error },
+  };
+};
+
+export const deleteFriend = (userId, friendId) => (dispatch, getState) => {
+  return new Promise(function (resolve, reject) {
+    dispatch(deleteFriendBegin());
+    axios
+      .delete(
+        `http://localhost:5000/api/users/${userId}/friends/${friendId}`,
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        const { friend } = res.data;
+        dispatch(deleteFriendSuccess(friend));
+        resolve(friend);
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(deleteFriendFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
+const deleteFriendBegin = () => {
+  return {
+    type: DELETE_FRIEND_BEGIN,
+  };
+};
+
+const deleteFriendSuccess = (friend) => {
+  return {
+    type: DELETE_FRIEND_SUCCESS,
+    payload: { friendId: friend._id },
+  };
+};
+
+const deleteFriendFail = (error) => {
+  return {
+    type: DELETE_FRIEND_FAIL,
     payload: { error },
   };
 };

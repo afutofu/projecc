@@ -53,4 +53,5 @@ export {
   sendFriendRequest,
   deleteFriendRequest,
   addFriend,
+  deleteFriend,
 } from "./friend";

@@ -41,9 +41,36 @@ router.post("/", auth, (req, res) => {
       foundUser.save();
       foundFriend.save();
 
-      console.log(foundUser.friends[0]);
-
       res.status(200).json({ friend: foundUser.friends[0] });
+    });
+  });
+});
+
+// @route   DELETE /api/users/:userId/friends/:friendId
+// @desc    Delete a friend
+// @access  Private
+router.delete("/:friendId", auth, (req, res) => {
+  const { userId, friendId } = req.params;
+
+  User.findById(userId, (err, foundUser) => {
+    if (err) return res.status(400).json({ msg: "User must be logged in" });
+
+    User.findById(friendId, (err, foundFriend) => {
+      if (err) return res.status(400).json({ msg: "User does not exist" });
+
+      // Remove request from both users
+      foundUser.friends = foundUser.friends.filter((friend) => {
+        if (friend.friendId !== friendId) return friend;
+      });
+
+      foundFriend.friends = foundFriend.friends.filter((friend) => {
+        if (friend.friendId !== userId) return friend;
+      });
+
+      foundUser.save();
+      foundFriend.save();
+
+      res.status(200).json({ friend: foundFriend });
     });
   });
 });

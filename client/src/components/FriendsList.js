@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
 import { fetchUserData } from "../shared/utils";
-import { deleteFriendRequest, addFriend } from "../store/actions";
+import { deleteFriendRequest, addFriend, deleteFriend } from "../store/actions";
 
 const fadeIn = keyframes`
 from{
@@ -132,14 +132,49 @@ const FriendsList = (props) => {
     fetchUserData,
     deleteFriendRequest,
     addFriend,
+    deleteFriend,
   } = props;
 
+  const [allFriends, setAllFriends] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
 
   useEffect(() => {
+    fetchFriends(friends);
     fetchRequests(requests);
-  }, [requests]);
+  }, [friends, requests]);
+
+  const fetchFriends = (friends) => {
+    let friendsArr = [];
+
+    setAllFriends([...friendsArr]);
+
+    friends.forEach((friend, i) => {
+      fetchUserData(friend.friendId)
+        .then((friend) => {
+          friendsArr.unshift(
+            <FriendItem key={i}>
+              <Info>
+                <Name>{friend.name}</Name>
+                <Id>{friend._id}</Id>
+              </Info>
+              <Buttons>
+                <Button
+                  onClick={() => deleteFriend(user._id, friend._id)}
+                  color="red"
+                >
+                  <i className="fa fa-times"></i>
+                </Button>
+              </Buttons>
+            </FriendItem>
+          );
+          setAllFriends([...friendsArr]);
+        })
+        .catch(() => {
+          return null;
+        });
+    });
+  };
 
   const fetchRequests = (requests) => {
     let sent = [],
@@ -162,9 +197,7 @@ const FriendsList = (props) => {
                   </Info>
                   <Buttons>
                     <Button
-                      onClick={() =>
-                        onDeleteFriendRequest(user._id, friend._id)
-                      }
+                      onClick={() => deleteFriendRequest(user._id, friend._id)}
                       color="red"
                     >
                       <i className="fa fa-times"></i>
@@ -192,9 +225,7 @@ const FriendsList = (props) => {
                       <i className="fa fa-check"></i>
                     </Button>
                     <Button
-                      onClick={(e) =>
-                        onDeleteFriendRequest(user._id, friend._id)
-                      }
+                      onClick={() => deleteFriendRequest(user._id, friend._id)}
                       color="red"
                     >
                       <i className="fa fa-times"></i>
@@ -214,16 +245,10 @@ const FriendsList = (props) => {
     });
   };
 
-  const onDeleteFriendRequest = (userId, friendId) => {
-    deleteFriendRequest(userId, friendId);
-  };
-
   const renderFriends = () => {
     switch (statusDisplay) {
       case "all":
-        return friends.map((friend) => {
-          return <FriendItem>{friend.friendId}</FriendItem>;
-        });
+        return allFriends.length > 0 && allFriends;
       case "pending":
         return (
           <React.Fragment>
@@ -269,6 +294,8 @@ const mapDispatchToProps = (dispatch) => {
     deleteFriendRequest: (userId, friendId) =>
       dispatch(deleteFriendRequest(userId, friendId)),
     addFriend: (userId, friendId) => dispatch(addFriend(userId, friendId)),
+    deleteFriend: (userId, friendId) =>
+      dispatch(deleteFriend(userId, friendId)),
   };
 };
 
