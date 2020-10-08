@@ -156,6 +156,7 @@ const AddButton = styled.button`
   border: none;
   outline: none;
   background: ${(props) => (props.success ? "#0eb514" : "#1a8cff")};
+  pointer-events: ${(props) => (props.success ? "none" : "auto")};
   color: #ddd;
   margin-right: 20px;
 
@@ -241,9 +242,11 @@ const FriendModal = (props) => {
           setSuccess(true);
           setTimeout(() => {
             friendModalClose();
+            setSuccess(false);
           }, 1500);
         })
         .catch((error) => {
+          setFriendId("");
           setErrorMsg(error);
         });
     }

@@ -20,11 +20,11 @@ router.post("/", auth, (req, res) => {
 
       // Remove request from both users
       foundUser.requests = foundUser.requests.filter((request) => {
-        if (request.friendId !== friendId) return request;
+        if (request.friendId != friendId) return request;
       });
 
       foundFriend.requests = foundFriend.requests.filter((request) => {
-        if (request.friendId !== userId) return request;
+        if (request.friendId != userId) return request;
       });
 
       // Add friend in both users
@@ -60,11 +60,11 @@ router.delete("/:friendId", auth, (req, res) => {
 
       // Remove request from both users
       foundUser.friends = foundUser.friends.filter((friend) => {
-        if (friend.friendId !== friendId) return friend;
+        if (friend.friendId != friendId) return friend;
       });
 
       foundFriend.friends = foundFriend.friends.filter((friend) => {
-        if (friend.friendId !== userId) return friend;
+        if (friend.friendId != userId) return friend;
       });
 
       foundUser.save();
@@ -86,6 +86,32 @@ router.post("/:friendId/requests", auth, (req, res) => {
 
     User.findById(friendId, (err, foundFriend) => {
       if (err) return res.status(400).json({ msg: "User does not exist" });
+
+      // Validation to check if there is already a request/friend with the same id
+      const { friends, requests } = foundUser;
+
+      for (let i = 0; i < friends.length; i++) {
+        const friend = friends[i];
+        if (friend.friendId.localeCompare(foundUser._id)) {
+          return res
+            .status(400)
+            .json({ msg: "You are already friends with this user" });
+        }
+      }
+
+      for (let i = 0; i < requests.length; i++) {
+        const request = requests[i];
+        if (request.friendId.localeCompare(foundUser._id)) {
+          if (request.type == "SENT")
+            return res
+              .status(400)
+              .json({ msg: "You have already sent a request to this user" });
+          if (request.type == "RECEIVED")
+            return res
+              .status(400)
+              .json({ msg: "You already have pending request from this user" });
+        }
+      }
 
       // Add request in both users
       foundUser.requests.unshift({
@@ -124,11 +150,11 @@ router.delete("/:friendId/requests", auth, (req, res) => {
 
       // Remove request from both users
       foundUser.requests = foundUser.requests.filter((request) => {
-        if (request.friendId !== friendId) return request;
+        if (request.friendId != friendId) return request;
       });
 
       foundFriend.requests = foundFriend.requests.filter((request) => {
-        if (request.friendId !== userId) return request;
+        if (request.friendId != userId) return request;
       });
 
       foundUser.save();

@@ -184,7 +184,6 @@ const FriendsList = (props) => {
     setReceivedRequests([...received]);
 
     requests.forEach((request, i) => {
-      console.log(request);
       switch (request.type) {
         case "SENT":
           fetchUserData(request.friendId)
