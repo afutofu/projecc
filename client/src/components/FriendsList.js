@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
 import { fetchUserData } from "../shared/utils";
-import { deleteFriendRequest } from "../store/actions";
+import { deleteFriendRequest, addFriend } from "../store/actions";
+
+const fadeIn = keyframes`
+from{
+  opacity:0;
+}
+to{
+  opacity:1;
+}
+`;
 
 const FriendsListComp = styled.div`
   width: 100%;
@@ -14,6 +23,8 @@ const FriendsListComp = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  opacity: 0;
+  animation: ${fadeIn} 0.5s ease forwards;
 `;
 
 const RequestArea = styled.div`
@@ -34,7 +45,8 @@ const Title = styled.h2`
 const FriendItem = styled.div`
   width: 100%;
   height: 40px;
-  padding: 4px 8px;
+  padding: 5px 20px;
+  padding-right: 15px;
   background-color: none;
   color: #aaa;
   box-sizing: border-box;
@@ -100,6 +112,7 @@ const Buttons = styled.div`
 const Button = styled.div`
   transition: 0.2s;
   padding: 5px;
+  margin-left: 10px;
 
   i {
     transition: 0.3s;
@@ -118,6 +131,7 @@ const FriendsList = (props) => {
     requests,
     fetchUserData,
     deleteFriendRequest,
+    addFriend,
   } = props;
 
   const [sentRequests, setSentRequests] = useState([]);
@@ -174,10 +188,15 @@ const FriendsList = (props) => {
                     <Id>{friend._id}</Id>
                   </Info>
                   <Buttons>
-                    <Button onClick={(e) => console.log(e)}>
+                    <Button onClick={() => addFriend(user._id, friend._id)}>
                       <i className="fa fa-check"></i>
                     </Button>
-                    <Button onClick={(e) => console.log(e)} color="red">
+                    <Button
+                      onClick={(e) =>
+                        onDeleteFriendRequest(user._id, friend._id)
+                      }
+                      color="red"
+                    >
                       <i className="fa fa-times"></i>
                     </Button>
                   </Buttons>
@@ -203,7 +222,7 @@ const FriendsList = (props) => {
     switch (statusDisplay) {
       case "all":
         return friends.map((friend) => {
-          return <FriendItem>Friend</FriendItem>;
+          return <FriendItem>{friend.friendId}</FriendItem>;
         });
       case "pending":
         return (
@@ -249,6 +268,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserData: (userId) => dispatch(fetchUserData(userId)),
     deleteFriendRequest: (userId, friendId) =>
       dispatch(deleteFriendRequest(userId, friendId)),
+    addFriend: (userId, friendId) => dispatch(addFriend(userId, friendId)),
   };
 };
 

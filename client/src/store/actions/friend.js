@@ -8,9 +8,9 @@ import {
   DELETE_FRIEND_REQUEST_BEGIN,
   DELETE_FRIEND_REQUEST_SUCCESS,
   DELETE_FRIEND_REQUEST_FAIL,
-  DELETE_FRIEND_BEGIN,
-  DELETE_FRIEND_SUCCESS,
-  DELETE_FRIEND_FAIL,
+  ADD_FRIEND_BEGIN,
+  ADD_FRIEND_SUCCESS,
+  ADD_FRIEND_FAIL,
 } from "./actions";
 import { tokenConfig } from "../../shared/utils";
 
@@ -107,6 +107,50 @@ const deleteFriendRequestSuccess = (friendId) => {
 const deleteFriendRequestFail = (error) => {
   return {
     type: DELETE_FRIEND_REQUEST_FAIL,
+    payload: { error },
+  };
+};
+
+export const addFriend = (userId, friendId) => (dispatch, getState) => {
+  return new Promise(function (resolve, reject) {
+    dispatch(addFriendBegin());
+    axios
+      .post(
+        `http://localhost:5000/api/users/${userId}/friends`,
+        {
+          friendId,
+        },
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        const { friend } = res.data;
+        dispatch(addFriendSuccess(friend));
+        resolve(friend);
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(addFriendFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
+const addFriendBegin = () => {
+  return {
+    type: ADD_FRIEND_BEGIN,
+  };
+};
+
+const addFriendSuccess = (friend) => {
+  return {
+    type: ADD_FRIEND_SUCCESS,
+    payload: { friend },
+  };
+};
+
+const addFriendFail = (error) => {
+  return {
+    type: ADD_FRIEND_FAIL,
     payload: { error },
   };
 };

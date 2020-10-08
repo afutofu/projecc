@@ -52,4 +52,5 @@ export {
   storeFriends,
   sendFriendRequest,
   deleteFriendRequest,
+  addFriend,
 } from "./friend";
