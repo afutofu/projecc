@@ -26,15 +26,21 @@ const HomeItemComp = styled.div`
   }
 `;
 
-const ChatPrefix = styled.span`
-  :before {
-    content: "-";
-  }
-  width: 15px;
-  color: #555;
-  font-size: 25px;
-  padding-right: 8px;
+const Icon = styled.div`
+  width: ${(props) => (props.friend ? "30px" : "45px")};
+  color: ${(props) => (props.selected ? "#aaa" : "#555")};
+  font-size: ${(props) => (props.friend ? "25px" : "20px")};
+  padding-right: ${(props) => (props.friend ? "5px" : "15px")};
   font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+
+  transition: 0.1s;
+  ${HomeItemComp}:hover & {
+    color: ${(props) => (props.selected ? "#aaa" : "#888")};
+  }
 `;
 
 const ItemName = styled.h3`
@@ -57,41 +63,38 @@ const ItemContainer = styled.div`
   align-items: center;
 `;
 
-const Buttons = styled.div`
-  width: 20%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  opacity: 0;
-
-  transition: 0.2s;
-  ${HomeItemComp}:hover & {
-    transition: 0.5s;
-    opacity: 1;
-  }
-`;
-
-const Button = styled.div`
-  transition: 0.2s;
-  padding: 5px;
-
-  i {
-    transition: 0.3s;
-  }
-
-  :hover i {
-    color: ${(props) => (props.color === "red" ? "red" : "#1a8cff")};
-  }
-`;
-
 const HomeItem = (props) => {
-  const { selected, id, name, icon, setHomeItem } = props;
+  const { id, name, homeItem, setHomeItem } = props;
+
+  const selected = homeItem == id;
+
+  const renderIcon = () => {
+    switch (id) {
+      case "profile":
+        return <i className="fas fa-user"></i>;
+      case "schedule":
+        return <i className="fas fa-calendar-alt"></i>;
+      case "friends":
+        return <i className="fas fa-user-friends"></i>;
+      default:
+        return "-";
+    }
+  };
+
+  const checkIfFriend = () => {
+    if (id != "profile" && id != "schedule" && id != "friends") {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <HomeItemComp selected={selected} onClick={() => setHomeItem(id)}>
       <ItemContainer>
-        {icon ? <ChatPrefix /> : null}
+        <Icon selected={selected} friend={checkIfFriend()}>
+          {renderIcon()}
+        </Icon>
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
     </HomeItemComp>
@@ -99,7 +102,9 @@ const HomeItem = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    homeItem: state.home.homeItem,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
