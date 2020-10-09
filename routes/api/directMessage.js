@@ -5,28 +5,25 @@ const auth = require("../../middleware/auth");
 const DirectMessage = require("../../models/DirectMessage");
 
 // @route   GET /api/users/:userId/directMessages
-// @desc    Get direct messages for user
+// @desc    Get all direct messages for user
 // @access  Private
 router.get("/", auth, (req, res) => {
   const { userId } = req.params;
 
-  DirectMessage.find(
-    { members: userId },
-    (err,
-    (directMessages) => {
-      if (!err)
-        return res
-          .status(400)
-          .json({ msg: "No direct messages found for this user" });
-      console.log(directMessages);
-    })
-  );
+  DirectMessage.find({ members: userId }, (err, directMessages) => {
+    if (err)
+      return res
+        .status(400)
+        .json({ msg: "No direct messages found for this user" });
+
+    res.status(200).json({ directMessages });
+  });
 });
 
 // @route   POST /api/users/:userId/directMessages
 // @desc    Create direct message for user
 // @access  Private
-router.get("/", auth, (req, res) => {
+router.post("/", auth, (req, res) => {
   const { userId } = req.params;
   const { friendId } = req.body;
 

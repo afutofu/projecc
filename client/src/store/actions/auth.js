@@ -11,7 +11,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
 } from "./actions";
-import { storeFriends } from "./index";
+import { storeFriends, fetchDirectMessages } from "./index";
 import { tokenConfig } from "../../shared/utils";
 
 export const setUsername = (username) => {
@@ -31,6 +31,7 @@ export const fetchUser = () => (dispatch, getState) => {
         const { token, user, friends } = res.data;
         dispatch(fetchUserSuccess({ token, user }));
         dispatch(storeFriends(friends));
+        dispatch(fetchDirectMessages(user._id));
         resolve(res.data);
       })
       .catch((err) => {

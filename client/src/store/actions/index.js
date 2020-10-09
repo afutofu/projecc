@@ -55,3 +55,6 @@ export {
   addFriend,
   deleteFriend,
 } from "./friend";
+
+// DIRECT MESSAGE
+export { fetchDirectMessages, startDirectMessage } from "./directMessage";

@@ -3,7 +3,12 @@ import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
 import { fetchUserData } from "../shared/utils";
-import { deleteFriendRequest, addFriend, deleteFriend } from "../store/actions";
+import {
+  deleteFriendRequest,
+  addFriend,
+  deleteFriend,
+  startDirectMessage,
+} from "../store/actions";
 
 const fadeIn = keyframes`
 from{
@@ -133,6 +138,7 @@ const FriendsList = (props) => {
     deleteFriendRequest,
     addFriend,
     deleteFriend,
+    startDirectMessage,
   } = props;
 
   const [allFriends, setAllFriends] = useState([]);
@@ -159,7 +165,9 @@ const FriendsList = (props) => {
                 <Id>{friend._id}</Id>
               </Info>
               <Buttons>
-                <Button onClick={() => console.log(user._id, friend._id)}>
+                <Button
+                  onClick={() => startDirectMessage(user._id, friend._id)}
+                >
                   <i className="fas fa-comment"></i>
                 </Button>
                 <Button
@@ -298,6 +306,8 @@ const mapDispatchToProps = (dispatch) => {
     addFriend: (userId, friendId) => dispatch(addFriend(userId, friendId)),
     deleteFriend: (userId, friendId) =>
       dispatch(deleteFriend(userId, friendId)),
+    startDirectMessage: (userId, friendId) =>
+      dispatch(startDirectMessage(userId, friendId)),
   };
 };
 
