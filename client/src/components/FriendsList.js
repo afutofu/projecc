@@ -159,6 +159,9 @@ const FriendsList = (props) => {
                 <Id>{friend._id}</Id>
               </Info>
               <Buttons>
+                <Button onClick={() => console.log(user._id, friend._id)}>
+                  <i className="fas fa-comment"></i>
+                </Button>
                 <Button
                   onClick={() => deleteFriend(user._id, friend._id)}
                   color="red"

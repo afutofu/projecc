@@ -22,6 +22,7 @@ const channelRoutes = require("./routes/api/channels");
 const messageRoutes = require("./routes/api/messages");
 const userRoutes = require("./routes/api/users");
 const friendRoutes = require("./routes/api/friend");
+const directMessageRoutes = require("./routes/api/directMessage");
 const authRoutes = require("./routes/api/auth");
 
 // ROUTES
@@ -31,6 +32,7 @@ app.use("/api/projects/:projectId/channels", channelRoutes);
 app.use("/api/projects/:projectId/channels/:channelId/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/users/:userId/friends", friendRoutes);
+app.use("/api/users/:userId/directMessages", directMessageRoutes);
 app.use("/api/auth", authRoutes);
 
 // CONNECT TO DB
