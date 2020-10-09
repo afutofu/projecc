@@ -57,7 +57,7 @@ const CenterContainer = styled.div`
 `;
 
 const Content = (props) => {
-  const { selectedProject, homeItem } = props;
+  const { selectedProject, homeItem, directMessages } = props;
 
   // PROJECT
   // If there is a selected project and selected channel
@@ -108,9 +108,18 @@ const Content = (props) => {
       );
     // If selected friend for messaging
     default:
+      // Get direct message from redux store using id
+      const directMessage = directMessages.find((directMessage) => {
+        if (directMessage._id == homeItem) return directMessage;
+      });
+
       return (
         <ContentComp>
-          <Chat chatType="dm" directMessageId={homeItem} />
+          <Chat
+            chatType="dm"
+            directMessageId={homeItem}
+            directMessage={directMessage}
+          />
         </ContentComp>
       );
   }
@@ -120,6 +129,7 @@ const mapStateToProps = (state) => {
   return {
     selectedProject: state.project.selectedProject,
     homeItem: state.home.homeItem,
+    directMessages: state.directMessage.directMessages,
   };
 };
 

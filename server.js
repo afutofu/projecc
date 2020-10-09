@@ -32,7 +32,7 @@ app.use("/api/projects/:projectId/channels", channelRoutes);
 app.use("/api/projects/:projectId/channels/:channelId/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/users/:userId/friends", friendRoutes);
-app.use("/api/users/:userId/directMessages", directMessageRoutes);
+app.use("/api/directMessages", directMessageRoutes);
 app.use("/api/auth", authRoutes);
 
 // CONNECT TO DB

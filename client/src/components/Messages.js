@@ -19,13 +19,39 @@ const TopSpace = styled.div`
 `;
 
 const Messages = (props) => {
-  const { messages, channelId, projectId, deleteMessage } = props;
+  const {
+    chatType,
+    messages,
+    channelId,
+    projectId,
+    deleteMessage,
+    fetchUserData,
+  } = props;
   let newMessages = [];
 
   if (messages !== undefined) {
     messages.forEach((message) => {
       newMessages.unshift(message);
     });
+  }
+
+  if (chatType == "dm") {
+    return (
+      <MessagesComp>
+        {newMessages.map((message, i) => {
+          return (
+            <Message
+              key={i}
+              chatType={chatType}
+              message={message}
+              deleteMessage={deleteMessage}
+              fetchUserData={fetchUserData}
+            />
+          );
+        })}
+        <TopSpace />
+      </MessagesComp>
+    );
   }
 
   return (

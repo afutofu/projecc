@@ -1,16 +1,26 @@
 import axios from "axios";
 
 // Setup config/headers and token
-export const tokenConfig = (getState) => {
+export const tokenConfig = (getState, params) => {
   // Get token from localstorage
   const token = getState().auth.token;
 
   // Headers
-  const config = {
+  let config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
+
+  // Params
+  if (params) {
+    config = {
+      ...config,
+      params: {
+        ...params,
+      },
+    };
+  }
 
   // If token, add to headers
   if (token) {
@@ -29,7 +39,9 @@ export const fetchUserData = (userId) => (dispatch, getState) => {
         resolve(res.data);
       })
       .catch((err) => {
-        reject(err.response.data.msg);
+        console.log(err);
+        if (err.response) return reject(err.response.data.msg);
+        return reject();
       });
   });
 };

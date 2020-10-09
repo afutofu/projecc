@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const MessageComp = styled.div`
@@ -77,8 +77,59 @@ const Button = styled.div`
 `;
 
 const Message = (props) => {
-  const { message, channelId, projectId, deleteMessage } = props;
-  const { _id, username, date, text } = message;
+  const [memberName, setMemberName] = useState("");
+  const {
+    chatType,
+    message,
+    channelId,
+    projectId,
+    deleteMessage,
+    fetchUserData,
+  } = props;
+  const { _id, userId, username, date, text } = message;
+
+  // If chat is in direct messages, fetch user data (name)
+  useEffect(() => {
+    if (chatType == "dm") {
+      fetchMemberName();
+    }
+  }, []);
+
+  // If chat is changed, reset
+
+  const fetchMemberName = () => {
+    let memberNameTemp = "";
+
+    setMemberName(memberNameTemp);
+
+    // Get user data for member
+    fetchUserData(userId)
+      .then((member) => {
+        setMemberName(member.name);
+      })
+      .catch(() => {
+        return null;
+      });
+  };
+
+  if (chatType == "dm") {
+    return (
+      <MessageComp>
+        <TopRow>
+          <NameDate>
+            <Name>{memberName}</Name>
+            <DateComp>{date}</DateComp>
+          </NameDate>
+          <Buttons>
+            <Button onClick={() => deleteMessage(_id, channelId, projectId)}>
+              <i className="fa fa-times"></i>
+            </Button>
+          </Buttons>
+        </TopRow>
+        <MessageText>{text}</MessageText>
+      </MessageComp>
+    );
+  }
 
   return (
     <MessageComp>

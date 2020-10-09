@@ -34,7 +34,7 @@ const HomeBar = (props) => {
 
   useEffect(() => {
     fetchDirectMessages(directMessages);
-  }, [directMessages]);
+  }, [directMessages.length]);
 
   const fetchDirectMessages = (directMessages) => {
     let DMArr = [];

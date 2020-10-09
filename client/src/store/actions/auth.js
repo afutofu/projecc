@@ -35,7 +35,6 @@ export const fetchUser = () => (dispatch, getState) => {
         resolve(res.data);
       })
       .catch((err) => {
-        console.log(err);
         dispatch(fetchUserFail(err.response.data.msg));
         reject(err.response.data.msg);
       });
@@ -79,6 +78,7 @@ export const register = (name, email, password) => (dispatch) => {
         const { token, user, friends } = res.data;
         dispatch(registerSuccess({ token, user }));
         dispatch(storeFriends(friends));
+        dispatch(fetchDirectMessages(user._id));
         resolve(user);
       })
       .catch((err) => {
@@ -119,6 +119,7 @@ export const login = (email, password) => (dispatch) => {
         const { token, user, friends } = res.data;
         dispatch(loginSuccess({ token, user }));
         dispatch(storeFriends(friends));
+        dispatch(fetchDirectMessages(user._id));
         resolve(user);
       })
       .catch((err) => {

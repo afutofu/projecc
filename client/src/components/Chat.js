@@ -9,6 +9,7 @@ import {
   createMessageClient,
   deleteMessage,
   deleteMessageClient,
+  createDirectMessage,
 } from "../store/actions";
 import { fetchUserData } from "../shared/utils";
 
@@ -76,7 +77,7 @@ const Form = styled.form.attrs((props) => ({
 `;
 
 const Input = styled.input.attrs((props) => ({
-  placeholder: "Message ~general",
+  placeholder: props.placeholder,
 }))`
   position: relative;
   width: 100%;
@@ -95,7 +96,7 @@ const Input = styled.input.attrs((props) => ({
 
 const Chat = (props) => {
   const [message, setMessage] = useState("");
-  const [directMessage, setDirectMessage] = useState({});
+  const [messageDM, setMessageDM] = useState("");
   const [memberName, setMemberName] = useState("");
   const {
     selectedProject,
@@ -103,14 +104,16 @@ const Chat = (props) => {
     username,
     userId,
     directMessageId,
-    directMessages,
+    directMessage,
     fetchUserData,
     createMessage,
     deleteMessage,
+    createDirectMessage,
     socket,
     chatType,
   } = props;
 
+  // If chat is in direct messages, fetch user data (name)
   useEffect(() => {
     if (chatType == "dm") {
       fetchMemberName();
@@ -122,15 +125,8 @@ const Chat = (props) => {
 
     setMemberName(memberNameTemp);
 
-    // Get direct message from redux store using id
-    const directMessageTemp = directMessages.find((directMessage) => {
-      if (directMessage._id == directMessageId) return directMessage;
-    });
-
-    setDirectMessage(directMessageTemp);
-
     // Get all members excluding the user
-    const memberIds = directMessageTemp.members.filter((member) => {
+    const memberIds = directMessage.members.filter((member) => {
       if (member != userId) return member;
     });
 
@@ -149,25 +145,42 @@ const Chat = (props) => {
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
-    if (message) {
-      createMessage(
-        {
-          text: message,
-          username,
+
+    if (chatType == "dm") {
+      if (messageDM) {
+        createDirectMessage({
+          directMessageId,
           userId,
-        },
-        selectedChannel._id,
-        selectedProject._id
-      )
-        .then(({ data, channelId, projectId }) => {
-          // Send message to server
-          socket.emit("sendMessage", { data, channelId, projectId }, () => {
-            setMessage("");
-          });
+          text: messageDM,
         })
-        .catch((err) => {
-          console.log(err);
-        });
+          .then(() => {
+            setMessageDM("");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    } else {
+      if (message) {
+        createMessage(
+          {
+            text: message,
+            username,
+            userId,
+          },
+          selectedChannel._id,
+          selectedProject._id
+        )
+          .then(({ data, channelId, projectId }) => {
+            // Send message to server
+            socket.emit("sendMessage", { data, channelId, projectId }, () => {
+              setMessage("");
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
   };
 
@@ -190,13 +203,16 @@ const Chat = (props) => {
         </Header>
         <Container>
           <Messages
+            chatType={chatType}
             messages={directMessage.messages}
             deleteMessage={onDeleteMessage}
+            fetchUserData={fetchUserData}
           />
           <Form onSubmit={onMessageSubmit}>
             <Input
-              onChange={(e) => setMessage(e.target.value)}
-              value={message}
+              onChange={(e) => setMessageDM(e.target.value)}
+              value={messageDM}
+              placeholder={`Message ${memberName}`}
             />
           </Form>
         </Container>
@@ -218,7 +234,11 @@ const Chat = (props) => {
           deleteMessage={onDeleteMessage}
         />
         <Form onSubmit={onMessageSubmit}>
-          <Input onChange={(e) => setMessage(e.target.value)} value={message} />
+          <Input
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+            placeholder={`Message ~${selectedChannel.name}`}
+          />
         </Form>
       </Container>
     </ChatComp>
@@ -244,6 +264,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteMessage(messageId, channelId, projectId)),
     deleteMessageClient: (updatedChannel, channelId, projectId) =>
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
+    createDirectMessage: (directMessageId, userId, text) =>
+      dispatch(createDirectMessage(directMessageId, userId, text)),
     fetchUserData: (userId) => dispatch(fetchUserData(userId)),
   };
 };

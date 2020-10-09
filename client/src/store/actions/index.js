@@ -57,4 +57,8 @@ export {
 } from "./friend";
 
 // DIRECT MESSAGE
-export { fetchDirectMessages, startDirectMessage } from "./directMessage";
+export {
+  fetchDirectMessages,
+  startDirectMessage,
+  createDirectMessage,
+} from "./directMessage";
