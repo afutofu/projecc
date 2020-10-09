@@ -56,7 +56,7 @@ const HomeBar = (props) => {
           DMArr.unshift(
             <HomeItem
               key={i}
-              id={memberId}
+              id={directMessage._id}
               name={member.name}
               setHomeItem={setHomeItem}
             />

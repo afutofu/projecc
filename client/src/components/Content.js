@@ -64,16 +64,11 @@ const Content = (props) => {
   if (selectedProject && selectedProject.selectedChannel) {
     return (
       <ContentComp>
-        <Header>
-          <ChatPrefix />
-          {selectedProject.selectedChannel.name}
-        </Header>
-        <Container>
-          <Chat
-            selectedProject={selectedProject}
-            selectedChannel={selectedProject.selectedChannel}
-          />
-        </Container>
+        <Chat
+          chatType="project"
+          selectedProject={selectedProject}
+          selectedChannel={selectedProject.selectedChannel}
+        />
       </ContentComp>
     );
     // If there is a selected project and no selected channel
@@ -115,7 +110,7 @@ const Content = (props) => {
     default:
       return (
         <ContentComp>
-          <CenterContainer>Work In Progress :3</CenterContainer>
+          <Chat chatType="dm" directMessageId={homeItem} />
         </ContentComp>
       );
   }
