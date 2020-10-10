@@ -60,6 +60,7 @@ export {
 export {
   fetchDirectMessages,
   startDirectMessage,
+  deleteDirectMessageGroup,
   createDirectMessage,
   deleteDirectMessage,
 } from "./directMessage";

@@ -4,6 +4,8 @@ import {
   FETCH_DIRECT_MESSAGES_FAIL,
   START_DIRECT_MESSAGE_SUCCESS,
   START_DIRECT_MESSAGE_FAIL,
+  DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
+  DELETE_DIRECT_MESSAGE_GROUP_FAIL,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_SUCCESS,
@@ -79,6 +81,42 @@ const startDirectMessageSuccess = (directMessage) => {
 const startDirectMessageFail = (error) => {
   return {
     type: START_DIRECT_MESSAGE_FAIL,
+    payload: { error },
+  };
+};
+
+export const deleteDirectMessageGroup = (directMessageId) => (
+  dispatch,
+  getState
+) => {
+  return new Promise(function (resolve, reject) {
+    axios
+      .delete(
+        `http://localhost:5000/api/directMessages/${directMessageId}`,
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        dispatch(deleteDirectMessageGroupSuccess(res.data));
+        dispatch(setHomeItem("friends"));
+        resolve(res.data);
+      })
+      .catch((error) => {
+        dispatch(deleteDirectMessageGroupFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
+const deleteDirectMessageGroupSuccess = (directMessage) => {
+  return {
+    type: DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
+    payload: { directMessage },
+  };
+};
+
+const deleteDirectMessageGroupFail = (error) => {
+  return {
+    type: DELETE_DIRECT_MESSAGE_GROUP_FAIL,
     payload: { error },
   };
 };

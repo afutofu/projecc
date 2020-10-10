@@ -117,7 +117,7 @@ const Chat = (props) => {
 
   // If chat is in direct messages, fetch user data (name)
   useEffect(() => {
-    if (chatType == "dm") {
+    if (chatType == "dm" && directMessage) {
       fetchMemberName();
     }
   }, [directMessageId]);
@@ -217,7 +217,7 @@ const Chat = (props) => {
         <Container>
           <Messages
             chatType={chatType}
-            messages={directMessage.messages}
+            messages={directMessage && directMessage.messages}
             deleteMessage={(memberId) => onDeleteDirectMessage(memberId)}
             fetchUserData={fetchUserData}
           />

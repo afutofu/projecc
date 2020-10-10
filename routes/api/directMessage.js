@@ -42,7 +42,22 @@ router.post("/", auth, (req, res) => {
   });
 });
 
-module.exports = router;
+// @route   DELETE /api/directMessages/:directMessageId
+// @desc    Create direct message for user
+// @access  Private
+router.delete("/:directMessageId", auth, (req, res) => {
+  const { directMessageId } = req.params;
+
+  DirectMessage.findByIdAndDelete(
+    directMessageId,
+    (err, deletedDirectMessage) => {
+      if (err)
+        return res.status(500).json({ msg: "Could not delete direct message" });
+
+      res.send(deletedDirectMessage);
+    }
+  );
+});
 
 // @route   POST /api/directMessages/:directMessageId/messages
 // @desc    Create a message in a direct message

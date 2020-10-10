@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import {} from "../store/actions";
+import { deleteDirectMessageGroup } from "../store/actions";
 
 const HomeItemComp = styled.div`
   width: 100%;
@@ -63,8 +63,36 @@ const ItemContainer = styled.div`
   align-items: center;
 `;
 
+const Buttons = styled.div`
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  opacity: 0;
+
+  transition: 0.2s;
+  ${HomeItemComp}:hover & {
+    transition: 0.5s;
+    opacity: 1;
+  }
+`;
+
+const Button = styled.div`
+  transition: 0.2s;
+  padding: 5px;
+
+  i {
+    transition: 0.3s;
+  }
+
+  :hover i {
+    color: ${(props) => (props.color === "red" ? "red" : "#1a8cff")};
+  }
+`;
+
 const HomeItem = (props) => {
-  const { id, name, homeItem, setHomeItem } = props;
+  const { id, name, homeItem, setHomeItem, deleteDirectMessageGroup } = props;
 
   const selected = homeItem == id;
 
@@ -85,18 +113,38 @@ const HomeItem = (props) => {
     if (id != "profile" && id != "schedule" && id != "friends") {
       return true;
     }
-
     return false;
   };
 
+  const onSetHomeItem = (e) => {
+    e.stopPropagation();
+    setHomeItem(id);
+  };
+
+  const onDeleteDirectMessageGroup = (e) => {
+    e.stopPropagation();
+    deleteDirectMessageGroup(id);
+  };
+
+  const renderButtons = () => {
+    return (
+      <Buttons>
+        <Button onClick={onDeleteDirectMessageGroup} color="red">
+          <i className="fa fa-times"></i>
+        </Button>
+      </Buttons>
+    );
+  };
+
   return (
-    <HomeItemComp selected={selected} onClick={() => setHomeItem(id)}>
+    <HomeItemComp selected={selected} onClick={onSetHomeItem}>
       <ItemContainer>
         <Icon selected={selected} friend={checkIfFriend()}>
           {renderIcon()}
         </Icon>
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
+      {checkIfFriend() && renderButtons()}
     </HomeItemComp>
   );
 };
@@ -108,7 +156,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    deleteDirectMessageGroup: (directMessageId) =>
+      dispatch(deleteDirectMessageGroup(directMessageId)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeItem);

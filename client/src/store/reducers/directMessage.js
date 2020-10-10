@@ -3,6 +3,8 @@ import {
   FETCH_DIRECT_MESSAGES_FAIL,
   START_DIRECT_MESSAGE_SUCCESS,
   START_DIRECT_MESSAGE_FAIL,
+  DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
+  DELETE_DIRECT_MESSAGE_GROUP_FAIL,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_SUCCESS,
@@ -26,6 +28,14 @@ const friendReducer = (state = initialState, action) => {
         ...state,
         directMessages: [action.payload.directMessage, ...state.directMessages],
       };
+    case DELETE_DIRECT_MESSAGE_GROUP_SUCCESS:
+      return {
+        ...state,
+        directMessages: state.directMessages.filter((directMessage) => {
+          if (directMessage._id != action.payload.directMessage._id)
+            return directMessage;
+        }),
+      };
     case CREATE_DIRECT_MESSAGE_SUCCESS:
       return {
         ...state,
@@ -48,6 +58,7 @@ const friendReducer = (state = initialState, action) => {
       };
     case FETCH_DIRECT_MESSAGES_FAIL:
     case START_DIRECT_MESSAGE_FAIL:
+    case DELETE_DIRECT_MESSAGE_GROUP_FAIL:
     case CREATE_DIRECT_MESSAGE_FAIL:
     case DELETE_DIRECT_MESSAGE_FAIL:
       return {
