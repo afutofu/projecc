@@ -7,8 +7,9 @@ import {
   deleteFriendRequest,
   addFriend,
   deleteFriend,
-  startDirectMessage,
+  createDirectMessageGroup,
 } from "../store/actions";
+import { Socket } from "socket.io-client";
 
 const fadeIn = keyframes`
 from{
@@ -131,6 +132,7 @@ const Button = styled.div`
 const FriendsList = (props) => {
   const {
     statusDisplay,
+    socket,
     user,
     friends,
     requests,
@@ -138,7 +140,7 @@ const FriendsList = (props) => {
     deleteFriendRequest,
     addFriend,
     deleteFriend,
-    startDirectMessage,
+    createDirectMessageGroup,
   } = props;
 
   const [allFriends, setAllFriends] = useState([]);
@@ -149,6 +151,16 @@ const FriendsList = (props) => {
     fetchFriends(friends);
     fetchRequests(requests);
   }, [friends, requests]);
+
+  const onCreateDirectMessageGroup = (userId, friendId) => {
+    createDirectMessageGroup(userId, friendId)
+      .then((directMessage) => {
+        socket.emit("createDirectMessageGroup", { directMessage });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const fetchFriends = (friends) => {
     let friendsArr = [];
@@ -166,7 +178,9 @@ const FriendsList = (props) => {
               </Info>
               <Buttons>
                 <Button
-                  onClick={() => startDirectMessage(user._id, friend._id)}
+                  onClick={() =>
+                    onCreateDirectMessageGroup(user._id, friend._id)
+                  }
                 >
                   <i className="fas fa-comment"></i>
                 </Button>
@@ -292,6 +306,7 @@ const FriendsList = (props) => {
 const mapStateToProps = (state) => {
   return {
     statusDisplay: state.friend.statusDisplay,
+    socket: state.socket.socket,
     user: state.auth.user,
     friends: state.friend.friends,
     requests: state.friend.requests,
@@ -306,8 +321,8 @@ const mapDispatchToProps = (dispatch) => {
     addFriend: (userId, friendId) => dispatch(addFriend(userId, friendId)),
     deleteFriend: (userId, friendId) =>
       dispatch(deleteFriend(userId, friendId)),
-    startDirectMessage: (userId, friendId) =>
-      dispatch(startDirectMessage(userId, friendId)),
+    createDirectMessageGroup: (userId, friendId) =>
+      dispatch(createDirectMessageGroup(userId, friendId)),
   };
 };
 

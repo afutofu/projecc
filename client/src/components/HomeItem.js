@@ -92,7 +92,14 @@ const Button = styled.div`
 `;
 
 const HomeItem = (props) => {
-  const { id, name, homeItem, setHomeItem, deleteDirectMessageGroup } = props;
+  const {
+    socket,
+    id,
+    name,
+    homeItem,
+    setHomeItem,
+    deleteDirectMessageGroup,
+  } = props;
 
   const selected = homeItem == id;
 
@@ -123,7 +130,13 @@ const HomeItem = (props) => {
 
   const onDeleteDirectMessageGroup = (e) => {
     e.stopPropagation();
-    deleteDirectMessageGroup(id);
+    deleteDirectMessageGroup(id)
+      .then((directMessage) => {
+        socket.emit("deleteDirectMessageGroup", { directMessage });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const renderButtons = () => {
@@ -151,6 +164,7 @@ const HomeItem = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    socket: state.socket.socket,
     homeItem: state.home.homeItem,
   };
 };

@@ -44,7 +44,7 @@ const Messages = (props) => {
               key={i}
               chatType={chatType}
               message={message}
-              deleteMessage={(memberId) => deleteMessage(memberId)}
+              deleteMessage={(messageId) => deleteMessage(messageId)}
               fetchUserData={fetchUserData}
             />
           );

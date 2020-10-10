@@ -13,6 +13,8 @@ import FriendModal from "./FriendModal";
 import {
   fetchProjects,
   setSocket,
+  createDirectMessageGroupClient,
+  deleteDirectMessageGroupClient,
   createDirectMessageClient,
   deleteDirectMessageClient,
   createMessageClient,
@@ -46,6 +48,8 @@ const Project = (props) => {
     fetchUser,
     fetchProjects,
     setSocket,
+    createDirectMessageGroupClient,
+    deleteDirectMessageGroupClient,
     createDirectMessageClient,
     deleteDirectMessageClient,
     createMessageClient,
@@ -68,6 +72,23 @@ const Project = (props) => {
       setSocket(socket);
 
       // DIRECT MESSAGE CLIENT EVENT LISTENERS
+      // Listening for direct message groups from server
+      socket.on("directMessageGroup", ({ type, directMessage }) => {
+        console.log("Direct message group from server");
+        switch (type) {
+          case "CREATE":
+            // Send direct message to redux store
+            createDirectMessageGroupClient(directMessage);
+            break;
+          case "DELETE":
+            // Delete direct message in redux store
+            deleteDirectMessageGroupClient(directMessage);
+            break;
+          default:
+            return null;
+        }
+      });
+
       // Listening for direct messages from server
       socket.on(
         "directMessage",
@@ -77,9 +98,11 @@ const Project = (props) => {
             case "CREATE":
               // Send direct message to redux store
               createDirectMessageClient(message, directMessageId);
+              break;
             case "DELETE":
               // Delete direct message in redux store
               deleteDirectMessageClient(messageId, directMessageId);
+              break;
             default:
               return null;
           }
@@ -192,6 +215,10 @@ const mapDispatchToProps = (dispatch) => {
     setSocket: (socket) => dispatch(setSocket(socket)),
 
     // DIRECT MESSAGE
+    createDirectMessageGroupClient: (directMessage) =>
+      dispatch(createDirectMessageGroupClient(directMessage)),
+    deleteDirectMessageGroupClient: (directMessage) =>
+      dispatch(deleteDirectMessageGroupClient(directMessage)),
     createDirectMessageClient: (newMessage, directMessageId) =>
       dispatch(createDirectMessageClient(newMessage, directMessageId)),
     deleteDirectMessageClient: (messageId, directMessageId) =>

@@ -9,6 +9,24 @@ const connectSocket = (server) => {
     console.log(socket.id, "has connected");
 
     // DIRECT MESSAGE EVENT LISTENERS
+    // Listening for direct message group from client
+    socket.on("createDirectMessageGroup", ({ directMessage }) => {
+      // Emits direct message to other clients, frontend filters which client receives information
+      socket.broadcast.emit("directMessageGroup", {
+        type: "CREATE",
+        directMessage,
+      });
+    });
+
+    // Listening for deleted direct message group
+    socket.on("deleteDirectMessageGroup", ({ directMessage }) => {
+      // Delete direct message group to other clients, frontend filters which client receives information
+      socket.broadcast.emit("directMessageGroup", {
+        type: "DELETE",
+        directMessage,
+      });
+    });
+
     // Listening for direct message from client
     socket.on("sendDirectMessage", ({ message, directMessageId }, callback) => {
       const messageObj = {
@@ -30,7 +48,7 @@ const connectSocket = (server) => {
       callback();
     });
 
-    // Listening for deleted direct message
+    // Listening for deleted direct message group
     socket.on("deleteDirectMessage", ({ messageId, directMessageId }) => {
       // Delete direct message to other clients, frontend filters which client receives information
       socket.broadcast.emit("directMessage", {

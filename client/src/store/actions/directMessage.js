@@ -2,8 +2,10 @@ import axios from "axios";
 import {
   FETCH_DIRECT_MESSAGES_SUCCESS,
   FETCH_DIRECT_MESSAGES_FAIL,
-  START_DIRECT_MESSAGE_SUCCESS,
-  START_DIRECT_MESSAGE_FAIL,
+  CREATE_DIRECT_MESSAGE_GROUP_CLIENT,
+  CREATE_DIRECT_MESSAGE_GROUP_SUCCESS,
+  CREATE_DIRECT_MESSAGE_GROUP_FAIL,
+  DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
   DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
   DELETE_DIRECT_MESSAGE_GROUP_FAIL,
   CREATE_DIRECT_MESSAGE_CLIENT,
@@ -49,7 +51,15 @@ const fetchDirectMessagesFail = (error) => {
   };
 };
 
-export const startDirectMessage = (userId, friendId) => (
+// CREATE DIRECT MESSAGE GROUP
+export const createDirectMessageGroupClient = (directMessage) => {
+  return {
+    type: CREATE_DIRECT_MESSAGE_GROUP_CLIENT,
+    payload: { directMessage },
+  };
+};
+
+export const createDirectMessageGroup = (userId, friendId) => (
   dispatch,
   getState
 ) => {
@@ -62,29 +72,49 @@ export const startDirectMessage = (userId, friendId) => (
       )
       .then((res) => {
         const { directMessage } = res.data;
-        dispatch(startDirectMessageSuccess(directMessage));
+        dispatch(createDirectMessageGroupSuccess(directMessage));
         dispatch(setHomeItem(directMessage._id));
         resolve(directMessage);
       })
       .catch((error) => {
-        dispatch(startDirectMessageFail(error.response.data.msg));
+        dispatch(createDirectMessageGroupFail(error.response.data.msg));
         reject(error.response.data.msg);
       });
   });
 };
 
-const startDirectMessageSuccess = (directMessage) => {
+const createDirectMessageGroupSuccess = (directMessage) => {
   return {
-    type: START_DIRECT_MESSAGE_SUCCESS,
+    type: CREATE_DIRECT_MESSAGE_GROUP_SUCCESS,
     payload: { directMessage },
   };
 };
 
-const startDirectMessageFail = (error) => {
+const createDirectMessageGroupFail = (error) => {
   return {
-    type: START_DIRECT_MESSAGE_FAIL,
+    type: CREATE_DIRECT_MESSAGE_GROUP_FAIL,
     payload: { error },
   };
+};
+
+// DELETE DIRECT MESSAGE GROUP
+export const deleteDirectMessageGroupClient = (directMessage) => (
+  dispatch,
+  getState
+) => {
+  const { homeItem } = getState().home;
+  if (directMessage._id == homeItem) {
+    dispatch({
+      type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
+      payload: { directMessage },
+    });
+    dispatch(setHomeItem("friends"));
+  }
+
+  dispatch({
+    type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
+    payload: { directMessage },
+  });
 };
 
 export const deleteDirectMessageGroup = (directMessageId) => (

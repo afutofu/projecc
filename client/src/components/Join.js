@@ -332,7 +332,7 @@ const Join = (props) => {
     return (
       <JoinComp>
         <Container>
-          <Display />
+          {/* <Display /> */}
           <JoinBox>
             <JoinBoxContainer>{isLogin ? login : register}</JoinBoxContainer>
           </JoinBox>

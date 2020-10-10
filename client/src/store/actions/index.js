@@ -59,7 +59,9 @@ export {
 // DIRECT MESSAGE
 export {
   fetchDirectMessages,
-  startDirectMessage,
+  createDirectMessageGroupClient,
+  createDirectMessageGroup,
+  deleteDirectMessageGroupClient,
   deleteDirectMessageGroup,
   createDirectMessageClient,
   createDirectMessage,

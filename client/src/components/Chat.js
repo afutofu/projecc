@@ -209,7 +209,7 @@ const Chat = (props) => {
       directMessageId,
       messageId,
     })
-      .then(() => {
+      .then(({ directMessageId, messageId }) => {
         socket.emit("deleteDirectMessage", { directMessageId, messageId });
       })
       .catch((err) => {
@@ -228,7 +228,7 @@ const Chat = (props) => {
           <Messages
             chatType={chatType}
             messages={directMessage && directMessage.messages}
-            deleteMessage={(memberId) => onDeleteDirectMessage(memberId)}
+            deleteMessage={(messageId) => onDeleteDirectMessage(messageId)}
             fetchUserData={fetchUserData}
           />
           <Form onSubmit={onMessageSubmit}>
