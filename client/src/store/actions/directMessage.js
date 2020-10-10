@@ -6,6 +6,8 @@ import {
   START_DIRECT_MESSAGE_FAIL,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
+  DELETE_DIRECT_MESSAGE_SUCCESS,
+  DELETE_DIRECT_MESSAGE_FAIL,
 } from "./actions";
 import { tokenConfig } from "../../shared/utils";
 import { setHomeItem } from "./index";
@@ -113,6 +115,42 @@ const createDirectMessageSuccess = (directMessage) => {
 const createDirectMessageFail = (error) => {
   return {
     type: CREATE_DIRECT_MESSAGE_FAIL,
+    payload: { error },
+  };
+};
+
+export const deleteDirectMessage = ({ directMessageId, messageId }) => (
+  dispatch,
+  getState
+) => {
+  return new Promise(function (resolve, reject) {
+    console.log(directMessageId, messageId);
+    axios
+      .delete(
+        `http://localhost:5000/api/directMessages/${directMessageId}/messages/${messageId}`,
+        tokenConfig(getState)
+      )
+      .then((res) => {
+        dispatch(deleteDirectMessageSuccess(res.data));
+        resolve(res.data);
+      })
+      .catch((error) => {
+        dispatch(deleteDirectMessageFail(error.response.data.msg));
+        reject(error.response.data.msg);
+      });
+  });
+};
+
+const deleteDirectMessageSuccess = (directMessage) => {
+  return {
+    type: DELETE_DIRECT_MESSAGE_SUCCESS,
+    payload: { directMessage },
+  };
+};
+
+const deleteDirectMessageFail = (error) => {
+  return {
+    type: DELETE_DIRECT_MESSAGE_FAIL,
     payload: { error },
   };
 };

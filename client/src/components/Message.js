@@ -121,7 +121,7 @@ const Message = (props) => {
             <DateComp>{date}</DateComp>
           </NameDate>
           <Buttons>
-            <Button onClick={() => deleteMessage(_id, channelId, projectId)}>
+            <Button onClick={() => deleteMessage(_id)}>
               <i className="fa fa-times"></i>
             </Button>
           </Buttons>

@@ -10,6 +10,7 @@ import {
   deleteMessage,
   deleteMessageClient,
   createDirectMessage,
+  deleteDirectMessage,
 } from "../store/actions";
 import { fetchUserData } from "../shared/utils";
 
@@ -109,6 +110,7 @@ const Chat = (props) => {
     createMessage,
     deleteMessage,
     createDirectMessage,
+    deleteDirectMessage,
     socket,
     chatType,
   } = props;
@@ -194,6 +196,17 @@ const Chat = (props) => {
       });
   };
 
+  const onDeleteDirectMessage = (messageId) => {
+    deleteDirectMessage({
+      directMessageId,
+      messageId,
+    })
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   if (chatType == "dm") {
     return (
       <ChatComp>
@@ -205,7 +218,7 @@ const Chat = (props) => {
           <Messages
             chatType={chatType}
             messages={directMessage.messages}
-            deleteMessage={onDeleteMessage}
+            deleteMessage={(memberId) => onDeleteDirectMessage(memberId)}
             fetchUserData={fetchUserData}
           />
           <Form onSubmit={onMessageSubmit}>
@@ -264,8 +277,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteMessage(messageId, channelId, projectId)),
     deleteMessageClient: (updatedChannel, channelId, projectId) =>
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
-    createDirectMessage: (directMessageId, userId, text) =>
-      dispatch(createDirectMessage(directMessageId, userId, text)),
+    createDirectMessage: ({ directMessageId, userId, text }) =>
+      dispatch(createDirectMessage({ directMessageId, userId, text })),
+    deleteDirectMessage: ({ directMessageId, messageId }) =>
+      dispatch(deleteDirectMessage({ directMessageId, messageId })),
     fetchUserData: (userId) => dispatch(fetchUserData(userId)),
   };
 };

@@ -84,4 +84,26 @@ router.post("/:directMessageId/messages", auth, (req, res) => {
   });
 });
 
+// @route   DELETE /api/directMessages/:directMessageId/messages/:messageId
+// @desc    Delete a message in a direct message
+// @access  Private
+router.delete("/:directMessageId/messages/:messageId", auth, (req, res) => {
+  const { directMessageId, messageId } = req.params;
+
+  DirectMessage.findById(directMessageId, (err, foundDirectMessage) => {
+    if (err)
+      return res.status(400).json({ msg: "Could not find direct message" });
+
+    foundDirectMessage.messages = foundDirectMessage.messages.filter(
+      (message) => {
+        if (message._id != messageId) return message;
+      }
+    );
+
+    foundDirectMessage.save();
+
+    res.send(foundDirectMessage);
+  });
+});
+
 module.exports = router;
