@@ -8,6 +8,7 @@ import {
   CREATE_DIRECT_MESSAGE_CLIENT,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
+  DELETE_DIRECT_MESSAGE_CLIENT,
   DELETE_DIRECT_MESSAGE_SUCCESS,
   DELETE_DIRECT_MESSAGE_FAIL,
 } from "../actions/actions";
@@ -51,12 +52,17 @@ const friendReducer = (state = initialState, action) => {
           return directMessage;
         }),
       };
+    case DELETE_DIRECT_MESSAGE_CLIENT:
     case DELETE_DIRECT_MESSAGE_SUCCESS:
       return {
         ...state,
         directMessages: state.directMessages.map((directMessage) => {
-          if (directMessage._id == action.payload.directMessage._id) {
-            return action.payload.directMessage;
+          if (directMessage._id == action.payload.directMessageId) {
+            directMessage.messages = directMessage.messages.filter(
+              (message) => {
+                if (message._id != action.payload.messageId) return message;
+              }
+            );
           }
           return directMessage;
         }),

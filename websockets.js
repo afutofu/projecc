@@ -9,6 +9,7 @@ const connectSocket = (server) => {
     console.log(socket.id, "has connected");
 
     // DIRECT MESSAGE EVENT LISTENERS
+    // Listening for direct message from client
     socket.on("sendDirectMessage", ({ message, directMessageId }, callback) => {
       const messageObj = {
         _id: 131313,
@@ -27,6 +28,16 @@ const connectSocket = (server) => {
       });
 
       callback();
+    });
+
+    // Listening for deleted direct message
+    socket.on("deleteDirectMessage", ({ messageId, directMessageId }) => {
+      // Delete direct message to other clients, frontend filters which client receives information
+      socket.broadcast.emit("directMessage", {
+        type: "DELETE",
+        messageId,
+        directMessageId,
+      });
     });
 
     // Find all projects in database

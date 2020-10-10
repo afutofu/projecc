@@ -9,6 +9,7 @@ import {
   CREATE_DIRECT_MESSAGE_CLIENT,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
+  DELETE_DIRECT_MESSAGE_CLIENT,
   DELETE_DIRECT_MESSAGE_SUCCESS,
   DELETE_DIRECT_MESSAGE_FAIL,
 } from "./actions";
@@ -169,20 +170,27 @@ const createDirectMessageFail = (error) => {
   };
 };
 
-export const deleteDirectMessage = ({ directMessageId, messageId }) => (
+// DELETE DIRECT MESSAGE
+export const deleteDirectMessageClient = (messageId, directMessageId) => {
+  return {
+    type: DELETE_DIRECT_MESSAGE_CLIENT,
+    payload: { messageId, directMessageId },
+  };
+};
+
+export const deleteDirectMessage = ({ messageId, directMessageId }) => (
   dispatch,
   getState
 ) => {
   return new Promise(function (resolve, reject) {
-    console.log(directMessageId, messageId);
     axios
       .delete(
         `http://localhost:5000/api/directMessages/${directMessageId}/messages/${messageId}`,
         tokenConfig(getState)
       )
       .then((res) => {
-        dispatch(deleteDirectMessageSuccess(res.data));
-        resolve(res.data);
+        dispatch(deleteDirectMessageSuccess(messageId, directMessageId));
+        resolve({ messageId, directMessageId });
       })
       .catch((error) => {
         dispatch(deleteDirectMessageFail(error.response.data.msg));
@@ -191,10 +199,10 @@ export const deleteDirectMessage = ({ directMessageId, messageId }) => (
   });
 };
 
-const deleteDirectMessageSuccess = (directMessage) => {
+const deleteDirectMessageSuccess = (messageId, directMessageId) => {
   return {
     type: DELETE_DIRECT_MESSAGE_SUCCESS,
-    payload: { directMessage },
+    payload: { messageId, directMessageId },
   };
 };
 

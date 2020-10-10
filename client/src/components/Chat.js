@@ -209,7 +209,9 @@ const Chat = (props) => {
       directMessageId,
       messageId,
     })
-      .then(() => {})
+      .then(() => {
+        socket.emit("deleteDirectMessage", { directMessageId, messageId });
+      })
       .catch((err) => {
         console.log(err);
       });

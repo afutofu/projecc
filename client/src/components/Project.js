@@ -14,6 +14,7 @@ import {
   fetchProjects,
   setSocket,
   createDirectMessageClient,
+  deleteDirectMessageClient,
   createMessageClient,
   deleteMessageClient,
   createChannelClient,
@@ -46,6 +47,7 @@ const Project = (props) => {
     fetchProjects,
     setSocket,
     createDirectMessageClient,
+    deleteDirectMessageClient,
     createMessageClient,
     deleteMessageClient,
     createChannelClient,
@@ -67,16 +69,22 @@ const Project = (props) => {
 
       // DIRECT MESSAGE CLIENT EVENT LISTENERS
       // Listening for direct messages from server
-      socket.on("directMessage", ({ type, message, directMessageId }) => {
-        console.log("Direct message from server");
-        switch (type) {
-          case "CREATE":
-            // Send direct message to redux store
-            createDirectMessageClient(message, directMessageId);
-          default:
-            return null;
+      socket.on(
+        "directMessage",
+        ({ type, message, messageId, directMessageId }) => {
+          console.log("Direct message from server");
+          switch (type) {
+            case "CREATE":
+              // Send direct message to redux store
+              createDirectMessageClient(message, directMessageId);
+            case "DELETE":
+              // Delete direct message in redux store
+              deleteDirectMessageClient(messageId, directMessageId);
+            default:
+              return null;
+          }
         }
-      });
+      );
 
       fetchProjects()
         .then(() => {
@@ -186,6 +194,8 @@ const mapDispatchToProps = (dispatch) => {
     // DIRECT MESSAGE
     createDirectMessageClient: (newMessage, directMessageId) =>
       dispatch(createDirectMessageClient(newMessage, directMessageId)),
+    deleteDirectMessageClient: (messageId, directMessageId) =>
+      dispatch(deleteDirectMessageClient(messageId, directMessageId)),
 
     // MESSAGE
     createMessageClient: (newMessage, channelId, projectId) =>
