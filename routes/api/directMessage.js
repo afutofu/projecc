@@ -64,7 +64,7 @@ router.delete("/:directMessageId", auth, (req, res) => {
 // @access  Private
 router.post("/:directMessageId/messages", auth, (req, res) => {
   const { directMessageId } = req.params;
-  const { text, userId } = req.body;
+  const { text, userId, username } = req.body;
 
   const dateObj = new Date();
   const date =
@@ -82,6 +82,7 @@ router.post("/:directMessageId/messages", auth, (req, res) => {
     _id: mongoose.Types.ObjectId(),
     text,
     userId,
+    username,
     date: dateTime,
     timeCreated: Date.now(),
   };

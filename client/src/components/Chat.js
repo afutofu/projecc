@@ -153,6 +153,7 @@ const Chat = (props) => {
         createDirectMessage({
           directMessageId,
           userId,
+          username,
           text: messageDM,
         })
           .then(() => {
@@ -277,8 +278,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteMessage(messageId, channelId, projectId)),
     deleteMessageClient: (updatedChannel, channelId, projectId) =>
       dispatch(deleteMessageClient(updatedChannel, channelId, projectId)),
-    createDirectMessage: ({ directMessageId, userId, text }) =>
-      dispatch(createDirectMessage({ directMessageId, userId, text })),
+    createDirectMessage: ({ directMessageId, userId, username, text }) =>
+      dispatch(
+        createDirectMessage({ directMessageId, userId, username, text })
+      ),
     deleteDirectMessage: ({ directMessageId, messageId }) =>
       dispatch(deleteDirectMessage({ directMessageId, messageId })),
     fetchUserData: (userId) => dispatch(fetchUserData(userId)),

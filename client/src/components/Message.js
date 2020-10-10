@@ -88,36 +88,36 @@ const Message = (props) => {
   } = props;
   const { _id, userId, username, date, text } = message;
 
-  // If chat is in direct messages, fetch user data (name)
-  useEffect(() => {
-    if (chatType == "dm") {
-      fetchMemberName();
-    }
-  }, []);
+  // // If chat is in direct messages, fetch user data (name)
+  // useEffect(() => {
+  //   if (chatType == "dm") {
+  //     fetchMemberName();
+  //   }
+  // }, []);
 
-  // If chat is changed, reset
+  // // If chat is changed, reset
 
-  const fetchMemberName = () => {
-    let memberNameTemp = "";
+  // const fetchMemberName = () => {
+  //   let memberNameTemp = "";
 
-    setMemberName(memberNameTemp);
+  //   setMemberName(memberNameTemp);
 
-    // Get user data for member
-    fetchUserData(userId)
-      .then((member) => {
-        setMemberName(member.name);
-      })
-      .catch(() => {
-        return null;
-      });
-  };
+  //   // Get user data for member
+  //   fetchUserData(userId)
+  //     .then((member) => {
+  //       setMemberName(member.name);
+  //     })
+  //     .catch(() => {
+  //       return null;
+  //     });
+  // };
 
   if (chatType == "dm") {
     return (
       <MessageComp>
         <TopRow>
           <NameDate>
-            <Name>{memberName}</Name>
+            <Name>{username}</Name>
             <DateComp>{date}</DateComp>
           </NameDate>
           <Buttons>

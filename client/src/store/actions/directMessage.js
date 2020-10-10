@@ -121,15 +121,17 @@ const deleteDirectMessageGroupFail = (error) => {
   };
 };
 
-export const createDirectMessage = ({ directMessageId, userId, text }) => (
-  dispatch,
-  getState
-) => {
+export const createDirectMessage = ({
+  directMessageId,
+  userId,
+  username,
+  text,
+}) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     axios
       .post(
         `http://localhost:5000/api/directMessages/${directMessageId}/messages`,
-        { userId, text },
+        { userId, username, text },
         tokenConfig(getState)
       )
       .then((res) => {
