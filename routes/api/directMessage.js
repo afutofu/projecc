@@ -96,7 +96,7 @@ router.post("/:directMessageId/messages", auth, (req, res) => {
 
     foundDirectMessage.save();
 
-    res.send(foundDirectMessage);
+    res.send(newMessage);
   });
 });
 

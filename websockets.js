@@ -5,23 +5,44 @@ const Project = require("./models/Project");
 const connectSocket = (server) => {
   const io = socketio(server);
 
-  // Find all projects in database
-  Project.find(async (err, projects) => {
-    if (err) return (projects = []);
+  io.on("connection", (socket) => {
+    console.log(socket.id, "has connected");
 
-    io.on("connection", (socket) => {
-      // Socket joins every channel
+    // DIRECT MESSAGE EVENT LISTENERS
+    socket.on("sendDirectMessage", ({ message, directMessageId }, callback) => {
+      const messageObj = {
+        _id: 131313,
+        userId: "2r2v4t2vq",
+        username: "John Doe",
+        text: "Yo wassup",
+        date: "7/4/2020 12:11",
+        timeCreated: 3526262,
+      };
+
+      // Emits direct message to other clients, frontend filters which client receives information
+      socket.broadcast.emit("directMessage", {
+        type: "CREATE",
+        message,
+        directMessageId,
+      });
+
+      callback();
+    });
+
+    // Find all projects in database
+    Project.find(async (err, projects) => {
+      if (err) return (projects = []);
+
+      // Socket joins every channel, start initializing listeners
       socket.on("initSockets", () => {
-        console.log(socket.id, "has connected");
         projects.forEach((project) => {
           project.channels.forEach((channel) => {
-            socket.join(`/channels/${channel._id}`);
+            // socket.join(`/channels/${channel._id}`);
           });
         });
       });
 
       // MESSAGE EVENT LISTENERS
-
       // Listening for message from client
       socket.on("sendMessage", ({ data, channelId, projectId }, callback) => {
         const messageObject = {
@@ -132,18 +153,18 @@ const connectSocket = (server) => {
           projectId,
         });
       });
+    });
 
-      // Listening for client force diconnect on app
-      socket.on("forceDisconnect", () => {
-        socket.disconnect();
-      });
+    // Listening for client force diconnect on app
+    socket.on("forceDisconnect", () => {
+      socket.disconnect();
+    });
 
-      // Listening for client diconnect on app
-      socket.on("disconnect", () => {
-        console.log(socket.id, "has disconnected");
-        socket.removeAllListeners("connection");
-        socket.disconnect();
-      });
+    // Listening for client diconnect on app
+    socket.on("disconnect", () => {
+      console.log(socket.id, "has disconnected");
+      socket.removeAllListeners("connection");
+      socket.disconnect();
     });
   });
 };

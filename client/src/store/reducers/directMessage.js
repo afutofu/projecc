@@ -5,6 +5,7 @@ import {
   START_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
   DELETE_DIRECT_MESSAGE_GROUP_FAIL,
+  CREATE_DIRECT_MESSAGE_CLIENT,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_SUCCESS,
@@ -36,12 +37,16 @@ const friendReducer = (state = initialState, action) => {
             return directMessage;
         }),
       };
+    case CREATE_DIRECT_MESSAGE_CLIENT:
     case CREATE_DIRECT_MESSAGE_SUCCESS:
       return {
         ...state,
         directMessages: state.directMessages.map((directMessage) => {
-          if (directMessage._id == action.payload.directMessage._id) {
-            directMessage.messages = [...action.payload.directMessage.messages];
+          if (directMessage._id == action.payload.directMessageId) {
+            directMessage.messages = [
+              ...directMessage.messages,
+              action.payload.newMessage,
+            ];
           }
           return directMessage;
         }),

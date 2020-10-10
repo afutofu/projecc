@@ -6,6 +6,7 @@ import {
   START_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
   DELETE_DIRECT_MESSAGE_GROUP_FAIL,
+  CREATE_DIRECT_MESSAGE_CLIENT,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_SUCCESS,
@@ -121,6 +122,14 @@ const deleteDirectMessageGroupFail = (error) => {
   };
 };
 
+// CREATE DIRECT MESSAGE
+export const createDirectMessageClient = (newMessage, directMessageId) => {
+  return {
+    type: CREATE_DIRECT_MESSAGE_CLIENT,
+    payload: { newMessage, directMessageId },
+  };
+};
+
 export const createDirectMessage = ({
   directMessageId,
   userId,
@@ -135,20 +144,21 @@ export const createDirectMessage = ({
         tokenConfig(getState)
       )
       .then((res) => {
-        dispatch(createDirectMessageSuccess(res.data));
-        resolve(res.data);
+        dispatch(createDirectMessageSuccess(res.data, directMessageId));
+        resolve({ message: res.data, directMessageId });
       })
       .catch((error) => {
+        console.log(error);
         dispatch(createDirectMessageFail(error.response.data.msg));
         reject(error.response.data.msg);
       });
   });
 };
 
-const createDirectMessageSuccess = (directMessage) => {
+const createDirectMessageSuccess = (newMessage, directMessageId) => {
   return {
     type: CREATE_DIRECT_MESSAGE_SUCCESS,
-    payload: { directMessage },
+    payload: { newMessage, directMessageId },
   };
 };
 

@@ -61,6 +61,7 @@ export {
   fetchDirectMessages,
   startDirectMessage,
   deleteDirectMessageGroup,
+  createDirectMessageClient,
   createDirectMessage,
   deleteDirectMessage,
 } from "./directMessage";

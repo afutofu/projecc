@@ -13,6 +13,7 @@ import FriendModal from "./FriendModal";
 import {
   fetchProjects,
   setSocket,
+  createDirectMessageClient,
   createMessageClient,
   deleteMessageClient,
   createChannelClient,
@@ -44,6 +45,7 @@ const Project = (props) => {
     fetchUser,
     fetchProjects,
     setSocket,
+    createDirectMessageClient,
     createMessageClient,
     deleteMessageClient,
     createChannelClient,
@@ -60,12 +62,25 @@ const Project = (props) => {
         setRedirect(true);
       });
     } else {
+      socket = io(ENDPOINT);
+      setSocket(socket);
+
+      // DIRECT MESSAGE CLIENT EVENT LISTENERS
+      // Listening for direct messages from server
+      socket.on("directMessage", ({ type, message, directMessageId }) => {
+        console.log("Direct message from server");
+        switch (type) {
+          case "CREATE":
+            // Send direct message to redux store
+            createDirectMessageClient(message, directMessageId);
+          default:
+            return null;
+        }
+      });
+
       fetchProjects()
         .then(() => {
-          socket = io(ENDPOINT);
           socket.emit("initSockets");
-          setSocket(socket);
-
           // MESSAGE CLIENT EVENT LISTENERS
           // Listening for message from server
           socket.on("message", ({ type, data, channelId, projectId }) => {
@@ -167,6 +182,10 @@ const mapDispatchToProps = (dispatch) => {
     fetchUser: () => dispatch(fetchUser()),
     fetchProjects: () => dispatch(fetchProjects()),
     setSocket: (socket) => dispatch(setSocket(socket)),
+
+    // DIRECT MESSAGE
+    createDirectMessageClient: (newMessage, directMessageId) =>
+      dispatch(createDirectMessageClient(newMessage, directMessageId)),
 
     // MESSAGE
     createMessageClient: (newMessage, channelId, projectId) =>

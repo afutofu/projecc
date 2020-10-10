@@ -156,8 +156,15 @@ const Chat = (props) => {
           username,
           text: messageDM,
         })
-          .then(() => {
-            setMessageDM("");
+          .then(({ message, directMessageId }) => {
+            // Send message to server
+            socket.emit(
+              "sendDirectMessage",
+              { message, directMessageId },
+              () => {
+                setMessageDM("");
+              }
+            );
           })
           .catch((err) => {
             console.log(err);

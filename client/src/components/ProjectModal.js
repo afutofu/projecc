@@ -255,7 +255,7 @@ const ChannelAddModal = (props) => {
             </Container>
             <ButtonContainer>
               <CreateButton onClick={() => onCreateProject()}>
-                Create Channel
+                Create Project
               </CreateButton>
               <CancelButton onClick={() => onProjectModalClose()}>
                 Cancel
