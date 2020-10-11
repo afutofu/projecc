@@ -60,10 +60,27 @@ const connectSocket = (server) => {
 
     // Listening for deleted direct message group
     socket.on("deleteFriendRequest", (friendId) => {
-      // Delete direct message to other clients, frontend filters which client receives information
+      // Delete friend request to other clients, frontend filters which client receives information
       socket.broadcast.emit("friendRequest", {
         type: "DELETE",
         friendId,
+      });
+    });
+
+    socket.on("addFriend", (friend) => {
+      // Emits friend to other clients, frontend filters which client receives information
+      socket.broadcast.emit("friend", {
+        type: "CREATE",
+        friend,
+      });
+    });
+
+    // Listening for deleted direct message group
+    socket.on("deleteFriend", (friend) => {
+      // Delete friend to other clients, frontend filters which client receives information
+      socket.broadcast.emit("friend", {
+        type: "DELETE",
+        friend,
       });
     });
 

@@ -32,10 +32,13 @@ const AvatarDisplay = styled.div`
 const AvatarImage = styled.img.attrs((props) => ({
   src: props.src && props.src,
 }))`
+  display: ${(props) => (props.src ? "block" : "none")};
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   background: none;
   outline: none;
+  border: 0;
 `;
 
 const UserDisplay = styled.h1`
@@ -72,6 +75,7 @@ const FileInput = styled.input.attrs((props) => ({
   type: "file",
 }))`
   display: none;
+  border: none;
 `;
 
 const AvatarEdit = styled.div`
@@ -267,7 +271,7 @@ const Profile = (props) => {
           <AvatarEdit onClick={() => fileInput.click()}>
             Change Avatar
           </AvatarEdit>
-          <AvatarImage src={profileImage} />
+          {/* <AvatarImage src={profileImage} /> */}
         </AvatarDisplay>
         {user ? (
           <UserEdit
@@ -291,9 +295,7 @@ const Profile = (props) => {
 
   return (
     <ProfileComp>
-      <AvatarDisplay>
-        <AvatarImage src={profileImage} />
-      </AvatarDisplay>
+      <AvatarDisplay>{/* <AvatarImage src={profileImage} /> */}</AvatarDisplay>
       {user ? <UserDisplay>{user.name}</UserDisplay> : null}
       {user ? <EmailDisplay>{user.email}</EmailDisplay> : null}
       {user ? <IdDisplay>{user._id}</IdDisplay> : null}

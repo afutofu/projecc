@@ -9,9 +9,11 @@ import {
   DELETE_FRIEND_REQUEST_BEGIN,
   DELETE_FRIEND_REQUEST_SUCCESS,
   DELETE_FRIEND_REQUEST_FAIL,
+  ADD_FRIEND_CLIENT,
   ADD_FRIEND_BEGIN,
   ADD_FRIEND_SUCCESS,
   ADD_FRIEND_FAIL,
+  DELETE_FRIEND_CLIENT,
   DELETE_FRIEND_BEGIN,
   DELETE_FRIEND_SUCCESS,
   DELETE_FRIEND_FAIL,
@@ -64,17 +66,23 @@ const friendReducer = (state = initialState, action) => {
         isLoading: false,
       };
     }
+    case ADD_FRIEND_CLIENT:
     case ADD_FRIEND_SUCCESS: {
       const { friend } = action.payload;
       return {
         ...state,
         friends: [friend, ...state.friends],
         requests: state.requests.filter((request) => {
-          if (request.friendId !== friend.friendId) return request;
+          if (
+            request.senderId != friend.friendId &&
+            request.receiverId != friend.friendId
+          )
+            return request;
         }),
         isLoading: false,
       };
     }
+    case DELETE_FRIEND_CLIENT:
     case DELETE_FRIEND_SUCCESS: {
       const { friendId } = action.payload;
       return {

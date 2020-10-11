@@ -54,7 +54,9 @@ export {
   sendFriendRequest,
   deleteFriendRequestClient,
   deleteFriendRequest,
+  addFriendClient,
   addFriend,
+  deleteFriendClient,
   deleteFriend,
 } from "./friend";
 

@@ -9,7 +9,6 @@ import {
   deleteFriend,
   createDirectMessageGroup,
 } from "../store/actions";
-import { Socket } from "socket.io-client";
 
 const fadeIn = keyframes`
 from{
@@ -156,6 +155,26 @@ const FriendsList = (props) => {
     }
   }, [friends.length, requests.length]);
 
+  const onAddFriend = (userId, friendId) => {
+    addFriend(userId, friendId)
+      .then((friend) => {
+        socket.emit("addFriend", friend);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onDeleteFriend = (userId, friendId) => {
+    deleteFriend(userId, friendId)
+      .then((friend) => {
+        socket.emit("deleteFriend", friend);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const onDeleteFriendRequest = (userId, friendId) => {
     deleteFriendRequest(userId, friendId)
       .then(() => {
@@ -199,7 +218,7 @@ const FriendsList = (props) => {
                   <i className="fas fa-comment"></i>
                 </Button>
                 <Button
-                  onClick={() => deleteFriend(user._id, friend._id)}
+                  onClick={() => onDeleteFriend(user._id, friend._id)}
                   color="red"
                 >
                   <i className="fa fa-times"></i>
@@ -261,7 +280,7 @@ const FriendsList = (props) => {
                     <Id>{friend._id}</Id>
                   </Info>
                   <Buttons>
-                    <Button onClick={() => addFriend(user._id, friend._id)}>
+                    <Button onClick={() => onAddFriend(user._id, friend._id)}>
                       <i className="fa fa-check"></i>
                     </Button>
                     <Button

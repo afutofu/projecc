@@ -10,9 +10,11 @@ import {
   DELETE_FRIEND_REQUEST_BEGIN,
   DELETE_FRIEND_REQUEST_SUCCESS,
   DELETE_FRIEND_REQUEST_FAIL,
+  ADD_FRIEND_CLIENT,
   ADD_FRIEND_BEGIN,
   ADD_FRIEND_SUCCESS,
   ADD_FRIEND_FAIL,
+  DELETE_FRIEND_CLIENT,
   DELETE_FRIEND_BEGIN,
   DELETE_FRIEND_SUCCESS,
   DELETE_FRIEND_FAIL,
@@ -133,6 +135,15 @@ const deleteFriendRequestFail = (error) => {
   };
 };
 
+// ADD FRIEND
+
+export const addFriendClient = (friend) => {
+  return {
+    type: ADD_FRIEND_CLIENT,
+    payload: { friend },
+  };
+};
+
 export const addFriend = (userId, friendId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     dispatch(addFriendBegin());
@@ -145,9 +156,9 @@ export const addFriend = (userId, friendId) => (dispatch, getState) => {
         tokenConfig(getState)
       )
       .then((res) => {
-        const { friend } = res.data;
-        dispatch(addFriendSuccess(friend));
-        resolve(friend);
+        const { friendRequestReceiver, friendRequestSender } = res.data;
+        dispatch(addFriendSuccess(friendRequestReceiver));
+        resolve(friendRequestSender);
       })
       .catch((error) => {
         console.log(error);
@@ -177,6 +188,14 @@ const addFriendFail = (error) => {
   };
 };
 
+// DELETE FRIEND
+export const deleteFriendClient = (friend) => {
+  return {
+    type: DELETE_FRIEND_CLIENT,
+    payload: { friendId: friend._id },
+  };
+};
+
 export const deleteFriend = (userId, friendId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteFriendBegin());
@@ -186,9 +205,9 @@ export const deleteFriend = (userId, friendId) => (dispatch, getState) => {
         tokenConfig(getState)
       )
       .then((res) => {
-        const { friend } = res.data;
+        const { user, friend } = res.data;
         dispatch(deleteFriendSuccess(friend));
-        resolve(friend);
+        resolve(user);
       })
       .catch((error) => {
         console.log(error);

@@ -15,6 +15,8 @@ import {
   setSocket,
   sendFriendRequestClient,
   deleteFriendRequestClient,
+  addFriendClient,
+  deleteFriendClient,
   createDirectMessageGroupClient,
   deleteDirectMessageGroupClient,
   createDirectMessageClient,
@@ -53,6 +55,8 @@ const Project = (props) => {
     setSocket,
     sendFriendRequestClient,
     deleteFriendRequestClient,
+    addFriendClient,
+    deleteFriendClient,
     createDirectMessageGroupClient,
     deleteDirectMessageGroupClient,
     createDirectMessageClient,
@@ -82,12 +86,27 @@ const Project = (props) => {
         switch (type) {
           case "CREATE":
             // Store friend request
-            console.log(newRequest);
             sendFriendRequestClient(newRequest);
             break;
           case "DELETE":
             // Delete friend request
             deleteFriendRequestClient(friendId);
+            break;
+          default:
+            return null;
+        }
+      });
+
+      socket.on("friend", ({ type, friend }) => {
+        console.log("Friend from server");
+        switch (type) {
+          case "CREATE":
+            // Store friend
+            addFriendClient(friend);
+            break;
+          case "DELETE":
+            // Delete friend
+            deleteFriendClient(friend);
             break;
           default:
             return null;
@@ -242,6 +261,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(sendFriendRequestClient(newRequest)),
     deleteFriendRequestClient: (friendId) =>
       dispatch(deleteFriendRequestClient(friendId)),
+    addFriendClient: (friend) => dispatch(addFriendClient(friend)),
+    deleteFriendClient: (friend) => dispatch(deleteFriendClient(friend)),
 
     // DIRECT MESSAGE
     createDirectMessageGroupClient: (directMessage) =>

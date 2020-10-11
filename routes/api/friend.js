@@ -20,28 +20,34 @@ router.post("/", auth, (req, res) => {
 
       // Remove request from both users
       foundUser.requests = foundUser.requests.filter((request) => {
-        if (request.friendId != friendId) return request;
+        if (request.senderId != friendId && request.receiverId != friendId)
+          return request;
       });
 
       foundFriend.requests = foundFriend.requests.filter((request) => {
-        if (request.friendId != userId) return request;
+        if (request.senderId != userId && request.receiverId != userId)
+          return request;
       });
 
       // Add friend in both users
-      foundUser.friends.unshift({
+      const friendRequestReceiver = {
         friendId,
         timeCreated: Date.now(),
-      });
+      };
 
-      foundFriend.friends.unshift({
+      const friendRequestSender = {
         friendId: userId,
         timeCreated: Date.now(),
-      });
+      };
+
+      foundUser.friends.unshift(friendRequestReceiver);
+
+      foundFriend.friends.unshift(friendRequestSender);
 
       foundUser.save();
       foundFriend.save();
 
-      res.status(200).json({ friend: foundUser.friends[0] });
+      res.status(200).json({ friendRequestReceiver, friendRequestSender });
     });
   });
 });
@@ -58,7 +64,7 @@ router.delete("/:friendId", auth, (req, res) => {
     User.findById(friendId, (err, foundFriend) => {
       if (err) return res.status(400).json({ msg: "User does not exist" });
 
-      // Remove request from both users
+      // Remove friend from both users
       foundUser.friends = foundUser.friends.filter((friend) => {
         if (friend.friendId != friendId) return friend;
       });
@@ -70,7 +76,7 @@ router.delete("/:friendId", auth, (req, res) => {
       foundUser.save();
       foundFriend.save();
 
-      res.status(200).json({ friend: foundFriend });
+      res.status(200).json({ user: foundUser, friend: foundFriend });
     });
   });
 });
