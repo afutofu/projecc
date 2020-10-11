@@ -92,7 +92,7 @@ router.post("/:friendId/requests", auth, (req, res) => {
 
       for (let i = 0; i < friends.length; i++) {
         const friend = friends[i];
-        if (friend.friendId.localeCompare(foundUser._id)) {
+        if (friend.friendId == foundFriend._id) {
           return res
             .status(400)
             .json({ msg: "You are already friends with this user" });
@@ -101,7 +101,10 @@ router.post("/:friendId/requests", auth, (req, res) => {
 
       for (let i = 0; i < requests.length; i++) {
         const request = requests[i];
-        if (request.friendId.localeCompare(foundUser._id)) {
+        if (
+          request.senderId == foundFriend._id ||
+          request.receiverId == foundFriend._id
+        ) {
           if (request.type == "SENT")
             return res
               .status(400)
@@ -114,22 +117,27 @@ router.post("/:friendId/requests", auth, (req, res) => {
       }
 
       // Add request in both users
-      foundUser.requests.unshift({
+      const senderRequest = {
         type: "SENT",
-        friendId,
+        receiverId: friendId,
+        senderId: userId,
         timeCreated: Date.now(),
-      });
+      };
 
-      foundFriend.requests.unshift({
+      const receiverRequest = {
         type: "RECEIVED",
-        friendId: userId,
+        receiverId: friendId,
+        senderId: userId,
         timeCreated: Date.now(),
-      });
+      };
+
+      foundUser.requests.unshift(senderRequest);
+      foundFriend.requests.unshift(receiverRequest);
 
       foundUser.save();
       foundFriend.save();
 
-      res.status(200).json({ request: foundUser.requests[0] });
+      res.status(200).json({ senderRequest, receiverRequest });
     });
   });
 
@@ -150,11 +158,13 @@ router.delete("/:friendId/requests", auth, (req, res) => {
 
       // Remove request from both users
       foundUser.requests = foundUser.requests.filter((request) => {
-        if (request.friendId != friendId) return request;
+        if (request.senderId != friendId && request.receiverId != friendId)
+          return request;
       });
 
       foundFriend.requests = foundFriend.requests.filter((request) => {
-        if (request.friendId != userId) return request;
+        if (request.senderId != userId && request.receiverId != userId)
+          return request;
       });
 
       foundUser.save();

@@ -13,6 +13,8 @@ import FriendModal from "./FriendModal";
 import {
   fetchProjects,
   setSocket,
+  sendFriendRequestClient,
+  deleteFriendRequestClient,
   createDirectMessageGroupClient,
   deleteDirectMessageGroupClient,
   createDirectMessageClient,
@@ -26,6 +28,7 @@ import {
   renameProjectClient,
   deleteProjectClient,
   fetchUser,
+  deleteFriend,
 } from "../store/actions";
 
 const ProjectComp = styled.div`
@@ -48,6 +51,8 @@ const Project = (props) => {
     fetchUser,
     fetchProjects,
     setSocket,
+    sendFriendRequestClient,
+    deleteFriendRequestClient,
     createDirectMessageGroupClient,
     deleteDirectMessageGroupClient,
     createDirectMessageClient,
@@ -70,6 +75,24 @@ const Project = (props) => {
     } else {
       socket = io(ENDPOINT);
       setSocket(socket);
+
+      // FRIEND EVENT LISTENERS
+      socket.on("friendRequest", ({ type, newRequest, friendId }) => {
+        console.log("Friend request from server");
+        switch (type) {
+          case "CREATE":
+            // Store friend request
+            console.log(newRequest);
+            sendFriendRequestClient(newRequest);
+            break;
+          case "DELETE":
+            // Delete friend request
+            deleteFriendRequestClient(friendId);
+            break;
+          default:
+            return null;
+        }
+      });
 
       // DIRECT MESSAGE CLIENT EVENT LISTENERS
       // Listening for direct message groups from server
@@ -213,6 +236,12 @@ const mapDispatchToProps = (dispatch) => {
     fetchUser: () => dispatch(fetchUser()),
     fetchProjects: () => dispatch(fetchProjects()),
     setSocket: (socket) => dispatch(setSocket(socket)),
+
+    // FRIEND
+    sendFriendRequestClient: (newRequest) =>
+      dispatch(sendFriendRequestClient(newRequest)),
+    deleteFriendRequestClient: (friendId) =>
+      dispatch(deleteFriendRequestClient(friendId)),
 
     // DIRECT MESSAGE
     createDirectMessageGroupClient: (directMessage) =>

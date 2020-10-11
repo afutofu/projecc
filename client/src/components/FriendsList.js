@@ -148,9 +148,23 @@ const FriendsList = (props) => {
   const [receivedRequests, setReceivedRequests] = useState([]);
 
   useEffect(() => {
-    fetchFriends(friends);
-    fetchRequests(requests);
-  }, [friends, requests]);
+    if (friends) {
+      fetchFriends(friends);
+    }
+    if (requests) {
+      fetchRequests(requests);
+    }
+  }, [friends.length, requests.length]);
+
+  const onDeleteFriendRequest = (userId, friendId) => {
+    deleteFriendRequest(userId, friendId)
+      .then(() => {
+        socket.emit("deleteFriendRequest", userId);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const onCreateDirectMessageGroup = (userId, friendId) => {
     createDirectMessageGroup(userId, friendId)
@@ -211,7 +225,7 @@ const FriendsList = (props) => {
     requests.forEach((request, i) => {
       switch (request.type) {
         case "SENT":
-          fetchUserData(request.friendId)
+          fetchUserData(request.receiverId)
             .then((friend) => {
               sent.unshift(
                 <FriendItem key={i}>
@@ -221,7 +235,9 @@ const FriendsList = (props) => {
                   </Info>
                   <Buttons>
                     <Button
-                      onClick={() => deleteFriendRequest(user._id, friend._id)}
+                      onClick={() =>
+                        onDeleteFriendRequest(user._id, friend._id)
+                      }
                       color="red"
                     >
                       <i className="fa fa-times"></i>
@@ -236,7 +252,7 @@ const FriendsList = (props) => {
             });
           break;
         case "RECEIVED":
-          fetchUserData(request.friendId)
+          fetchUserData(request.senderId)
             .then((friend) => {
               received.unshift(
                 <FriendItem key={i}>
@@ -249,7 +265,9 @@ const FriendsList = (props) => {
                       <i className="fa fa-check"></i>
                     </Button>
                     <Button
-                      onClick={() => deleteFriendRequest(user._id, friend._id)}
+                      onClick={() =>
+                        onDeleteFriendRequest(user._id, friend._id)
+                      }
                       color="red"
                     >
                       <i className="fa fa-times"></i>

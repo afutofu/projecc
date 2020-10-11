@@ -50,7 +50,9 @@ export { setHomeItem } from "./home";
 export {
   setFriendStatusDisplay,
   storeFriends,
+  sendFriendRequestClient,
   sendFriendRequest,
+  deleteFriendRequestClient,
   deleteFriendRequest,
   addFriend,
   deleteFriend,

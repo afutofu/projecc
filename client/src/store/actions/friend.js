@@ -2,9 +2,11 @@ import axios from "axios";
 import {
   SET_FRIEND_STATUS_DISPLAY,
   STORE_FRIENDS,
+  SEND_FRIEND_REQUEST_CLIENT,
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
   SEND_FRIEND_REQUEST_FAIL,
+  DELETE_FRIEND_REQUEST_CLIENT,
   DELETE_FRIEND_REQUEST_BEGIN,
   DELETE_FRIEND_REQUEST_SUCCESS,
   DELETE_FRIEND_REQUEST_FAIL,
@@ -31,6 +33,14 @@ export const storeFriends = (friends) => {
   };
 };
 
+// SEND FRIEND REQUEST
+export const sendFriendRequestClient = (newRequest) => {
+  return {
+    type: SEND_FRIEND_REQUEST_CLIENT,
+    payload: { newRequest },
+  };
+};
+
 export const sendFriendRequest = (userId, friendId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     dispatch(sendFriendRequestBegin());
@@ -41,9 +51,9 @@ export const sendFriendRequest = (userId, friendId) => (dispatch, getState) => {
         tokenConfig(getState)
       )
       .then((res) => {
-        const { request } = res.data;
-        dispatch(sendFriendRequestSuccess(request));
-        resolve(request);
+        const { senderRequest, receiverRequest } = res.data;
+        dispatch(sendFriendRequestSuccess(senderRequest));
+        resolve(receiverRequest);
       })
       .catch((error) => {
         dispatch(sendFriendRequestFail(error.response.data.msg));
@@ -72,6 +82,15 @@ const sendFriendRequestFail = (error) => {
   };
 };
 
+// DELETE FRIEND REQUEST
+export const deleteFriendRequestClient = (friendId) => {
+  console.log(friendId);
+  return {
+    type: DELETE_FRIEND_REQUEST_CLIENT,
+    payload: { friendId },
+  };
+};
+
 export const deleteFriendRequest = (userId, friendId) => (
   dispatch,
   getState
@@ -85,7 +104,7 @@ export const deleteFriendRequest = (userId, friendId) => (
       )
       .then((res) => {
         dispatch(deleteFriendRequestSuccess(friendId));
-        resolve(res.data);
+        resolve(userId);
       })
       .catch((error) => {
         dispatch(deleteFriendRequestFail(error.response.data.msg));

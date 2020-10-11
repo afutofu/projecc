@@ -211,6 +211,7 @@ const FriendModal = (props) => {
     // Validation to check if there is already a request/friend with the same id
     let error = false;
 
+    // If already friends
     for (let i = 0; i < friends.length; i++) {
       const friend = friends[i];
       if (friend.friendId === friendId) {
@@ -221,10 +222,11 @@ const FriendModal = (props) => {
       }
     }
 
+    // If already requested to be friends
     if (!error) {
       for (let i = 0; i < requests.length; i++) {
         const request = requests[i];
-        if (request.friendId === friendId) {
+        if (request.senderId === friendId || request.receiverId === friendId) {
           setFriendId("");
           if (request.type === "SENT")
             setErrorMsg("You have already sent a request to this user");
@@ -238,8 +240,10 @@ const FriendModal = (props) => {
 
     if (!error) {
       sendFriendRequest(user._id, friendId)
-        .then((res) => {
-          setSuccess(true);
+        .then((newRequest) => {
+          socket.emit("sendFriendRequest", newRequest, () => {
+            setSuccess(true);
+          });
           setTimeout(() => {
             friendModalClose();
             setSuccess(false);

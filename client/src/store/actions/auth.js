@@ -35,8 +35,13 @@ export const fetchUser = () => (dispatch, getState) => {
         resolve(res.data);
       })
       .catch((err) => {
-        dispatch(fetchUserFail(err.response.data.msg));
-        reject(err.response.data.msg);
+        if (err.response) {
+          dispatch(fetchUserFail(err.response.data.msg));
+          reject(err.response.data.msg);
+        } else {
+          console.log(err);
+          reject(err);
+        }
       });
   });
 };

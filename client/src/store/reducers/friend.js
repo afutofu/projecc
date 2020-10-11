@@ -1,9 +1,11 @@
 import {
   SET_FRIEND_STATUS_DISPLAY,
   STORE_FRIENDS,
+  SEND_FRIEND_REQUEST_CLIENT,
   SEND_FRIEND_REQUEST_BEGIN,
   SEND_FRIEND_REQUEST_SUCCESS,
   SEND_FRIEND_REQUEST_FAIL,
+  DELETE_FRIEND_REQUEST_CLIENT,
   DELETE_FRIEND_REQUEST_BEGIN,
   DELETE_FRIEND_REQUEST_SUCCESS,
   DELETE_FRIEND_REQUEST_FAIL,
@@ -43,18 +45,21 @@ const friendReducer = (state = initialState, action) => {
         ...state,
         isLoading: true,
       };
+    case SEND_FRIEND_REQUEST_CLIENT:
     case SEND_FRIEND_REQUEST_SUCCESS:
       return {
         ...state,
         requests: [...state.requests, action.payload.newRequest],
         isLoading: false,
       };
+    case DELETE_FRIEND_REQUEST_CLIENT:
     case DELETE_FRIEND_REQUEST_SUCCESS: {
       const { friendId } = action.payload;
       return {
         ...state,
         requests: state.requests.filter((request) => {
-          if (request.friendId !== friendId) return request;
+          if (request.senderId != friendId && request.receiverId != friendId)
+            return request;
         }),
         isLoading: false,
       };
@@ -80,7 +85,9 @@ const friendReducer = (state = initialState, action) => {
         isLoading: false,
       };
     }
+    case SEND_FRIEND_REQUEST_CLIENT:
     case SEND_FRIEND_REQUEST_FAIL:
+    case DELETE_FRIEND_REQUEST_CLIENT:
     case DELETE_FRIEND_REQUEST_FAIL:
     case ADD_FRIEND_FAIL:
     case DELETE_FRIEND_FAIL:
