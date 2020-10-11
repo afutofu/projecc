@@ -18,7 +18,10 @@ const ChatComp = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
   font-family: "Raleway", "san-serif";
+  display: flex;
+  flex-direction: column;
 `;
 
 const ChatPrefix = styled.span`
@@ -63,7 +66,11 @@ const Header = styled.div`
 
 const Container = styled.div`
   position: relative;
+  width: 100%;
   height: calc(100% - 50px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Form = styled.form.attrs((props) => ({

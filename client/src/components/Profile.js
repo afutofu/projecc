@@ -17,12 +17,19 @@ const ProfileComp = styled.div`
 
 const AvatarDisplay = styled.div`
   position: relative;
-  width: 150px;
-  height: 150px;
+  min-width: 150px;
+  min-height: 150px;
   border-radius: 50%;
   background-color: #1a1a1a;
   margin-bottom: 30px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 45px;
+  font-weight: 700;
+  text-transform: uppercase;
 
   :focus {
     border: #1a8cff 1px solid;
@@ -292,14 +299,14 @@ const Profile = (props) => {
       </ProfileComp>
     );
   }
-
+  //user && user.name.substring(0, 1)
   return (
     <ProfileComp>
-      <AvatarDisplay>{/* <AvatarImage src={profileImage} /> */}</AvatarDisplay>
+      <AvatarDisplay>{user && user.name.substring(0, 1)}</AvatarDisplay>
       {user ? <UserDisplay>{user.name}</UserDisplay> : null}
       {user ? <EmailDisplay>{user.email}</EmailDisplay> : null}
       {user ? <IdDisplay>{user._id}</IdDisplay> : null}
-      <Button onClick={onEdit}>Edit</Button>
+      {/* <Button onClick={onEdit}>Edit</Button> */}
       <LogoutButton onClick={onLogout}>Logout</LogoutButton>
     </ProfileComp>
   );

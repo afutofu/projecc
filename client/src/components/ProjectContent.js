@@ -7,6 +7,7 @@ import ContentBar from "./ContentBar";
 import Content from "./Content";
 
 const ProjectContentComp = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;

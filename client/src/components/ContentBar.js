@@ -8,9 +8,7 @@ import { projectModalOpen, deleteProject } from "../store/actions";
 
 const ContentBarComp = styled.div`
   position: relative;
-  /* width: ${({ selectedProject }) =>
-    selectedProject === null ? "0px" : "240px"}; */
-    width: 240px;
+  min-width: 240px;
   height: 100%;
   background-color: #252525;
   box-sizing: border-box;

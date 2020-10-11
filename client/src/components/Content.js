@@ -8,7 +8,7 @@ import Friends from "./Friends";
 
 const ContentComp = styled.div`
   position: relative;
-  flex-grow: 1;
+  width: 100%;
   height: 100%;
   background-color: #2b2b2b;
 `;
@@ -44,10 +44,12 @@ const Header = styled.div`
 
 const Container = styled.div`
   position: relative;
+  width: 100%;
   height: calc(100% - 50px);
 `;
 
 const CenterContainer = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;

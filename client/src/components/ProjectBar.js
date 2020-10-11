@@ -14,7 +14,7 @@ const ProjectBarComp = styled.div.attrs((props) => ({
   position: relative;
   top: 0;
   left: 0;
-  width: 70px;
+  min-width: 70px;
   height: 100%;
   background-color: #151515;
   display: flex;

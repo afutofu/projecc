@@ -6,10 +6,11 @@ import Message from "./Message";
 const MessagesComp = styled.div`
   position: relative;
   height: calc(100% - 65px);
+  width: 100%;
   display: flex;
   flex-direction: column-reverse;
-  overflow-y: auto;
   padding: 0 20px;
+  margin: 0;
   box-sizing: border-box;
 `;
 
