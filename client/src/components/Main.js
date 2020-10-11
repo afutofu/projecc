@@ -51,6 +51,7 @@ const Project = (props) => {
   const {
     isAuthenticated,
     fetchUser,
+    user,
     fetchProjects,
     setSocket,
     sendFriendRequestClient,
@@ -81,72 +82,80 @@ const Project = (props) => {
       setSocket(socket);
 
       // FRIEND EVENT LISTENERS
-      socket.on("friendRequest", ({ type, newRequest, friendId }) => {
-        console.log("Friend request from server");
-        switch (type) {
-          case "CREATE":
-            // Store friend request
-            sendFriendRequestClient(newRequest);
-            break;
-          case "DELETE":
-            // Delete friend request
-            deleteFriendRequestClient(friendId);
-            break;
-          default:
-            return null;
+      socket.on("friendRequest", ({ type, newRequest, friendId, clientId }) => {
+        if (clientId == user._id) {
+          console.log("Friend request from server");
+          switch (type) {
+            case "CREATE":
+              // Store friend request
+              sendFriendRequestClient(newRequest);
+              break;
+            case "DELETE":
+              // Delete friend request
+              deleteFriendRequestClient(friendId);
+              break;
+            default:
+              return null;
+          }
         }
       });
 
-      socket.on("friend", ({ type, friend }) => {
-        console.log("Friend from server");
-        switch (type) {
-          case "CREATE":
-            // Store friend
-            addFriendClient(friend);
-            break;
-          case "DELETE":
-            // Delete friend
-            deleteFriendClient(friend);
-            break;
-          default:
-            return null;
+      socket.on("friend", ({ type, friend, clientId }) => {
+        if (clientId == user._id) {
+          console.log("Friend from server");
+          switch (type) {
+            case "CREATE":
+              // Store friend
+              addFriendClient(friend);
+              break;
+            case "DELETE":
+              // Delete friend
+              deleteFriendClient(friend);
+              break;
+            default:
+              return null;
+          }
         }
       });
 
       // DIRECT MESSAGE CLIENT EVENT LISTENERS
       // Listening for direct message groups from server
-      socket.on("directMessageGroup", ({ type, directMessage }) => {
-        console.log("Direct message group from server");
-        switch (type) {
-          case "CREATE":
-            // Send direct message to redux store
-            createDirectMessageGroupClient(directMessage);
-            break;
-          case "DELETE":
-            // Delete direct message in redux store
-            deleteDirectMessageGroupClient(directMessage);
-            break;
-          default:
-            return null;
+      socket.on("directMessageGroup", ({ type, directMessage, clientId }) => {
+        if (clientId == user._id) {
+          console.log("Direct message group from server");
+          switch (type) {
+            case "CREATE":
+              // Send direct message to redux store
+              createDirectMessageGroupClient(directMessage);
+              break;
+            case "DELETE":
+              // Delete direct message in redux store
+              deleteDirectMessageGroupClient(directMessage);
+              break;
+            default:
+              return null;
+          }
         }
       });
 
       // Listening for direct messages from server
       socket.on(
         "directMessage",
-        ({ type, message, messageId, directMessageId }) => {
-          console.log("Direct message from server");
-          switch (type) {
-            case "CREATE":
-              // Send direct message to redux store
-              createDirectMessageClient(message, directMessageId);
-              break;
-            case "DELETE":
-              // Delete direct message in redux store
-              deleteDirectMessageClient(messageId, directMessageId);
-              break;
-            default:
-              return null;
+        ({ type, message, messageId, directMessageId, clientId }) => {
+          if (clientId == user._id) {
+            console.log("Direct message from server");
+            switch (type) {
+              case "CREATE":
+                // Send direct message to redux store
+                createDirectMessageClient(message, directMessageId);
+                break;
+              case "DELETE":
+                // Delete direct message in redux store
+                deleteDirectMessageClient(messageId, directMessageId);
+                break;
+              default:
+                return null;
+            }
           }
         }
       );
@@ -247,6 +256,7 @@ const Project = (props) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user,
   };
 };
 

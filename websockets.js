@@ -10,87 +10,101 @@ const connectSocket = (server) => {
 
     // DIRECT MESSAGE EVENT LISTENERS
     // Listening for direct message group from client
-    socket.on("createDirectMessageGroup", ({ directMessage }) => {
+    socket.on("createDirectMessageGroup", ({ directMessage, clientId }) => {
       // Emits direct message to other clients, frontend filters which client receives information
       socket.broadcast.emit("directMessageGroup", {
         type: "CREATE",
         directMessage,
+        clientId,
       });
     });
 
     // Listening for deleted direct message group
-    socket.on("deleteDirectMessageGroup", ({ directMessage }) => {
+    socket.on("deleteDirectMessageGroup", ({ directMessage, clientId }) => {
       // Delete direct message group to other clients, frontend filters which client receives information
       socket.broadcast.emit("directMessageGroup", {
         type: "DELETE",
         directMessage,
+        clientId,
       });
     });
 
     // Listening for direct message from client
-    socket.on("sendDirectMessage", ({ message, directMessageId }, callback) => {
-      const messageObj = {
-        _id: 131313,
-        userId: "2r2v4t2vq",
-        username: "John Doe",
-        text: "Yo wassup",
-        date: "7/4/2020 12:11",
-        timeCreated: 3526262,
-      };
+    socket.on(
+      "sendDirectMessage",
+      ({ message, directMessageId, clientId }, callback) => {
+        const messageObj = {
+          _id: 131313,
+          userId: "2r2v4t2vq",
+          username: "John Doe",
+          text: "Yo wassup",
+          date: "7/4/2020 12:11",
+          timeCreated: 3526262,
+        };
 
-      // Emits direct message to other clients, frontend filters which client receives information
-      socket.broadcast.emit("directMessage", {
-        type: "CREATE",
-        message,
-        directMessageId,
-      });
+        // Emits direct message to other clients, frontend filters which client receives information
+        socket.broadcast.emit("directMessage", {
+          type: "CREATE",
+          message,
+          directMessageId,
+          clientId,
+        });
 
-      callback();
-    });
+        callback();
+      }
+    );
 
     // Listening for direct message from client
-    socket.on("deleteDirectMessage", ({ messageId, directMessageId }) => {
-      // Emits direct message to other clients, frontend filters which client receives information
-      socket.broadcast.emit("directMessage", {
-        type: "DELETE",
-        messageId,
-        directMessageId,
-      });
-    });
+    socket.on(
+      "deleteDirectMessage",
+      ({ messageId, directMessageId, clientId }) => {
+        // Emits direct message to other clients, frontend filters which client receives information
+        socket.broadcast.emit("directMessage", {
+          type: "DELETE",
+          messageId,
+          directMessageId,
+          clientId,
+        });
+      }
+    );
 
     // FRIENDS EVENT LISTENERS
-    socket.on("sendFriendRequest", (newRequest, callback) => {
+    socket.on("sendFriendRequest", ({ newRequest, clientId }, callback) => {
       // Emits direct message to other clients, frontend filters which client receives information
       socket.broadcast.emit("friendRequest", {
         type: "CREATE",
         newRequest,
+        clientId,
       });
       callback();
     });
 
     // Listening for deleted direct message group
-    socket.on("deleteFriendRequest", (friendId) => {
+    socket.on("deleteFriendRequest", ({ friendId, clientId }) => {
       // Delete friend request to other clients, frontend filters which client receives information
       socket.broadcast.emit("friendRequest", {
         type: "DELETE",
         friendId,
+        clientId,
       });
     });
 
-    socket.on("addFriend", (friend) => {
+    socket.on("addFriend", ({ friend, clientId }) => {
       // Emits friend to other clients, frontend filters which client receives information
       socket.broadcast.emit("friend", {
         type: "CREATE",
         friend,
+        clientId,
       });
     });
 
     // Listening for deleted direct message group
-    socket.on("deleteFriend", (friend) => {
+    socket.on("deleteFriend", ({ friend, clientId }) => {
       // Delete friend to other clients, frontend filters which client receives information
       socket.broadcast.emit("friend", {
         type: "DELETE",
         friend,
+        clientId,
       });
     });
 

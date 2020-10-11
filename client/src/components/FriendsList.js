@@ -158,7 +158,7 @@ const FriendsList = (props) => {
   const onAddFriend = (userId, friendId) => {
     addFriend(userId, friendId)
       .then((friend) => {
-        socket.emit("addFriend", friend);
+        socket.emit("addFriend", { friend, clientId: friendId });
       })
       .catch((err) => {
         console.log(err);
@@ -168,7 +168,7 @@ const FriendsList = (props) => {
   const onDeleteFriend = (userId, friendId) => {
     deleteFriend(userId, friendId)
       .then((friend) => {
-        socket.emit("deleteFriend", friend);
+        socket.emit("deleteFriend", { friend, clientId: friendId });
       })
       .catch((err) => {
         console.log(err);
@@ -178,7 +178,12 @@ const FriendsList = (props) => {
   const onDeleteFriendRequest = (userId, friendId) => {
     deleteFriendRequest(userId, friendId)
       .then(() => {
-        socket.emit("deleteFriendRequest", userId);
+        // Send current userId to be deleted in the other user's redux store
+        // Specify clientId to which user uses the event data
+        socket.emit("deleteFriendRequest", {
+          friendId: userId,
+          clientId: friendId,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -188,7 +193,10 @@ const FriendsList = (props) => {
   const onCreateDirectMessageGroup = (userId, friendId) => {
     createDirectMessageGroup(userId, friendId)
       .then((directMessage) => {
-        socket.emit("createDirectMessageGroup", { directMessage });
+        socket.emit("createDirectMessageGroup", {
+          directMessage,
+          clientId: friendId,
+        });
       })
       .catch((err) => {
         console.log(err);

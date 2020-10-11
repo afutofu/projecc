@@ -98,7 +98,7 @@ const HomeItem = (props) => {
     name,
     homeItem,
     setHomeItem,
-    deleteDirectMessageGroup,
+    onDeleteDirectMessageGroup,
   } = props;
 
   const selected = homeItem == id;
@@ -128,17 +128,6 @@ const HomeItem = (props) => {
     setHomeItem(id);
   };
 
-  const onDeleteDirectMessageGroup = (e) => {
-    e.stopPropagation();
-    deleteDirectMessageGroup(id)
-      .then((directMessage) => {
-        socket.emit("deleteDirectMessageGroup", { directMessage });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const renderButtons = () => {
     return (
       <Buttons>
@@ -164,16 +153,12 @@ const HomeItem = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    socket: state.socket.socket,
     homeItem: state.home.homeItem,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    deleteDirectMessageGroup: (directMessageId) =>
-      dispatch(deleteDirectMessageGroup(directMessageId)),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeItem);

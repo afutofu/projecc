@@ -105,7 +105,7 @@ const Input = styled.input.attrs((props) => ({
 const Chat = (props) => {
   const [message, setMessage] = useState("");
   const [messageDM, setMessageDM] = useState("");
-  const [memberName, setMemberName] = useState("");
+  const [member, setMember] = useState({});
   const {
     selectedProject,
     selectedChannel,
@@ -125,14 +125,14 @@ const Chat = (props) => {
   // If chat is in direct messages, fetch user data (name)
   useEffect(() => {
     if (chatType == "dm" && directMessage) {
-      fetchMemberName();
+      fetchMember();
     }
   }, [directMessageId]);
 
-  const fetchMemberName = () => {
-    let memberNameTemp = "";
+  const fetchMember = () => {
+    let memberTemp = {};
 
-    setMemberName(memberNameTemp);
+    setMember(memberTemp);
 
     // Get all members excluding the user
     const memberIds = directMessage.members.filter((member) => {
@@ -145,7 +145,7 @@ const Chat = (props) => {
     // Get user data for member
     fetchUserData(memberId)
       .then((member) => {
-        setMemberName(member.name);
+        setMember(member);
       })
       .catch(() => {
         return null;
@@ -167,7 +167,7 @@ const Chat = (props) => {
             // Send message to server
             socket.emit(
               "sendDirectMessage",
-              { message, directMessageId },
+              { message, directMessageId, clientId: member._id },
               () => {
                 setMessageDM("");
               }
@@ -217,7 +217,11 @@ const Chat = (props) => {
       messageId,
     })
       .then(({ directMessageId, messageId }) => {
-        socket.emit("deleteDirectMessage", { directMessageId, messageId });
+        socket.emit("deleteDirectMessage", {
+          directMessageId,
+          messageId,
+          clientId: member._id,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -229,7 +233,7 @@ const Chat = (props) => {
       <ChatComp>
         <Header>
           <FriendPrefix>-</FriendPrefix>
-          {memberName}
+          {member.name}
         </Header>
         <Container>
           <Messages
@@ -242,7 +246,7 @@ const Chat = (props) => {
             <Input
               onChange={(e) => setMessageDM(e.target.value)}
               value={messageDM}
-              placeholder={`Message ${memberName}`}
+              placeholder={`Message ${member.name}`}
             />
           </Form>
         </Container>

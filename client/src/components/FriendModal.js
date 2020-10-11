@@ -241,9 +241,13 @@ const FriendModal = (props) => {
     if (!error) {
       sendFriendRequest(user._id, friendId)
         .then((newRequest) => {
-          socket.emit("sendFriendRequest", newRequest, () => {
-            setSuccess(true);
-          });
+          socket.emit(
+            "sendFriendRequest",
+            { newRequest, clientId: friendId },
+            () => {
+              setSuccess(true);
+            }
+          );
           setTimeout(() => {
             friendModalClose();
             setSuccess(false);

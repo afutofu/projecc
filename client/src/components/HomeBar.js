@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { fetchUser, setHomeItem } from "../store/actions";
+import {
+  fetchUser,
+  setHomeItem,
+  deleteDirectMessageGroup,
+} from "../store/actions";
 import { fetchUserData } from "../shared/utils";
 import HomeItem from "./HomeItem";
 import { FETCH_USER_BEGIN } from "../store/actions/actions";
@@ -28,13 +32,35 @@ const DirectMessageTitle = styled.h3`
 `;
 
 const HomeBar = (props) => {
-  const { user, fetchUserData, homeItem, setHomeItem, directMessages } = props;
+  const {
+    socket,
+    user,
+    fetchUserData,
+    homeItem,
+    setHomeItem,
+    directMessages,
+    deleteDirectMessageGroup,
+  } = props;
 
   const [DMs, setDMs] = useState([]);
 
   useEffect(() => {
     fetchDirectMessages(directMessages);
   }, [directMessages.length]);
+
+  const onDeleteDirectMessageGroup = (e, directMessageId, memberId) => {
+    e.stopPropagation();
+    deleteDirectMessageGroup(directMessageId)
+      .then((directMessage) => {
+        socket.emit("deleteDirectMessageGroup", {
+          directMessage,
+          clientId: memberId,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const fetchDirectMessages = (directMessages) => {
     let DMArr = [];
@@ -59,6 +85,9 @@ const HomeBar = (props) => {
               id={directMessage._id}
               name={member.name}
               setHomeItem={setHomeItem}
+              onDeleteDirectMessageGroup={(e) =>
+                onDeleteDirectMessageGroup(e, directMessage._id, member._id)
+              }
             />
           );
           setDMs([...DMArr]);
@@ -101,6 +130,7 @@ const HomeBar = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    socket: state.socket.socket,
     homeItem: state.home.homeItem,
     user: state.auth.user,
     directMessages: state.directMessage.directMessages,
@@ -111,6 +141,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchUserData: (userId) => dispatch(fetchUserData(userId)),
     setHomeItem: (homeItem) => dispatch(setHomeItem(homeItem)),
+    deleteDirectMessageGroup: (directMessageId) =>
+      dispatch(deleteDirectMessageGroup(directMessageId)),
   };
 };
 
