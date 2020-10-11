@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import ProjectBar from "./ProjectBar";
-import ProjectContent from "./ProjectContent";
+import MainContent from "./MainContent";
 import ProjectModal from "./ProjectModal";
 import ChannelModal from "./ChannelModal";
 import FriendModal from "./FriendModal";
@@ -33,7 +33,7 @@ import {
   deleteFriend,
 } from "../store/actions";
 
-const ProjectComp = styled.div`
+const MainComp = styled.div`
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -231,13 +231,13 @@ const Project = (props) => {
     if (redirect) return <Redirect to="/" />;
 
     return (
-      <ProjectComp>
+      <MainComp>
         <ProjectModal />
         <ChannelModal />
         <FriendModal />
         <ProjectBar />
-        <ProjectContent />
-      </ProjectComp>
+        <MainContent />
+      </MainComp>
     );
   };
 

@@ -6,7 +6,7 @@ import { logout } from "../store/actions";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
 
-const ProjectContentComp = styled.div`
+const MainContentComp = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
@@ -15,10 +15,10 @@ const ProjectContentComp = styled.div`
 
 const ProjectContent = ({ selectedProject }) => {
   return (
-    <ProjectContentComp>
+    <MainContentComp>
       <ContentBar selectedProject={selectedProject} />
       <Content selectedProject={selectedProject} />
-    </ProjectContentComp>
+    </MainContentComp>
   );
 };
 

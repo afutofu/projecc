@@ -48,6 +48,16 @@ const connectSocket = (server) => {
       callback();
     });
 
+    // Listening for direct message from client
+    socket.on("deleteDirectMessage", ({ messageId, directMessageId }) => {
+      // Emits direct message to other clients, frontend filters which client receives information
+      socket.broadcast.emit("directMessage", {
+        type: "DELETE",
+        messageId,
+        directMessageId,
+      });
+    });
+
     // FRIENDS EVENT LISTENERS
     socket.on("sendFriendRequest", (newRequest, callback) => {
       // Emits direct message to other clients, frontend filters which client receives information

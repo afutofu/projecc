@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Join from "./components/Join";
-import Project from "./components/Project";
+import Main from "./components/Main";
 import store from "./config/store";
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact component={Join} />
-          <Route path="/projects" exact component={Project} />
+          <Route path="/projects" exact component={Main} />
         </Switch>
       </Router>
     </Provider>
