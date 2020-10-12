@@ -48,7 +48,7 @@ export const sendFriendRequest = (userId, friendId) => (dispatch, getState) => {
     dispatch(sendFriendRequestBegin());
     axios
       .post(
-        `http://localhost:5000/api/users/${userId}/friends/${friendId}/requests`,
+        `/api/users/${userId}/friends/${friendId}/requests`,
         {},
         tokenConfig(getState)
       )
@@ -101,7 +101,7 @@ export const deleteFriendRequest = (userId, friendId) => (
     dispatch(deleteFriendRequestBegin());
     axios
       .delete(
-        `http://localhost:5000/api/users/${userId}/friends/${friendId}/requests`,
+        `/api/users/${userId}/friends/${friendId}/requests`,
         tokenConfig(getState)
       )
       .then((res) => {
@@ -149,7 +149,7 @@ export const addFriend = (userId, friendId) => (dispatch, getState) => {
     dispatch(addFriendBegin());
     axios
       .post(
-        `http://localhost:5000/api/users/${userId}/friends`,
+        `/api/users/${userId}/friends`,
         {
           friendId,
         },
@@ -200,10 +200,7 @@ export const deleteFriend = (userId, friendId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteFriendBegin());
     axios
-      .delete(
-        `http://localhost:5000/api/users/${userId}/friends/${friendId}`,
-        tokenConfig(getState)
-      )
+      .delete(`/api/users/${userId}/friends/${friendId}`, tokenConfig(getState))
       .then((res) => {
         const { user, friend } = res.data;
         dispatch(deleteFriendSuccess(friend));

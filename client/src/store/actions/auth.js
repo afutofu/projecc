@@ -26,7 +26,7 @@ export const fetchUser = () => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     dispatch(fetchUserBegin());
     axios
-      .get("http://localhost:5000/api/auth/user", tokenConfig(getState))
+      .get("/api/auth/user", tokenConfig(getState))
       .then((res) => {
         const { token, user, friends } = res.data;
         dispatch(fetchUserSuccess({ token, user }));
@@ -78,7 +78,7 @@ export const register = (name, email, password) => (dispatch) => {
     const body = { name, email, password };
 
     axios
-      .post("http://localhost:5000/api/users", body, config)
+      .post("/api/users", body, config)
       .then((res) => {
         const { token, user, friends } = res.data;
         dispatch(registerSuccess({ token, user }));
@@ -119,7 +119,7 @@ export const login = (email, password) => (dispatch) => {
     const body = { email, password };
 
     axios
-      .post("http://localhost:5000/api/auth", body, config)
+      .post("/api/auth", body, config)
       .then((res) => {
         const { token, user, friends } = res.data;
         dispatch(loginSuccess({ token, user }));

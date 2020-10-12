@@ -34,7 +34,7 @@ export const tokenConfig = (getState, params) => {
 export const fetchUserData = (userId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     axios
-      .get(`http://localhost:5000/api/users/${userId}`, tokenConfig(getState))
+      .get(`/api/users/${userId}`, tokenConfig(getState))
       .then((res) => {
         resolve(res.data);
       })

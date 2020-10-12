@@ -21,10 +21,7 @@ import { setHomeItem } from "./index";
 export const fetchDirectMessages = (userId) => (dispatch, getState) => {
   return new Promise(function (resolve, reject) {
     axios
-      .get(
-        `http://localhost:5000/api/directMessages`,
-        tokenConfig(getState, { userId })
-      )
+      .get(`/api/directMessages`, tokenConfig(getState, { userId }))
       .then((res) => {
         const { directMessages } = res.data;
         dispatch(fetchDirectMessagesSuccess(directMessages));
@@ -65,11 +62,7 @@ export const createDirectMessageGroup = (userId, friendId) => (
 ) => {
   return new Promise(function (resolve, reject) {
     axios
-      .post(
-        `http://localhost:5000/api/directMessages`,
-        { userId, friendId },
-        tokenConfig(getState)
-      )
+      .post(`/api/directMessages`, { userId, friendId }, tokenConfig(getState))
       .then((res) => {
         const { directMessage } = res.data;
         dispatch(createDirectMessageGroupSuccess(directMessage));
@@ -123,10 +116,7 @@ export const deleteDirectMessageGroup = (directMessageId) => (
 ) => {
   return new Promise(function (resolve, reject) {
     axios
-      .delete(
-        `http://localhost:5000/api/directMessages/${directMessageId}`,
-        tokenConfig(getState)
-      )
+      .delete(`/api/directMessages/${directMessageId}`, tokenConfig(getState))
       .then((res) => {
         dispatch(deleteDirectMessageGroupSuccess(res.data));
         dispatch(setHomeItem("friends"));
@@ -170,7 +160,7 @@ export const createDirectMessage = ({
   return new Promise(function (resolve, reject) {
     axios
       .post(
-        `http://localhost:5000/api/directMessages/${directMessageId}/messages`,
+        `/api/directMessages/${directMessageId}/messages`,
         { userId, username, text },
         tokenConfig(getState)
       )
@@ -215,7 +205,7 @@ export const deleteDirectMessage = ({ messageId, directMessageId }) => (
   return new Promise(function (resolve, reject) {
     axios
       .delete(
-        `http://localhost:5000/api/directMessages/${directMessageId}/messages/${messageId}`,
+        `/api/directMessages/${directMessageId}/messages/${messageId}`,
         tokenConfig(getState)
       )
       .then((res) => {
