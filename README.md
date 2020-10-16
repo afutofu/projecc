@@ -10,6 +10,7 @@ Technologies used:
 - [Socket.IO](https://socket.io/)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
+- [Styled Components](https://styled-components.com/)
 
 Features in this version:
 
