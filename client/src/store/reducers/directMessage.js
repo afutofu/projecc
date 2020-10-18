@@ -38,8 +38,9 @@ const friendReducer = (state = initialState, action) => {
       return {
         ...state,
         directMessages: state.directMessages.filter((directMessage) => {
-          if (directMessage._id != action.payload.directMessage._id)
+          if (directMessage._id !== action.payload.directMessage._id)
             return directMessage;
+          return null;
         }),
       };
     case CREATE_DIRECT_MESSAGE_CLIENT:
@@ -47,7 +48,7 @@ const friendReducer = (state = initialState, action) => {
       return {
         ...state,
         directMessages: state.directMessages.map((directMessage) => {
-          if (directMessage._id == action.payload.directMessageId) {
+          if (directMessage._id === action.payload.directMessageId) {
             directMessage.messages = [
               ...directMessage.messages,
               action.payload.newMessage,
@@ -61,10 +62,11 @@ const friendReducer = (state = initialState, action) => {
       return {
         ...state,
         directMessages: state.directMessages.map((directMessage) => {
-          if (directMessage._id == action.payload.directMessageId) {
+          if (directMessage._id === action.payload.directMessageId) {
             directMessage.messages = directMessage.messages.filter(
               (message) => {
-                if (message._id != action.payload.messageId) return message;
+                if (message._id !== action.payload.messageId) return message;
+                return null;
               }
             );
           }

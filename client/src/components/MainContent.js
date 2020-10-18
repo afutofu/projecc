@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { logout } from "../store/actions";
 import ContentBar from "./ContentBar";
 import Content from "./Content";
 

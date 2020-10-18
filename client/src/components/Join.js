@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -34,16 +34,16 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Display = styled.div`
-  position: relative;
-  width: 600px;
-  height: 100%;
-  background-color: none;
-  box-sizing: border-box;
-  margin-right: 20px;
-  padding-right: 20px;
-  border-right: 5px solid rgba(0, 0, 0, 0.3);
-`;
+// const Display = styled.div`
+//   position: relative;
+//   width: 600px;
+//   height: 100%;
+//   background-color: none;
+//   box-sizing: border-box;
+//   margin-right: 20px;
+//   padding-right: 20px;
+//   border-right: 5px solid rgba(0, 0, 0, 0.3);
+// `;
 
 const JoinBox = styled.div`
   position: relative;
@@ -205,6 +205,7 @@ const Join = (props) => {
         .then(() => setRedirect(true))
         .catch((err) => console.log(err));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

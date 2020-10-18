@@ -30,7 +30,6 @@ import {
   renameProjectClient,
   deleteProjectClient,
   fetchUser,
-  deleteFriend,
 } from "../store/actions";
 
 const MainComp = styled.div`
@@ -83,7 +82,7 @@ const Project = (props) => {
 
       // FRIEND EVENT LISTENERS
       socket.on("friendRequest", ({ type, newRequest, friendId, clientId }) => {
-        if (clientId == user._id) {
+        if (clientId === user._id) {
           console.log("Friend request from server");
           switch (type) {
             case "CREATE":
@@ -101,7 +100,7 @@ const Project = (props) => {
       });
 
       socket.on("friend", ({ type, friend, clientId }) => {
-        if (clientId == user._id) {
+        if (clientId === user._id) {
           console.log("Friend from server");
           switch (type) {
             case "CREATE":
@@ -121,7 +120,7 @@ const Project = (props) => {
       // DIRECT MESSAGE CLIENT EVENT LISTENERS
       // Listening for direct message groups from server
       socket.on("directMessageGroup", ({ type, directMessage, clientId }) => {
-        if (clientId == user._id) {
+        if (clientId === user._id) {
           console.log("Direct message group from server");
           switch (type) {
             case "CREATE":
@@ -142,7 +141,7 @@ const Project = (props) => {
       socket.on(
         "directMessage",
         ({ type, message, messageId, directMessageId, clientId }) => {
-          if (clientId == user._id) {
+          if (clientId === user._id) {
             console.log("Direct message from server");
             switch (type) {
               case "CREATE":
@@ -234,6 +233,7 @@ const Project = (props) => {
         })
         .catch((err) => {});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, fetchProjects]);
 
   const render = () => {

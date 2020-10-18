@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import io from "socket.io-client";
 import { connect } from "react-redux";
 
 import Messages from "./Messages";
@@ -124,9 +123,10 @@ const Chat = (props) => {
 
   // If chat is in direct messages, fetch user data (name)
   useEffect(() => {
-    if (chatType == "dm" && directMessage) {
+    if (chatType === "dm" && directMessage) {
       fetchMember();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [directMessageId]);
 
   const fetchMember = () => {
@@ -136,7 +136,8 @@ const Chat = (props) => {
 
     // Get all members excluding the user
     const memberIds = directMessage.members.filter((member) => {
-      if (member != userId) return member;
+      if (member !== userId) return member;
+      return null;
     });
 
     // Get the first member in the memberIds array
@@ -155,7 +156,7 @@ const Chat = (props) => {
   const onMessageSubmit = (e) => {
     e.preventDefault();
 
-    if (chatType == "dm") {
+    if (chatType === "dm") {
       if (messageDM) {
         createDirectMessage({
           directMessageId,
@@ -228,7 +229,7 @@ const Chat = (props) => {
       });
   };
 
-  if (chatType == "dm") {
+  if (chatType === "dm") {
     return (
       <ChatComp>
         <Header>

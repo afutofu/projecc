@@ -31,7 +31,7 @@ export const createChannelClient = (state, action) => {
   const { newChannel, projectId } = action.payload;
 
   // If client not in same project as new channel
-  if (!state.selectedProject || state.selectedProject._id != projectId) {
+  if (!state.selectedProject || state.selectedProject._id !== projectId) {
     return {
       ...state,
       projects: state.projects.map((project) => {
@@ -128,7 +128,7 @@ export const renameChannelClient = (state, action) => {
   const { renamedChannel, channelId, projectId } = action.payload;
 
   // If client not in same project as deleted channel
-  if (!state.selectedProject || state.selectedProject._id != projectId) {
+  if (!state.selectedProject || state.selectedProject._id !== projectId) {
     return {
       ...state,
       projects: state.projects.map((project) => {
@@ -238,13 +238,13 @@ export const deleteChannelClient = (state, action) => {
   const { channelId, projectId } = action.payload;
 
   // If client not in same project as deleted channel
-  if (!state.selectedProject || state.selectedProject._id != projectId) {
+  if (!state.selectedProject || state.selectedProject._id !== projectId) {
     return {
       ...state,
       projects: state.projects.map((project) => {
         if (project._id === projectId) {
           project.channels = project.channels.filter(
-            (channel) => channel._id != channelId
+            (channel) => channel._id !== channelId
           );
         }
         return project;
@@ -261,7 +261,7 @@ export const deleteChannelClient = (state, action) => {
     projects: state.projects.map((project) => {
       if (project._id === projectId) {
         newChannels = project.channels.filter(
-          (channel) => channel._id != channelId
+          (channel) => channel._id !== channelId
         );
         if (
           project.selectedChannel._id === channelId &&

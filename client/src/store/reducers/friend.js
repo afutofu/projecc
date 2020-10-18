@@ -60,8 +60,9 @@ const friendReducer = (state = initialState, action) => {
       return {
         ...state,
         requests: state.requests.filter((request) => {
-          if (request.senderId != friendId && request.receiverId != friendId)
+          if (request.senderId !== friendId && request.receiverId !== friendId)
             return request;
+          return null;
         }),
         isLoading: false,
       };
@@ -74,10 +75,11 @@ const friendReducer = (state = initialState, action) => {
         friends: [friend, ...state.friends],
         requests: state.requests.filter((request) => {
           if (
-            request.senderId != friend.friendId &&
-            request.receiverId != friend.friendId
+            request.senderId !== friend.friendId &&
+            request.receiverId !== friend.friendId
           )
             return request;
+          return null;
         }),
         isLoading: false,
       };
@@ -89,13 +91,12 @@ const friendReducer = (state = initialState, action) => {
         ...state,
         friends: state.friends.filter((friend) => {
           if (friend.friendId !== friendId) return friend;
+          return null;
         }),
         isLoading: false,
       };
     }
-    case SEND_FRIEND_REQUEST_CLIENT:
     case SEND_FRIEND_REQUEST_FAIL:
-    case DELETE_FRIEND_REQUEST_CLIENT:
     case DELETE_FRIEND_REQUEST_FAIL:
     case ADD_FRIEND_FAIL:
     case DELETE_FRIEND_FAIL:

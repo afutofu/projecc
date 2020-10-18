@@ -110,7 +110,7 @@ const ErrorMessage = styled.p`
 `;
 
 const Input = styled.input.attrs((props) => ({
-  placeholder: "Example: 5f7c6dc296a3c22f107d2a03",
+  placeholder: "Example: 2f059u8gc87bc0353a5b5384",
 }))`
   position: relative;
   width: 100%;

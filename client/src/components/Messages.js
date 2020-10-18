@@ -36,7 +36,7 @@ const Messages = (props) => {
     });
   }
 
-  if (chatType == "dm") {
+  if (chatType === "dm") {
     return (
       <MessagesComp>
         {newMessages.map((message, i) => {

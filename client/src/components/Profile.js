@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
@@ -36,17 +36,17 @@ const AvatarDisplay = styled.div`
   }
 `;
 
-const AvatarImage = styled.img.attrs((props) => ({
-  src: props.src && props.src,
-}))`
-  display: ${(props) => (props.src ? "block" : "none")};
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: none;
-  outline: none;
-  border: 0;
-`;
+// const AvatarImage = styled.img.attrs((props) => ({
+//   src: props.src && props.src,
+// }))`
+//   display: ${(props) => (props.src ? "block" : "none")};
+//   width: 100%;
+//   height: 100%;
+//   border-radius: 50%;
+//   background: none;
+//   outline: none;
+//   border: 0;
+// `;
 
 const UserDisplay = styled.h1`
   font-size: 18px;
@@ -78,133 +78,133 @@ const IdDisplay = styled.p`
   font-family: "Montserrat", sans-serif;
 `;
 
-const FileInput = styled.input.attrs((props) => ({
-  type: "file",
-}))`
-  display: none;
-  border: none;
-`;
+// const FileInput = styled.input.attrs((props) => ({
+//   type: "file",
+// }))`
+//   display: none;
+//   border: none;
+// `;
 
-const AvatarEdit = styled.div`
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin-bottom: 30px;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  cursor: pointer;
+// const AvatarEdit = styled.div`
+//   position: absolute;
+//   width: 150px;
+//   height: 150px;
+//   border-radius: 50%;
+//   margin-bottom: 30px;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   opacity: 0;
+//   cursor: pointer;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
 
-  color: #ddd;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 700;
+//   color: #ddd;
+//   font-size: 12px;
+//   text-transform: uppercase;
+//   font-weight: 700;
 
-  transition: opacity 0.2s;
-  :hover {
-    opacity: 1;
-  }
-`;
+//   transition: opacity 0.2s;
+//   :hover {
+//     opacity: 1;
+//   }
+// `;
 
-const UserEdit = styled.input.attrs((props) => ({
-  placeholder: props.placeholder,
-  value: props.value,
-  spellCheck: "false",
-  type: "text",
-}))`
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 500;
-  margin: 0;
-  margin-bottom: 8px;
-  background-color: #222;
-  color: #ddd;
-  padding: 7px;
-  box-sizing: border-box;
-  outline: unset;
-  border: #222 1px solid;
-  border-radius: 4px;
-  font-family: "Montserrat", sans-serif;
+// const UserEdit = styled.input.attrs((props) => ({
+//   placeholder: props.placeholder,
+//   value: props.value,
+//   spellCheck: "false",
+//   type: "text",
+// }))`
+//   width: 100%;
+//   max-width: 400px;
+//   text-align: center;
+//   font-size: 18px;
+//   font-weight: 500;
+//   margin: 0;
+//   margin-bottom: 8px;
+//   background-color: #222;
+//   color: #ddd;
+//   padding: 7px;
+//   box-sizing: border-box;
+//   outline: unset;
+//   border: #222 1px solid;
+//   border-radius: 4px;
+//   font-family: "Montserrat", sans-serif;
 
-  :focus {
-    border: #1a8cff 1px solid;
-  }
-`;
+//   :focus {
+//     border: #1a8cff 1px solid;
+//   }
+// `;
 
-const EmailEdit = styled.input.attrs((props) => ({
-  placeholder: props.placeholder,
-  value: props.value,
-  spellCheck: "false",
-  type: "text",
-}))`
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 500;
-  margin: 0;
-  margin-bottom: 15px;
-  background-color: #222;
-  color: #ddd;
-  padding: 7px;
-  box-sizing: border-box;
-  outline: unset;
-  border: #222 1px solid;
-  border-radius: 4px;
-  font-family: "Montserrat", sans-serif;
+// const EmailEdit = styled.input.attrs((props) => ({
+//   placeholder: props.placeholder,
+//   value: props.value,
+//   spellCheck: "false",
+//   type: "text",
+// }))`
+//   width: 100%;
+//   max-width: 400px;
+//   text-align: center;
+//   font-size: 18px;
+//   font-weight: 500;
+//   margin: 0;
+//   margin-bottom: 15px;
+//   background-color: #222;
+//   color: #ddd;
+//   padding: 7px;
+//   box-sizing: border-box;
+//   outline: unset;
+//   border: #222 1px solid;
+//   border-radius: 4px;
+//   font-family: "Montserrat", sans-serif;
 
-  :focus {
-    border: #1a8cff 1px solid;
-  }
-`;
+//   :focus {
+//     border: #1a8cff 1px solid;
+//   }
+// `;
 
-const Button = styled.button`
-  width: 200px;
-  height: 45px;
-  margin-bottom: 20px;
-  padding-left: 10px;
-  text-transform: uppercase;
-  /* font-family: "Montserrat", sans-serif; */
-  font-weight: 700;
-  color: white;
-  background: #1a8cff;
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
+// const Button = styled.button`
+//   width: 200px;
+//   height: 45px;
+//   margin-bottom: 20px;
+//   padding-left: 10px;
+//   text-transform: uppercase;
+//   /* font-family: "Montserrat", sans-serif; */
+//   font-weight: 700;
+//   color: white;
+//   background: #1a8cff;
+//   border: none;
+//   border-radius: 4px;
+//   outline: none;
+//   cursor: pointer;
 
-  transition: background-color 0.25s;
-  :hover {
-    background: #0073e6;
-  }
+//   transition: background-color 0.25s;
+//   :hover {
+//     background: #0073e6;
+//   }
 
-  a {
-    color: white;
-    all: unset;
-  }
-`;
+//   a {
+//     color: white;
+//     all: unset;
+//   }
+// `;
 
-const CancelButton = styled.p`
-  border: none;
-  outline: none;
-  background: none;
-  color: #ddd;
-  margin: 0;
-  margin-bottom: 20px;
-  font-family: "Montserrat", sans-serif;
-  font-size: 14px;
-  cursor: pointer;
+// const CancelButton = styled.p`
+//   border: none;
+//   outline: none;
+//   background: none;
+//   color: #ddd;
+//   margin: 0;
+//   margin-bottom: 20px;
+//   font-family: "Montserrat", sans-serif;
+//   font-size: 14px;
+//   cursor: pointer;
 
-  :hover {
-    text-decoration: underline;
-  }
-`;
+//   :hover {
+//     text-decoration: underline;
+//   }
+// `;
 
 const LogoutButton = styled.button`
   position: absolute;
@@ -228,38 +228,38 @@ const LogoutButton = styled.button`
 const Profile = (props) => {
   const { socket, user, logout } = props;
 
-  let fileInput = useRef(null);
+  // let fileInput = useRef(null);
 
-  const [editable, setEditable] = useState(false);
-  const [profileImage, setProfileImage] = useState(
-    "https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
-  );
-  const [usernameVal, setUsernameVal] = useState("");
-  const [emailVal, setEmailVal] = useState("");
+  // const [editable, setEditable] = useState(false);
+  // const [profileImage, setProfileImage] = useState(
+  //   "https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png"
+  // );
+  // const [usernameVal, setUsernameVal] = useState("");
+  // const [emailVal, setEmailVal] = useState("");
 
-  const onProfileImageSelect = (e) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setProfileImage(reader.result);
-      }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
+  // const onProfileImageSelect = (e) => {
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     if (reader.readyState === 2) {
+  //       setProfileImage(reader.result);
+  //     }
+  //   };
+  //   reader.readAsDataURL(e.target.files[0]);
+  // };
 
-  const onEdit = () => {
-    setUsernameVal(user.name);
-    setEmailVal(user.email);
-    setEditable(true);
-  };
+  // const onEdit = () => {
+  //   setUsernameVal(user.name);
+  //   setEmailVal(user.email);
+  //   setEditable(true);
+  // };
 
-  const onEditExit = () => {
-    setEditable(false);
-  };
+  // const onEditExit = () => {
+  //   setEditable(false);
+  // };
 
-  const onEditSave = () => {
-    setEditable(false);
-  };
+  // const onEditSave = () => {
+  //   setEditable(false);
+  // };
 
   const onLogout = () => {
     console.log("logout");
@@ -267,38 +267,38 @@ const Profile = (props) => {
     logout();
   };
 
-  if (editable) {
-    return (
-      <ProfileComp>
-        <AvatarDisplay>
-          <FileInput
-            onChange={onProfileImageSelect}
-            ref={(el) => (fileInput = el)}
-          />
-          <AvatarEdit onClick={() => fileInput.click()}>
-            Change Avatar
-          </AvatarEdit>
-          {/* <AvatarImage src={profileImage} /> */}
-        </AvatarDisplay>
-        {user ? (
-          <UserEdit
-            placeholder={"Username"}
-            value={usernameVal}
-            onChange={(e) => setUsernameVal(e.target.value)}
-          />
-        ) : null}
-        {user ? (
-          <EmailEdit
-            placeholder={"Email"}
-            value={emailVal}
-            onChange={(e) => setEmailVal(e.target.value)}
-          />
-        ) : null}
-        <CancelButton onClick={onEditExit}>Cancel</CancelButton>
-        <Button onClick={onEditSave}>Save</Button>
-      </ProfileComp>
-    );
-  }
+  // if (editable) {
+  //   return (
+  //     <ProfileComp>
+  //       <AvatarDisplay>
+  //         <FileInput
+  //           onChange={onProfileImageSelect}
+  //           ref={(el) => (fileInput = el)}
+  //         />
+  //         <AvatarEdit onClick={() => fileInput.click()}>
+  //           Change Avatar
+  //         </AvatarEdit>
+  //         {/* <AvatarImage src={profileImage} /> */}
+  //       </AvatarDisplay>
+  //       {user ? (
+  //         <UserEdit
+  //           placeholder={"Username"}
+  //           value={usernameVal}
+  //           onChange={(e) => setUsernameVal(e.target.value)}
+  //         />
+  //       ) : null}
+  //       {user ? (
+  //         <EmailEdit
+  //           placeholder={"Email"}
+  //           value={emailVal}
+  //           onChange={(e) => setEmailVal(e.target.value)}
+  //         />
+  //       ) : null}
+  //       <CancelButton onClick={onEditExit}>Cancel</CancelButton>
+  //       <Button onClick={onEditSave}>Save</Button>
+  //     </ProfileComp>
+  //   );
+  // }
   //user && user.name.substring(0, 1)
   return (
     <ProfileComp>

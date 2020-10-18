@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { connect } from "react-redux";
 
-import {
-  createProjectClient,
-  createProject,
-  renameProjectClient,
-  renameProject,
-} from "../store/actions";
+import { createProject, renameProject } from "../store/actions";
 import { projectModalClose } from "../store/actions";
 
 const modalFadeIn = keyframes`

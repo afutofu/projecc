@@ -97,7 +97,7 @@ export const createProjectFail = (state, action) => {
 export const renameProjectClient = (state, action) => {
   const { renamedProject, projectId } = action.payload;
 
-  if (!state.selectedProject || state.selectedProject._id != projectId) {
+  if (!state.selectedProject || state.selectedProject._id !== projectId) {
     return {
       ...state,
       projects: state.projects.map((project) => {
@@ -160,10 +160,10 @@ export const renameProjectFail = (state, action) => {
 export const deleteProjectClient = (state, action) => {
   const { projectId } = action.payload;
 
-  if (!state.selectedProject || state.selectedProject._id != projectId) {
+  if (!state.selectedProject || state.selectedProject._id !== projectId) {
     return {
       ...state,
-      projects: state.projects.filter((project) => project._id != projectId),
+      projects: state.projects.filter((project) => project._id !== projectId),
     };
   }
 

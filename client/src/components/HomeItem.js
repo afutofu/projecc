@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { deleteDirectMessageGroup } from "../store/actions";
-
 const HomeItemComp = styled.div`
   width: 100%;
   height: 45px;
@@ -92,16 +90,9 @@ const Button = styled.div`
 `;
 
 const HomeItem = (props) => {
-  const {
-    socket,
-    id,
-    name,
-    homeItem,
-    setHomeItem,
-    onDeleteDirectMessageGroup,
-  } = props;
+  const { id, name, homeItem, setHomeItem, onDeleteDirectMessageGroup } = props;
 
-  const selected = homeItem == id;
+  const selected = homeItem === id;
 
   const renderIcon = () => {
     switch (id) {
@@ -117,7 +108,7 @@ const HomeItem = (props) => {
   };
 
   const checkIfFriend = () => {
-    if (id != "profile" && id != "schedule" && id != "friends") {
+    if (id !== "profile" && id !== "schedule" && id !== "friends") {
       return true;
     }
     return false;

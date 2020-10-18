@@ -2,14 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import {
-  fetchUser,
-  setHomeItem,
-  deleteDirectMessageGroup,
-} from "../store/actions";
+import { setHomeItem, deleteDirectMessageGroup } from "../store/actions";
 import { fetchUserData } from "../shared/utils";
 import HomeItem from "./HomeItem";
-import { FETCH_USER_BEGIN } from "../store/actions/actions";
 
 const HomeBarComp = styled.div``;
 
@@ -36,7 +31,6 @@ const HomeBar = (props) => {
     socket,
     user,
     fetchUserData,
-    homeItem,
     setHomeItem,
     directMessages,
     deleteDirectMessageGroup,
@@ -46,6 +40,7 @@ const HomeBar = (props) => {
 
   useEffect(() => {
     fetchDirectMessages(directMessages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [directMessages.length]);
 
   const onDeleteDirectMessageGroup = (e, directMessageId, memberId) => {
@@ -70,7 +65,8 @@ const HomeBar = (props) => {
     directMessages.forEach((directMessage, i) => {
       // Get all members excluding the user
       const memberIds = directMessage.members.filter((member) => {
-        if (member != user._id) return member;
+        if (member !== user._id) return member;
+        return null;
       });
 
       // Get the first member in the

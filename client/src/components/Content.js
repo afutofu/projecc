@@ -13,16 +13,16 @@ const ContentComp = styled.div`
   background-color: #2b2b2b;
 `;
 
-const ChatPrefix = styled.span`
-  :before {
-    content: "~";
-  }
-  width: 15px;
-  color: #555;
-  font-size: 25px;
-  padding-right: 8px;
-  font-weight: 700;
-`;
+// const ChatPrefix = styled.span`
+//   :before {
+//     content: "~";
+//   }
+//   width: 15px;
+//   color: #555;
+//   font-size: 25px;
+//   padding-right: 8px;
+//   font-weight: 700;
+// `;
 
 const Header = styled.div`
   width: 100%;
@@ -42,11 +42,11 @@ const Header = styled.div`
   background-color: #2b2b2b;
 `;
 
-const Container = styled.div`
-  position: relative;
-  width: 100%;
-  height: calc(100% - 50px);
-`;
+// const Container = styled.div`
+//   position: relative;
+//   width: 100%;
+//   height: calc(100% - 50px);
+// `;
 
 const CenterContainer = styled.div`
   position: relative;
@@ -112,7 +112,8 @@ const Content = (props) => {
     default:
       // Get direct message from redux store using id
       const directMessage = directMessages.find((directMessage) => {
-        if (directMessage._id == homeItem) return directMessage;
+        if (directMessage._id === homeItem) return directMessage;
+        return null;
       });
 
       return (

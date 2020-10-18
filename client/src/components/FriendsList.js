@@ -153,6 +153,7 @@ const FriendsList = (props) => {
     if (requests) {
       fetchRequests(requests);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friends.length, requests.length]);
 
   const onAddFriend = (userId, friendId) => {

@@ -96,7 +96,7 @@ export const deleteDirectMessageGroupClient = (directMessage) => (
   getState
 ) => {
   const { homeItem } = getState().home;
-  if (directMessage._id == homeItem) {
+  if (directMessage._id === homeItem) {
     dispatch({
       type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
       payload: { directMessage },

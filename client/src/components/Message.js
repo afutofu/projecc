@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const MessageComp = styled.div`
@@ -11,11 +11,6 @@ const MessageComp = styled.div`
   font-family: "Montserrat", "san-serif";
   margin-bottom: 25px;
   box-sizing: border-box;
-`;
-
-const Avatar = styled.div`
-  position: relative;
-  width: 15%;
 `;
 
 const AvatarDisplay = styled.div`
@@ -132,16 +127,8 @@ const Button = styled.div`
 `;
 
 const Message = (props) => {
-  const [memberName, setMemberName] = useState("");
-  const {
-    chatType,
-    message,
-    channelId,
-    projectId,
-    deleteMessage,
-    fetchUserData,
-  } = props;
-  const { _id, userId, username, date, text } = message;
+  const { chatType, message, channelId, projectId, deleteMessage } = props;
+  const { _id, username, date, text } = message;
 
   // // If chat is in direct messages, fetch user data (name)
   // useEffect(() => {
@@ -167,7 +154,7 @@ const Message = (props) => {
   //     });
   // };
 
-  if (chatType == "dm") {
+  if (chatType === "dm") {
     return (
       <MessageComp>
         <AvatarDisplay>{username.substring(0, 1)}</AvatarDisplay>
