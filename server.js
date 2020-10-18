@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // IMPORT ROUTES
-const routes = require("./routes");
+// const routes = require("./routes");
 const projectRoutes = require("./routes/api/projects");
 const channelRoutes = require("./routes/api/channels");
 const messageRoutes = require("./routes/api/messages");
@@ -27,7 +27,7 @@ const directMessageRoutes = require("./routes/api/directMessage");
 const authRoutes = require("./routes/api/auth");
 
 // USE ROUTES
-app.use("/", routes);
+// app.use("/", routes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/projects/:projectId/channels", channelRoutes);
 app.use("/api/projects/:projectId/channels/:channelId/messages", messageRoutes);
