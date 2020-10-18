@@ -27,7 +27,7 @@ export const createMessage = (message, channelId, projectId) => (
     dispatch(createMessageBegin());
     axios
       .post(
-        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages`,
+        `/api/projects/${projectId}/channels/${channelId}/messages`,
         message,
         tokenConfig(getState)
       )
@@ -78,7 +78,7 @@ export const deleteMessage = (messageId, channelId, projectId) => (
     dispatch(deleteMessageBegin());
     axios
       .delete(
-        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`,
+        `/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`,
         tokenConfig(getState)
       )
       .then((res) => {

@@ -1,5 +1,7 @@
 # Projecc
 
+Website Link: [Projecc](https://projecc-afu.herokuapp.com/)
+
 A real-time text messaging web app inspired by Discord. Join project groups, interact with fellow project members, and plan out your next big project!
 
 Technologies used:

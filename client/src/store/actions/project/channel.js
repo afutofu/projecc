@@ -35,7 +35,7 @@ export const createChannel = (channelName, projectId) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(createChannelBegin());
     axios
-      .post(`http://localhost:5000/api/projects/${projectId}/channels`, {
+      .post(`/api/projects/${projectId}/channels`, {
         channelName,
       })
       .then((res) => {
@@ -83,10 +83,9 @@ export const renameChannel = (newChannelName, channelId, projectId) => (
   return new Promise(function (resolve, reject) {
     dispatch(renameChannelBegin());
     axios
-      .patch(
-        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}`,
-        { newChannelName }
-      )
+      .patch(`/api/projects/${projectId}/channels/${channelId}`, {
+        newChannelName,
+      })
       .then((res) => {
         dispatch(renameChannelSuccess(res.data, channelId, projectId));
         resolve({ data: res.data, channelId, projectId });
@@ -130,9 +129,7 @@ export const deleteChannel = (channelId, projectId) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteChannelBegin());
     axios
-      .delete(
-        `http://localhost:5000/api/projects/${projectId}/channels/${channelId}`
-      )
+      .delete(`/api/projects/${projectId}/channels/${channelId}`)
       .then((res) => {
         dispatch(deleteChannelSuccess(res.data));
         resolve({ channelId, projectId });

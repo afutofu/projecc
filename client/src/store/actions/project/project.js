@@ -31,7 +31,7 @@ export const fetchProjects = () => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(fetchProjectsBegin());
     axios
-      .get("http://localhost:5000/api/projects")
+      .get("/api/projects")
       .then((res) => {
         dispatch(fetchProjectsSuccess(res.data));
         resolve(res.data);
@@ -75,7 +75,7 @@ export const createProject = ({ name, creatorName }) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(createProjectBegin());
     axios
-      .post("http://localhost:5000/api/projects", { name, creatorName })
+      .post("/api/projects", { name, creatorName })
       .then((res) => {
         dispatch(createProjectSuccess(res.data));
         resolve({ data: res.data });
@@ -119,7 +119,7 @@ export const renameProject = ({ newName, projectId }) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(renameProjectBegin());
     axios
-      .patch(`http://localhost:5000/api/projects/${projectId}`, {
+      .patch(`/api/projects/${projectId}`, {
         name: newName,
       })
       .then((res) => {
@@ -165,7 +165,7 @@ export const deleteProject = (projectId) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(deleteProjectBegin());
     axios
-      .delete(`http://localhost:5000/api/projects/${projectId}`)
+      .delete(`/api/projects/${projectId}`)
       .then((res) => {
         dispatch(deleteProjectSuccess(res.data));
         resolve({ data: res.data, projectId });
