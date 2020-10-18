@@ -44,7 +44,7 @@ const MainComp = styled.div`
 
 let socket;
 const Project = (props) => {
-  const ENDPOINT = "localhost:5000";
+  const ENDPOINT = "/";
   const [redirect, setRedirect] = useState(false);
 
   const {
