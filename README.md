@@ -8,11 +8,12 @@ Technologies used:
 
 - [React](https://reactjs.org/)
 - [Redux](https://redux.js.org/)
+- [Styled Components](https://styled-components.com/)
 - [Node.js](https://nodejs.org/en/)
 - [Socket.IO](https://socket.io/)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
-- [Styled Components](https://styled-components.com/)
+- [JWT](https://en.wikipedia.org/wiki/JSON_Web_Token)
 
 Features in this version:
 
