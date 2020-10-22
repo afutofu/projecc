@@ -39,7 +39,7 @@ const MainComp = styled.div`
   background-color: #1b1b1b;
   color: white;
   display: flex;
-  overflow: hidden;
+  /* overflow: hidden; */
 `;
 
 let socket;

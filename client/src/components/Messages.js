@@ -12,6 +12,7 @@ const MessagesComp = styled.div`
   padding: 0 20px;
   margin: 0;
   box-sizing: border-box;
+  overflow-y: auto;
 `;
 
 const TopSpace = styled.div`

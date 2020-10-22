@@ -61,6 +61,7 @@ const Header = styled.div`
   cursor: default;
   position: relative;
   background-color: #2b2b2b;
+  z-index: 100;
 `;
 
 const Container = styled.div`
