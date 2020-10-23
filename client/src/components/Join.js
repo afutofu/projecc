@@ -228,6 +228,8 @@ const Join = (props) => {
 
   const onLogin = (e) => {
     e.preventDefault();
+    clearLoginErrorMsg();
+
     login(email, password).then((user) => {
       setLoginWelcomeMsg(`Welcome back, ${user.name}`);
       setTimeout(() => {
@@ -238,6 +240,8 @@ const Join = (props) => {
 
   const onRegister = (e) => {
     e.preventDefault();
+    clearRegisterErrorMsg();
+
     register(name, email, password).then((user) => {
       setRegisterWelcomeMsg(`Welcome, ${user.name}`);
       setTimeout(() => {

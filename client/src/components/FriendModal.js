@@ -208,17 +208,29 @@ const FriendModal = (props) => {
   if (modalOpen) firstRender = false;
 
   const onAddFriend = () => {
-    // Validation to check if there is already a request/friend with the same id
+    setErrorMsg("");
+
+    // Validation
     let error = false;
 
+    // Check if sending request to self
+    if (user._id == friendId) {
+      setFriendId("");
+      setErrorMsg("You cannot send a friend request to yourself");
+      error = true;
+    }
+
+    // Check if there is already a request/friend with the same id
     // If already friends
-    for (let i = 0; i < friends.length; i++) {
-      const friend = friends[i];
-      if (friend.friendId === friendId) {
-        setFriendId("");
-        setErrorMsg("You are already friends with this user");
-        error = true;
-        break;
+    if (!error) {
+      for (let i = 0; i < friends.length; i++) {
+        const friend = friends[i];
+        if (friend.friendId === friendId) {
+          setFriendId("");
+          setErrorMsg("You are already friends with this user");
+          error = true;
+          break;
+        }
       }
     }
 
