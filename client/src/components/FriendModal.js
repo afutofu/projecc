@@ -213,11 +213,18 @@ const FriendModal = (props) => {
     // Validation
     let error = false;
 
-    // Check if sending request to self
-    if (user._id == friendId) {
-      setFriendId("");
-      setErrorMsg("You cannot send a friend request to yourself");
+    // Check if there is a friend id
+    if (!friendId) {
       error = true;
+    }
+
+    // Check if sending request to self
+    if (!error) {
+      if (user._id === friendId) {
+        setFriendId("");
+        setErrorMsg("You cannot send a friend request to yourself");
+        error = true;
+      }
     }
 
     // Check if there is already a request/friend with the same id
