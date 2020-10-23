@@ -93,6 +93,13 @@ router.post("/:friendId/requests", auth, (req, res) => {
     User.findById(friendId, (err, foundFriend) => {
       if (err) return res.status(400).json({ msg: "User does not exist" });
 
+      // Validation to check if friend id is the same as user id
+      if (foundUser._id == friendId) {
+        return res
+          .status(400)
+          .json({ msg: "You cannot send a friend request to yourself" });
+      }
+
       // Validation to check if there is already a request/friend with the same id
       const { friends, requests } = foundUser;
 
