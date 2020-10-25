@@ -263,7 +263,7 @@ const Profile = (props) => {
   // };
 
   const onLogout = () => {
-    console.log("logout");
+    // console.log("logout");
     socket.emit("forceDisconnect");
     logout();
   };

@@ -83,7 +83,7 @@ const Project = (props) => {
       // FRIEND EVENT LISTENERS
       socket.on("friendRequest", ({ type, newRequest, friendId, clientId }) => {
         if (clientId === user._id) {
-          console.log("Friend request from server");
+          // console.log("Friend request from server");
           switch (type) {
             case "CREATE":
               // Store friend request
@@ -101,7 +101,7 @@ const Project = (props) => {
 
       socket.on("friend", ({ type, friend, clientId }) => {
         if (clientId === user._id) {
-          console.log("Friend from server");
+          // console.log("Friend from server");
           switch (type) {
             case "CREATE":
               // Store friend
@@ -121,7 +121,7 @@ const Project = (props) => {
       // Listening for direct message groups from server
       socket.on("directMessageGroup", ({ type, directMessage, clientId }) => {
         if (clientId === user._id) {
-          console.log("Direct message group from server");
+          // console.log("Direct message group from server");
           switch (type) {
             case "CREATE":
               // Send direct message to redux store
@@ -142,7 +142,7 @@ const Project = (props) => {
         "directMessage",
         ({ type, message, messageId, directMessageId, clientId }) => {
           if (clientId === user._id) {
-            console.log("Direct message from server");
+            // console.log("Direct message from server");
             switch (type) {
               case "CREATE":
                 // Send direct message to redux store
@@ -165,14 +165,14 @@ const Project = (props) => {
           // MESSAGE CLIENT EVENT LISTENERS
           // Listening for message from server
           socket.on("message", ({ type, data, channelId, projectId }) => {
-            console.log("Message from server");
+            // console.log("Message from server");
             switch (type) {
               case "CREATE":
                 // Send message to redux store
                 createMessageClient(data, channelId, projectId);
                 break;
               case "DELETE":
-                console.log(data.messages);
+                // console.log(data.messages);
                 // Send updated Project to redux store
                 deleteMessageClient(data, channelId, projectId);
                 break;
@@ -184,21 +184,21 @@ const Project = (props) => {
           // CHANNEL CLIENT EVENT LISTENERS
           // Listening for channel from server
           socket.on("channel", ({ type, data, channelId, projectId }) => {
-            console.log("Channel from server");
+            // console.log("Channel from server");
             switch (type) {
               case "CREATE":
                 // Send new channel to store
-                console.log("Create new channel");
+                // console.log("Create new channel");
                 createChannelClient(data, projectId);
                 break;
               case "RENAME":
                 // Send renamed channel to store
-                console.log("Renamed channel");
+                // console.log("Renamed channel");
                 renameChannelClient(data, channelId, projectId);
                 break;
               case "DELETE":
                 // Send channelId to be deleted to store
-                console.log("Delete channel");
+                // console.log("Delete channel");
                 deleteChannelClient(channelId, projectId);
                 break;
               default:
@@ -209,21 +209,21 @@ const Project = (props) => {
           // PROJECT CLIENT EVENT LISTENERS
           // Listening for project from server
           socket.on("project", ({ type, data, projectId }) => {
-            console.log("Project from server");
+            // console.log("Project from server");
             switch (type) {
               case "CREATE":
                 // Send new project to store
-                console.log("Create new project");
+                // console.log("Create new project");
                 createProjectClient(data);
                 break;
               case "RENAME":
                 // Send renamed project to store
-                console.log("Renamed project");
+                // console.log("Renamed project");
                 renameProjectClient(data, projectId);
                 break;
               case "DELETE":
                 // Send projectId to be deleted to store
-                console.log("Delete project");
+                // console.log("Delete project");
                 deleteProjectClient(projectId);
                 break;
               default:

@@ -86,7 +86,6 @@ const sendFriendRequestFail = (error) => {
 
 // DELETE FRIEND REQUEST
 export const deleteFriendRequestClient = (friendId) => {
-  console.log(friendId);
   return {
     type: DELETE_FRIEND_REQUEST_CLIENT,
     payload: { friendId },
