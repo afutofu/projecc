@@ -19,6 +19,14 @@ router.post("/", (req, res) => {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
+  // Email validation
+  // Regex test returns true if email format is correct
+  const re =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!re.test(email)) {
+    return res.status(400).json({ msg: "Incorrect email format" });
+  }
+
   // Check for existing user
   User.findOne({ email }).then((user) => {
     if (user) return res.status(400).json({ msg: "User already exists" });
