@@ -34,17 +34,6 @@ const Container = styled.div`
   align-items: center;
 `;
 
-// const Display = styled.div`
-//   position: relative;
-//   width: 600px;
-//   height: 100%;
-//   background-color: none;
-//   box-sizing: border-box;
-//   margin-right: 20px;
-//   padding-right: 20px;
-//   border-right: 5px solid rgba(0, 0, 0, 0.3);
-// `;
-
 const JoinBox = styled.div`
   position: relative;
   width: 300px;
@@ -107,13 +96,14 @@ const Header = styled.h1`
 
 const ErrorBox = styled.div`
   width: 100%;
-  height: 45px;
+  padding: 15px;
   margin-bottom: 20px;
   font-family: "Raleway", sans-serif;
   box-sizing: border-box;
   outline: none;
   font-size: 17px;
   letter-spacing: 1px;
+  line-height: 1.3em;
   background: #ff3d3d;
   color: white;
   border-radius: 4px;
@@ -121,7 +111,7 @@ const ErrorBox = styled.div`
   justify-content: center;
   align-items: center;
 
-  animation: ${fadeIn} 1.5s forwards;
+  animation: ${fadeIn} 0.5s forwards;
 `;
 
 const Form = styled.form`
@@ -132,11 +122,13 @@ const Form = styled.form`
   align-content: center;
 `;
 
-const Input = styled.input.attrs((props) => ({
-  type: props.type || "text",
-  placeholder: props.placeholder || "Name",
-  name: props.name,
-}))`
+const Input = styled.input.attrs((props) => {
+  return {
+    type: props.type || "text",
+    placeholder: props.placeholder || "Name",
+    name: props.name,
+  };
+})`
   height: 45px;
   margin-bottom: 20px;
   padding-left: 15px;
