@@ -27,6 +27,14 @@ router.post("/", (req, res) => {
     return res.status(400).json({ msg: "Incorrect email format" });
   }
 
+  // Password validation
+  // Password length should be 6 or more characters
+  if (password.length < 6) {
+    return res
+      .status(400)
+      .json({ msg: "Password should be 6 or more characters" });
+  }
+
   // Check for existing user
   User.findOne({ email }).then((user) => {
     if (user) return res.status(400).json({ msg: "User already exists" });
