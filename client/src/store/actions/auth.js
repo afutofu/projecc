@@ -69,6 +69,29 @@ const fetchUserFail = (msg) => {
 // Register new user
 export const register = (name, email, password) => (dispatch) => {
   return new Promise(function (resolve, reject) {
+    // Client-side validation
+    // Check if all fields are entered
+    if (!name || !email || !password) {
+      dispatch(registerFail("Please enter all fields"));
+      return Promise.resolve();
+    }
+
+    // Email validation
+    // Regex test returns true if email format is correct
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(email)) {
+      dispatch(registerFail("Incorrect email format"));
+      return Promise.resolve();
+    }
+
+    // Password validation
+    // Password length should be 6 or more characters
+    if (password.length < 6) {
+      dispatch(registerFail("Password should be 6 or more characters"));
+      return Promise.resolve();
+    }
+
     // Headers
     const config = {
       "Content-Type": "application/json",
@@ -110,6 +133,15 @@ export const registerFail = (msg) => {
 export const login = (email, password) => (dispatch) => {
   return new Promise(function (resolve, reject) {
     dispatch(loginBegin());
+
+    // Client-side validation
+
+    // Check if all fields are entered
+    if (!email || !password) {
+      dispatch(loginFail("Please enter all fields"));
+      return Promise.resolve();
+    }
+
     // Headers
     const config = {
       "Content-Type": "application/json",
