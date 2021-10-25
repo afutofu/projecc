@@ -98,7 +98,7 @@ const Content = (props) => {
       return (
         <ContentComp>
           <Header>Schedule</Header>
-          <CenterContainer>Work In Progress :3</CenterContainer>
+          <CenterContainer>Work In Progress</CenterContainer>
         </ContentComp>
       );
     // If selected friends
