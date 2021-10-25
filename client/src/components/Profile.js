@@ -71,6 +71,32 @@ const EmailDisplay = styled.h3`
   box-sizing: border-box;
 `;
 
+const GuestDisplay = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 15px;
+  color: #ddd;
+  padding: 7px;
+  border: rgba(0, 0, 0, 0) 1px solid;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  * {
+    margin: 0;
+  }
+
+  h3 {
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 5px;
+  }
+`;
+
 const IdDisplay = styled.p`
   font-size: 14px;
   color: #888;
@@ -307,7 +333,11 @@ const Profile = (props) => {
       {user ? <UserDisplay>{user.name}</UserDisplay> : null}
       {user ? (
         user.isGuest ? (
-          <EmailDisplay>Guest Account</EmailDisplay>
+          <GuestDisplay>
+            <h3>Guest Account</h3>
+            <p>Can only view public project messages</p>
+            <p>Create an account to access all features</p>
+          </GuestDisplay>
         ) : (
           <EmailDisplay>{user.email}</EmailDisplay>
         )
