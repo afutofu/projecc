@@ -3,7 +3,13 @@ import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { setUsername, fetchUser, register, login } from "../store/actions";
+import {
+  setUsername,
+  fetchUser,
+  register,
+  login,
+  loginGuest,
+} from "../store/actions";
 
 const fadeIn = keyframes`
   from {opacity:0}
@@ -164,10 +170,17 @@ const Button = styled.button`
   }
 `;
 
+const SwitchTextArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const SwitchText = styled.p`
   color: white;
   font-size: 13px;
   align-self: center;
+  margin-bottom: 0;
 
   cursor: pointer;
 
@@ -187,7 +200,8 @@ const Join = (props) => {
   const [loginWelcomeMsg, setLoginWelcomeMsg] = useState(null);
   const [registerWelcomeMsg, setRegisterWelcomeMsg] = useState(null);
 
-  const { isAuthenticated, error, fetchUser, register, login } = props;
+  const { isAuthenticated, error, fetchUser, register, login, loginGuest } =
+    props;
 
   useEffect(() => {
     if (isAuthenticated === true) {
@@ -224,6 +238,17 @@ const Join = (props) => {
 
     login(email, password).then((user) => {
       setLoginWelcomeMsg(`Welcome back, ${user.name}`);
+      setTimeout(() => {
+        setRedirect(true);
+      }, 1500);
+    });
+  };
+
+  const onLoginGuest = () => {
+    clearLoginErrorMsg();
+
+    loginGuest().then(() => {
+      setLoginWelcomeMsg(`Welcome, guest`);
       setTimeout(() => {
         setRedirect(true);
       }, 1500);
@@ -291,9 +316,12 @@ const Join = (props) => {
           <Button onClick={onLogin} success={loginSuccess}>
             {loginSuccess ? loginWelcomeMsg : "Login"}
           </Button>
-          <SwitchText onClick={switchIsLogin}>
-            or create a new account
-          </SwitchText>
+          <SwitchTextArea>
+            <SwitchText onClick={switchIsLogin}>
+              or create a new account
+            </SwitchText>
+            <SwitchText onClick={onLoginGuest}>or login as a guest</SwitchText>
+          </SwitchTextArea>
         </Form>
       </LoginBox>
     );
@@ -321,7 +349,9 @@ const Join = (props) => {
           <Button onClick={onRegister} success={registerSuccess}>
             {registerSuccess ? registerWelcomeMsg : "Register"}
           </Button>
-          <SwitchText onClick={switchIsLogin}>or sign back in</SwitchText>
+          <SwitchText onClick={switchIsLogin}>
+            or login with an account
+          </SwitchText>
         </Form>
       </RegisterBox>
     );
@@ -329,7 +359,6 @@ const Join = (props) => {
     return (
       <JoinComp>
         <Container>
-          {/* <Display /> */}
           <JoinBox>
             <JoinBoxContainer>{isLogin ? login : register}</JoinBoxContainer>
           </JoinBox>
@@ -355,6 +384,7 @@ const mapDispatchToProps = (dispatch) => {
     register: (name, email, password) =>
       dispatch(register(name, email, password)),
     login: (email, password) => dispatch(login(email, password)),
+    loginGuest: () => dispatch(loginGuest()),
   };
 };
 

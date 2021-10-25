@@ -1,5 +1,12 @@
 // AUTH
-export { setUsername, fetchUser, register, login, logout } from "./auth";
+export {
+  setUsername,
+  fetchUser,
+  register,
+  login,
+  loginGuest,
+  logout,
+} from "./auth";
 
 // MESSAGES
 export {

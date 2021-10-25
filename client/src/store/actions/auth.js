@@ -9,6 +9,8 @@ import {
   LOGIN_BEGIN,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  LOGIN_GUEST_SUCCESS,
+  LOGIN_GUEST_FAIL,
   LOGOUT,
 } from "./actions";
 import { storeFriends, fetchDirectMessages } from "./index";
@@ -181,6 +183,42 @@ const loginSuccess = (data) => {
 const loginFail = (msg) => {
   return {
     type: LOGIN_FAIL,
+    payload: { id: "LOGIN_ERROR", msg },
+  };
+};
+
+// Login as guest
+export const loginGuest = () => (dispatch) => {
+  return new Promise(function (resolve, reject) {
+    // Headers
+    const config = {
+      "Content-Type": "application/json",
+    };
+
+    axios
+      .post("/api/users/guest", config)
+      .then((res) => {
+        const { user, friends } = res.data;
+        dispatch(loginGuestSuccess({ user }));
+        dispatch(storeFriends(friends));
+        resolve(user);
+      })
+      .catch((err) => {
+        dispatch(loginGuestFail(err.response.data.msg));
+      });
+  });
+};
+
+const loginGuestSuccess = (data) => {
+  return {
+    type: LOGIN_GUEST_SUCCESS,
+    payload: { data },
+  };
+};
+
+const loginGuestFail = (msg) => {
+  return {
+    type: LOGIN_GUEST_FAIL,
     payload: { id: "LOGIN_ERROR", msg },
   };
 };

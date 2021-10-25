@@ -79,6 +79,36 @@ router.post("/", (req, res) => {
   });
 });
 
+// @route   POST /api/users/guest
+// @desc    Register New Guest
+// @access  Public
+router.post("/guest", (req, res) => {
+  // Create custom unique ID based on time
+  let id = "";
+  const date = new Date();
+
+  id += date.getFullYear();
+  id += date.getMonth();
+  id += date.getDay();
+  id += date.getHours();
+  id += date.getMinutes();
+  id += date.getSeconds();
+  id += date.getMilliseconds();
+
+  res.json({
+    user: {
+      _id: id,
+      name: "Guest" + id,
+      email: "",
+      isGuest: true,
+    },
+    friends: {
+      friends: [],
+      requests: [],
+    },
+  });
+});
+
 // @route   GET /api/users/:userId
 // @desc    Fetch User Data
 // @access  Private

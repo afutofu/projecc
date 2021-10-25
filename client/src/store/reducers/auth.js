@@ -8,6 +8,8 @@ import {
   LOGIN_BEGIN,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  LOGIN_GUEST_SUCCESS,
+  LOGIN_GUEST_FAIL,
   LOGOUT,
 } from "../actions/actions";
 
@@ -41,8 +43,17 @@ const authReducer = (state = initialState, action) => {
         error: null,
         isLoading: false,
       };
+    case LOGIN_GUEST_SUCCESS:
+      return {
+        ...state,
+        ...action.payload.data,
+        isAuthenticated: true,
+        error: null,
+        isLoading: false,
+      };
     case FETCH_USER_FAIL:
     case LOGIN_FAIL:
+    case LOGIN_GUEST_FAIL:
     case REGISTER_FAIL:
     case LOGOUT:
       localStorage.removeItem("token");
