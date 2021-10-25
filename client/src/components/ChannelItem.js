@@ -99,6 +99,7 @@ const ChannelItem = (props) => {
     project,
     _id,
     socket,
+    user,
   } = props;
 
   const onDeleteChannel = (e) => {
@@ -126,14 +127,17 @@ const ChannelItem = (props) => {
         <ChatPrefix />
         <ItemName selected={selected}>{name}</ItemName>
       </ItemContainer>
-      <Buttons>
-        <Button onClick={(e) => onRenameChannel(e)}>
-          <i className="fa fa-pencil"></i>
-        </Button>
-        <Button onClick={(e) => onDeleteChannel(e)} color="red">
-          <i className="fa fa-times"></i>
-        </Button>
-      </Buttons>
+
+      {user.isGuest == null && (
+        <Buttons>
+          <Button onClick={(e) => onRenameChannel(e)}>
+            <i className="fa fa-pencil"></i>
+          </Button>
+          <Button onClick={(e) => onDeleteChannel(e)} color="red">
+            <i className="fa fa-times"></i>
+          </Button>
+        </Buttons>
+      )}
     </ChannelItemComp>
   );
 };

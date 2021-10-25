@@ -73,9 +73,11 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Form = styled.form.attrs((props) => ({
-  onSubmit: props.onSubmit,
-}))`
+const Form = styled.form.attrs((props) => {
+  return {
+    onSubmit: props.onSubmit,
+  };
+})`
   position: relative;
   width: 100%;
   bottom: 0;
@@ -84,9 +86,12 @@ const Form = styled.form.attrs((props) => ({
   box-sizing: border-box;
 `;
 
-const Input = styled.input.attrs((props) => ({
-  placeholder: props.placeholder,
-}))`
+const Input = styled.input.attrs((props) => {
+  return {
+    placeholder: props.placeholder,
+    disabled: props.isGuest,
+  };
+})`
   position: relative;
   width: 100%;
   height: 45px;
@@ -120,6 +125,7 @@ const Chat = (props) => {
     deleteDirectMessage,
     socket,
     chatType,
+    user,
   } = props;
 
   // If chat is in direct messages, fetch user data (name)
@@ -273,7 +279,12 @@ const Chat = (props) => {
           <Input
             onChange={(e) => setMessage(e.target.value)}
             value={message}
-            placeholder={`Message ~${selectedChannel.name}`}
+            placeholder={
+              user.isGuest == null
+                ? `Message ~${selectedChannel.name}`
+                : "Guests cannot send messages"
+            }
+            isGuest={user.isGuest == null ? false : true}
           />
         </Form>
       </Container>
@@ -287,6 +298,7 @@ const mapStateToProps = (state) => {
     userId: state.auth.user._id,
     directMessages: state.directMessage.directMessages,
     socket: state.socket.socket,
+    user: state.auth.user,
   };
 };
 

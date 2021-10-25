@@ -8,9 +8,11 @@ import { setSelectedProject } from "../store/actions/";
 
 const itemSpacing = "15px";
 
-const ProjectBarComp = styled.div.attrs((props) => ({
-  ref: props.ref,
-}))`
+const ProjectBarComp = styled.div.attrs((props) => {
+  return {
+    ref: props.ref,
+  };
+})`
   position: relative;
   top: 0;
   left: 0;
@@ -77,6 +79,7 @@ const ProjectBar = (props) => {
     selectedProject,
     projectModalOpen,
     setSelectedProject,
+    user,
   } = props;
 
   return (
@@ -103,7 +106,16 @@ const ProjectBar = (props) => {
           );
         })}
       </ProjectItemWrapper>
-      <PlusIcon onClick={() => projectModalOpen("ADD")}>
+      <PlusIcon
+        onClick={() => {
+          // If the user is a guest, do not open modal
+          if (user.isGuest) {
+            return;
+          }
+
+          projectModalOpen("ADD");
+        }}
+      >
         <i className="fa fa-plus"></i>
       </PlusIcon>
     </ProjectBarComp>
@@ -114,6 +126,7 @@ const mapStateToProps = (state) => {
   return {
     projects: state.project.projects,
     selectedProject: state.project.selectedProject,
+    user: state.auth.user,
   };
 };
 

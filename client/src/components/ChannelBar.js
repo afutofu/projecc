@@ -41,12 +41,8 @@ const AddChannelButton = styled.button`
 `;
 
 const ContentBar = (props) => {
-  const {
-    channelModalOpen,
-    selectedProject,
-    channels,
-    selectedChannel,
-  } = props;
+  const { channelModalOpen, selectedProject, channels, selectedChannel, user } =
+    props;
 
   return (
     <ChannelBarComp>
@@ -60,11 +56,21 @@ const ContentBar = (props) => {
               projectName={selectedProject.name}
               project={selectedProject}
               selected={channel._id === selectedChannel._id ? true : false}
+              user={user}
             />
           );
         })}
       </Container>
-      <AddChannelButton onClick={() => channelModalOpen("ADD")}>
+      <AddChannelButton
+        onClick={() => {
+          // If the user is a guest, do not open modal
+          if (user.isGuest) {
+            return;
+          }
+
+          channelModalOpen("ADD");
+        }}
+      >
         <i className="fa fa-plus"></i>
       </AddChannelButton>
     </ChannelBarComp>
@@ -79,6 +85,7 @@ const mapStateToProps = (state) => {
       selectedProject: selectedProject,
       channels: selectedProject.channels,
       selectedChannel: selectedProject.selectedChannel,
+      user: state.auth.user,
     };
   }
 };

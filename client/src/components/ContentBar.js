@@ -61,7 +61,8 @@ const Button = styled.div`
 `;
 
 const ContentBar = (props) => {
-  const { selectedProject, projectModalOpen, deleteProject, socket } = props;
+  const { selectedProject, projectModalOpen, deleteProject, socket, user } =
+    props;
 
   const onRenameProject = () => {
     projectModalOpen("RENAME", {
@@ -99,14 +100,16 @@ const ContentBar = (props) => {
     <ContentBarComp selectedProject={selectedProject}>
       <Header>
         {renderName()}
-        <Buttons>
-          <Button onClick={(e) => onRenameProject(e)}>
-            <i className="fa fa-pencil"></i>
-          </Button>
-          <Button onClick={(e) => onDeleteProject(e)} color="red">
-            <i className="fa fa-times"></i>
-          </Button>
-        </Buttons>
+        {user.isGuest == null && (
+          <Buttons>
+            <Button onClick={(e) => onRenameProject(e)}>
+              <i className="fa fa-pencil"></i>
+            </Button>
+            <Button onClick={(e) => onDeleteProject(e)} color="red">
+              <i className="fa fa-times"></i>
+            </Button>
+          </Buttons>
+        )}
       </Header>
       <ChannelBar />
     </ContentBarComp>
@@ -129,6 +132,7 @@ const ContentBar = (props) => {
 const mapStateToProps = (state) => {
   return {
     socket: state.socket.socket,
+    user: state.auth.user,
   };
 };
 

@@ -82,11 +82,8 @@ const AddFriendButton = styled.button`
 `;
 
 const Friends = (props) => {
-  const {
-    friendStatusDisplay,
-    setFriendStatusDisplay,
-    friendModalOpen,
-  } = props;
+  const { friendStatusDisplay, setFriendStatusDisplay, friendModalOpen, user } =
+    props;
 
   return (
     <FriendsComp>
@@ -104,7 +101,16 @@ const Friends = (props) => {
         >
           Pending
         </FriendStatusButton>
-        <AddFriendButton onClick={() => friendModalOpen("ADD")}>
+        <AddFriendButton
+          onClick={() => {
+            // If the user is a guest, do not open modal
+            if (user.isGuest) {
+              return;
+            }
+
+            friendModalOpen("ADD");
+          }}
+        >
           Add Friend
         </AddFriendButton>
       </Header>
@@ -118,6 +124,7 @@ const Friends = (props) => {
 const mapStateToProps = (state) => {
   return {
     friendStatusDisplay: state.friend.statusDisplay,
+    user: state.auth.user,
   };
 };
 
