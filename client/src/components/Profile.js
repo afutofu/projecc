@@ -305,7 +305,13 @@ const Profile = (props) => {
     <ProfileComp>
       <AvatarDisplay>{user && user.name.substring(0, 1)}</AvatarDisplay>
       {user ? <UserDisplay>{user.name}</UserDisplay> : null}
-      {user ? <EmailDisplay>{user.email}</EmailDisplay> : null}
+      {user ? (
+        user.isGuest ? (
+          <EmailDisplay>Guest Account</EmailDisplay>
+        ) : (
+          <EmailDisplay>{user.email}</EmailDisplay>
+        )
+      ) : null}
       {user ? <IdDisplay>{user._id}</IdDisplay> : null}
       {/* <Button onClick={onEdit}>Edit</Button> */}
       <LogoutButton onClick={onLogout}>Logout</LogoutButton>
