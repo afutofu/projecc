@@ -100,7 +100,7 @@ const ContentBar = (props) => {
     <ContentBarComp selectedProject={selectedProject}>
       <Header>
         {renderName()}
-        {user.isGuest == null && (
+        {user && user.isGuest == null && (
           <Buttons>
             <Button onClick={(e) => onRenameProject(e)}>
               <i className="fa fa-pencil"></i>
