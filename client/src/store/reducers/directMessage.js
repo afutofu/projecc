@@ -110,6 +110,7 @@ const friendReducer = (state = initialState, action) => {
     case CREATE_DIRECT_MESSAGE_FAIL:
       return {
         ...state,
+        error: action.payload.error,
         directMessages: state.directMessages.map((directMessage) => {
           if (directMessage._id === action.payload.directMessageId) {
             directMessage.messages = directMessage.messages.filter(
