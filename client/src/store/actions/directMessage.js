@@ -9,13 +9,14 @@ import {
   DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
   DELETE_DIRECT_MESSAGE_GROUP_FAIL,
   CREATE_DIRECT_MESSAGE_CLIENT,
+  CREATE_DIRECT_MESSAGE_BEGIN,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_CLIENT,
   DELETE_DIRECT_MESSAGE_SUCCESS,
   DELETE_DIRECT_MESSAGE_FAIL,
 } from "./actions";
-import { tokenConfig } from "../../shared/utils";
+import { tokenConfig, createCustomID } from "../../shared/utils";
 import { setHomeItem } from "./index";
 
 export const fetchDirectMessages = (userId) => (dispatch, getState) => {
@@ -56,25 +57,27 @@ export const createDirectMessageGroupClient = (directMessage) => {
   };
 };
 
-export const createDirectMessageGroup = (userId, friendId) => (
-  dispatch,
-  getState
-) => {
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(`/api/directMessages`, { userId, friendId }, tokenConfig(getState))
-      .then((res) => {
-        const { directMessage } = res.data;
-        dispatch(createDirectMessageGroupSuccess(directMessage));
-        dispatch(setHomeItem(directMessage._id));
-        resolve(directMessage);
-      })
-      .catch((error) => {
-        dispatch(createDirectMessageGroupFail(error.response.data.msg));
-        reject(error.response.data.msg);
-      });
-  });
-};
+export const createDirectMessageGroup =
+  (userId, friendId) => (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      axios
+        .post(
+          `/api/directMessages`,
+          { userId, friendId },
+          tokenConfig(getState)
+        )
+        .then((res) => {
+          const { directMessage } = res.data;
+          dispatch(createDirectMessageGroupSuccess(directMessage));
+          dispatch(setHomeItem(directMessage._id));
+          resolve(directMessage);
+        })
+        .catch((error) => {
+          dispatch(createDirectMessageGroupFail(error.response.data.msg));
+          reject(error.response.data.msg);
+        });
+    });
+  };
 
 const createDirectMessageGroupSuccess = (directMessage) => {
   return {
@@ -91,43 +94,39 @@ const createDirectMessageGroupFail = (error) => {
 };
 
 // DELETE DIRECT MESSAGE GROUP
-export const deleteDirectMessageGroupClient = (directMessage) => (
-  dispatch,
-  getState
-) => {
-  const { homeItem } = getState().home;
-  if (directMessage._id === homeItem) {
+export const deleteDirectMessageGroupClient =
+  (directMessage) => (dispatch, getState) => {
+    const { homeItem } = getState().home;
+    if (directMessage._id === homeItem) {
+      dispatch({
+        type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
+        payload: { directMessage },
+      });
+      dispatch(setHomeItem("friends"));
+    }
+
     dispatch({
       type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
       payload: { directMessage },
     });
-    dispatch(setHomeItem("friends"));
-  }
+  };
 
-  dispatch({
-    type: DELETE_DIRECT_MESSAGE_GROUP_CLIENT,
-    payload: { directMessage },
-  });
-};
-
-export const deleteDirectMessageGroup = (directMessageId) => (
-  dispatch,
-  getState
-) => {
-  return new Promise(function (resolve, reject) {
-    axios
-      .delete(`/api/directMessages/${directMessageId}`, tokenConfig(getState))
-      .then((res) => {
-        dispatch(deleteDirectMessageGroupSuccess(res.data));
-        dispatch(setHomeItem("friends"));
-        resolve(res.data);
-      })
-      .catch((error) => {
-        dispatch(deleteDirectMessageGroupFail(error.response.data.msg));
-        reject(error.response.data.msg);
-      });
-  });
-};
+export const deleteDirectMessageGroup =
+  (directMessageId) => (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      axios
+        .delete(`/api/directMessages/${directMessageId}`, tokenConfig(getState))
+        .then((res) => {
+          dispatch(deleteDirectMessageGroupSuccess(res.data));
+          dispatch(setHomeItem("friends"));
+          resolve(res.data);
+        })
+        .catch((error) => {
+          dispatch(deleteDirectMessageGroupFail(error.response.data.msg));
+          reject(error.response.data.msg);
+        });
+    });
+  };
 
 const deleteDirectMessageGroupSuccess = (directMessage) => {
   return {
@@ -151,42 +150,66 @@ export const createDirectMessageClient = (newMessage, directMessageId) => {
   };
 };
 
-export const createDirectMessage = ({
-  directMessageId,
-  userId,
-  username,
-  text,
-}) => (dispatch, getState) => {
-  return new Promise(function (resolve, reject) {
-    axios
-      .post(
-        `/api/directMessages/${directMessageId}/messages`,
-        { userId, username, text },
-        tokenConfig(getState)
-      )
-      .then((res) => {
-        dispatch(createDirectMessageSuccess(res.data, directMessageId));
-        resolve({ message: res.data, directMessageId });
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(createDirectMessageFail(error.response.data.msg));
-        reject(error.response.data.msg);
-      });
-  });
-};
+export const createDirectMessage =
+  ({ directMessageId, userId, username, text }) =>
+  (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      const initialId = createCustomID();
 
-const createDirectMessageSuccess = (newMessage, directMessageId) => {
+      const initialMessage = {
+        initialId,
+        text,
+        userId,
+        username,
+        timeCreated: Date.now(),
+      };
+
+      dispatch(createDirectMessageBegin(initialMessage, directMessageId));
+
+      axios
+        .post(
+          `/api/directMessages/${directMessageId}/messages`,
+          { userId, username, text },
+          tokenConfig(getState)
+        )
+        .then((res) => {
+          dispatch(
+            createDirectMessageSuccess(res.data, directMessageId, initialId)
+          );
+          resolve({ message: res.data, directMessageId });
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(
+            createDirectMessageFail(
+              error.response.data.msg,
+              directMessageId,
+              initialId
+            )
+          );
+          reject(error.response.data.msg);
+        });
+    });
+  };
+
+const createDirectMessageBegin = (initialNewMessage, directMessageId) => {
   return {
-    type: CREATE_DIRECT_MESSAGE_SUCCESS,
-    payload: { newMessage, directMessageId },
+    type: CREATE_DIRECT_MESSAGE_BEGIN,
+    payload: { initialNewMessage, directMessageId },
   };
 };
 
-const createDirectMessageFail = (error) => {
+const createDirectMessageSuccess = (newMessage, directMessageId, initialId) => {
+  return {
+    type: CREATE_DIRECT_MESSAGE_SUCCESS,
+    payload: { newMessage, directMessageId, initialId },
+  };
+};
+
+const createDirectMessageFail = (error, directMessageId, initialId) => {
   return {
     type: CREATE_DIRECT_MESSAGE_FAIL,
-    payload: { error },
+    payload: { error, directMessageId, initialId },
   };
 };
 
@@ -198,26 +221,25 @@ export const deleteDirectMessageClient = (messageId, directMessageId) => {
   };
 };
 
-export const deleteDirectMessage = ({ messageId, directMessageId }) => (
-  dispatch,
-  getState
-) => {
-  return new Promise(function (resolve, reject) {
-    axios
-      .delete(
-        `/api/directMessages/${directMessageId}/messages/${messageId}`,
-        tokenConfig(getState)
-      )
-      .then((res) => {
-        dispatch(deleteDirectMessageSuccess(messageId, directMessageId));
-        resolve({ messageId, directMessageId });
-      })
-      .catch((error) => {
-        dispatch(deleteDirectMessageFail(error.response.data.msg));
-        reject(error.response.data.msg);
-      });
-  });
-};
+export const deleteDirectMessage =
+  ({ messageId, directMessageId }) =>
+  (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      axios
+        .delete(
+          `/api/directMessages/${directMessageId}/messages/${messageId}`,
+          tokenConfig(getState)
+        )
+        .then((res) => {
+          dispatch(deleteDirectMessageSuccess(messageId, directMessageId));
+          resolve({ messageId, directMessageId });
+        })
+        .catch((error) => {
+          dispatch(deleteDirectMessageFail(error.response.data.msg));
+          reject(error.response.data.msg);
+        });
+    });
+  };
 
 const deleteDirectMessageSuccess = (messageId, directMessageId) => {
   return {

@@ -87,7 +87,7 @@ const MessageContainer = styled.div`
 
 const MessageText = styled.p`
   font-size: 14px;
-  color: #ddd;
+  color: ${({ isInitial }) => (isInitial ? "#aaa" : "#ddd")};
   margin: 0;
   /* word-break: break-all; */
   line-height: 24px;
@@ -128,7 +128,7 @@ const Button = styled.div`
 
 const Message = (props) => {
   const { chatType, message, channelId, projectId, deleteMessage } = props;
-  const { _id, username, date, text } = message;
+  const { initialId, _id, username, date, text } = message;
 
   // // If chat is in direct messages, fetch user data (name)
   // useEffect(() => {
@@ -162,7 +162,7 @@ const Message = (props) => {
           <TopRow>
             <NameDate>
               <Name>{username}</Name>
-              <DateComp>{date}</DateComp>
+              <DateComp>{date && date}</DateComp>
             </NameDate>
             <Buttons>
               <Button onClick={() => deleteMessage(_id)}>
@@ -171,7 +171,7 @@ const Message = (props) => {
             </Buttons>
           </TopRow>
           <MessageContainer>
-            <MessageText>{text}</MessageText>
+            <MessageText isInitial={initialId != null}>{text}</MessageText>
           </MessageContainer>
         </Text>
       </MessageComp>
@@ -185,7 +185,7 @@ const Message = (props) => {
         <TopRow>
           <NameDate>
             <Name>{username}</Name>
-            <DateComp>{date}</DateComp>
+            <DateComp>{date && date}</DateComp>
           </NameDate>
           <Buttons>
             <Button onClick={() => deleteMessage(_id, channelId, projectId)}>
@@ -194,7 +194,7 @@ const Message = (props) => {
           </Buttons>
         </TopRow>
         <MessageContainer>
-          <MessageText>{text}</MessageText>
+          <MessageText isInitial={initialId != null}>{text}</MessageText>
         </MessageContainer>
       </Text>
     </MessageComp>

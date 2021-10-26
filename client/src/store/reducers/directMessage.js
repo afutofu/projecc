@@ -6,6 +6,7 @@ import {
   DELETE_DIRECT_MESSAGE_GROUP_SUCCESS,
   DELETE_DIRECT_MESSAGE_GROUP_FAIL,
   CREATE_DIRECT_MESSAGE_CLIENT,
+  CREATE_DIRECT_MESSAGE_BEGIN,
   CREATE_DIRECT_MESSAGE_SUCCESS,
   CREATE_DIRECT_MESSAGE_FAIL,
   DELETE_DIRECT_MESSAGE_CLIENT,
@@ -43,8 +44,20 @@ const friendReducer = (state = initialState, action) => {
           return null;
         }),
       };
+    case CREATE_DIRECT_MESSAGE_BEGIN:
+      return {
+        ...state,
+        directMessages: state.directMessages.map((directMessage) => {
+          if (directMessage._id === action.payload.directMessageId) {
+            directMessage.messages = [
+              ...directMessage.messages,
+              action.payload.initialNewMessage,
+            ];
+          }
+          return directMessage;
+        }),
+      };
     case CREATE_DIRECT_MESSAGE_CLIENT:
-    case CREATE_DIRECT_MESSAGE_SUCCESS:
       return {
         ...state,
         directMessages: state.directMessages.map((directMessage) => {
@@ -53,6 +66,24 @@ const friendReducer = (state = initialState, action) => {
               ...directMessage.messages,
               action.payload.newMessage,
             ];
+          }
+          return directMessage;
+        }),
+      };
+    case CREATE_DIRECT_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        directMessages: state.directMessages.map((directMessage) => {
+          if (directMessage._id === action.payload.directMessageId) {
+            for (let i = directMessage.messages.length - 1; i > 0; i--) {
+              if (
+                directMessage.messages[i].initialId === action.payload.initialId
+              ) {
+                directMessage.messages[i] = {
+                  ...action.payload.newMessage,
+                };
+              }
+            }
           }
           return directMessage;
         }),
@@ -77,6 +108,21 @@ const friendReducer = (state = initialState, action) => {
     case CREATE_DIRECT_MESSAGE_GROUP_FAIL:
     case DELETE_DIRECT_MESSAGE_GROUP_FAIL:
     case CREATE_DIRECT_MESSAGE_FAIL:
+      return {
+        ...state,
+        directMessages: state.directMessages.map((directMessage) => {
+          if (directMessage._id === action.payload.directMessageId) {
+            directMessage.messages = directMessage.messages.filter(
+              (message) => {
+                if (message.initialId !== action.payload.initialId)
+                  return message;
+                return null;
+              }
+            );
+          }
+          return directMessage;
+        }),
+      };
     case DELETE_DIRECT_MESSAGE_FAIL:
       return {
         ...state,
