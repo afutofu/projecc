@@ -45,3 +45,19 @@ export const fetchUserData = (userId) => (dispatch, getState) => {
       });
   });
 };
+
+export const createCustomID = () => {
+  // Create custom unique ID based on time
+  let id = "";
+  const date = new Date();
+
+  id += date.getFullYear();
+  id += date.getMonth();
+  id += date.getDay();
+  id += date.getHours();
+  id += date.getMinutes();
+  id += date.getSeconds();
+  id += date.getMilliseconds();
+
+  return id;
+};
