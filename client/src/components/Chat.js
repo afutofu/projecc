@@ -165,20 +165,21 @@ const Chat = (props) => {
 
     if (chatType === "dm") {
       if (messageDM) {
+        // Clear input so there is no wait for API requests
+        const text = messageDM;
+        setMessageDM("");
         createDirectMessage({
           directMessageId,
           userId,
           username,
-          text: messageDM,
+          text,
         })
           .then(({ message, directMessageId }) => {
             // Send message to server
             socket.emit(
               "sendDirectMessage",
               { message, directMessageId, clientId: member._id },
-              () => {
-                setMessageDM("");
-              }
+              () => {}
             );
           })
           .catch((err) => {
@@ -187,9 +188,12 @@ const Chat = (props) => {
       }
     } else {
       if (message) {
+        // Clear input so there is no wait for API requests
+        const text = message;
+        setMessage("");
         createMessage(
           {
-            text: message,
+            text,
             username,
             userId,
           },
@@ -198,9 +202,11 @@ const Chat = (props) => {
         )
           .then(({ data, channelId, projectId }) => {
             // Send message to server
-            socket.emit("sendMessage", { data, channelId, projectId }, () => {
-              setMessage("");
-            });
+            socket.emit(
+              "sendMessage",
+              { data, channelId, projectId },
+              () => {}
+            );
           })
           .catch((err) => {
             console.log(err);
