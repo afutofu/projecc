@@ -9,7 +9,7 @@ import {
   DELETE_MESSAGE_SUCCESS,
   DELETE_MESSAGE_FAIL,
 } from "../actions";
-import { tokenConfig } from "../../../shared/utils";
+import { tokenConfig, createCustomID } from "../../../shared/utils";
 
 // CREATE MESSAGE
 export const createMessageClient = (newMessage, channelId, projectId) => {
@@ -19,46 +19,57 @@ export const createMessageClient = (newMessage, channelId, projectId) => {
   };
 };
 
-export const createMessage = (message, channelId, projectId) => (
-  dispatch,
-  getState
-) => {
-  return new Promise(function (resolve, reject) {
-    dispatch(createMessageBegin());
-    axios
-      .post(
-        `/api/projects/${projectId}/channels/${channelId}/messages`,
-        message,
-        tokenConfig(getState)
-      )
-      .then((res) => {
-        dispatch(createMessageSuccess(res.data, channelId, projectId));
-        resolve({ data: res.data, channelId, projectId });
-      })
-      .catch((err) => {
-        dispatch(createMessageFail(err));
-        reject(err);
-      });
-  });
-};
+export const createMessage =
+  (message, channelId, projectId) => (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      const initialId = createCustomID();
+      const { text, username, userId } = message;
 
-const createMessageBegin = () => {
+      const initialMessage = {
+        initialId,
+        text,
+        userId,
+        username,
+      };
+
+      dispatch(createMessageBegin(initialMessage, channelId, projectId));
+      axios
+        .post(
+          `/api/projects/${projectId}/channels/${channelId}/messages`,
+          message,
+          tokenConfig(getState)
+        )
+        .then((res) => {
+          dispatch(
+            createMessageSuccess(res.data, channelId, projectId, initialId)
+          );
+          resolve({ data: res.data, channelId, projectId });
+        })
+        .catch((err) => {
+          dispatch(createMessageFail(err, channelId, projectId, initialId));
+          reject(err);
+        });
+    });
+  };
+
+const createMessageBegin = (initialNewMessage, channelId, projectId) => {
   return {
     type: CREATE_MESSAGE_BEGIN,
+    payload: { initialNewMessage, channelId, projectId },
   };
 };
 
-const createMessageSuccess = (newMessage, channelId, projectId) => {
+const createMessageSuccess = (newMessage, channelId, projectId, initialId) => {
   return {
     type: CREATE_MESSAGE_SUCCESS,
-    payload: { newMessage, channelId, projectId },
+    payload: { newMessage, channelId, projectId, initialId },
   };
 };
 
-const createMessageFail = (err) => {
+const createMessageFail = (err, channelId, projectId, initialId) => {
   return {
     type: CREATE_MESSAGE_FAIL,
-    payload: { err },
+    payload: { err, channelId, projectId, initialId },
   };
 };
 
@@ -70,27 +81,25 @@ export const deleteMessageClient = (updatedChannel, channelId, projectId) => {
   };
 };
 
-export const deleteMessage = (messageId, channelId, projectId) => (
-  dispatch,
-  getState
-) => {
-  return new Promise(function (resolve, reject) {
-    dispatch(deleteMessageBegin());
-    axios
-      .delete(
-        `/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`,
-        tokenConfig(getState)
-      )
-      .then((res) => {
-        dispatch(deleteMessageSuccess(res.data, channelId, projectId));
-        resolve({ data: res.data, channelId, projectId });
-      })
-      .catch((err) => {
-        dispatch(deleteMessageFail(err));
-        reject(err);
-      });
-  });
-};
+export const deleteMessage =
+  (messageId, channelId, projectId) => (dispatch, getState) => {
+    return new Promise(function (resolve, reject) {
+      dispatch(deleteMessageBegin());
+      axios
+        .delete(
+          `/api/projects/${projectId}/channels/${channelId}/messages/${messageId}`,
+          tokenConfig(getState)
+        )
+        .then((res) => {
+          dispatch(deleteMessageSuccess(res.data, channelId, projectId));
+          resolve({ data: res.data, channelId, projectId });
+        })
+        .catch((err) => {
+          dispatch(deleteMessageFail(err));
+          reject(err);
+        });
+    });
+  };
 
 const deleteMessageBegin = () => {
   return {

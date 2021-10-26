@@ -48,14 +48,7 @@ export const createMessageClient = (state, action) => {
 };
 
 export const createMessageBegin = (state, action) => {
-  return {
-    ...state,
-    loading: true,
-  };
-};
-
-export const createMessageSuccess = (state, action) => {
-  const { newMessage, channelId, projectId } = action.payload;
+  const { initialNewMessage, channelId, projectId } = action.payload;
 
   let newSelectedProject = {
     ...state.selectedProject,
@@ -67,7 +60,42 @@ export const createMessageSuccess = (state, action) => {
       if (project._id === projectId) {
         project.channels = project.channels.map((channel) => {
           if (channel._id === channelId) {
-            channel.messages.push(newMessage);
+            channel.messages.push(initialNewMessage);
+          }
+          return channel;
+        });
+        newSelectedProject = project;
+      }
+      return project;
+    }),
+    loading: true,
+    selectedProject: {
+      ...newSelectedProject,
+    },
+  };
+};
+
+export const createMessageSuccess = (state, action) => {
+  const { newMessage, channelId, projectId, initialId } = action.payload;
+
+  let newSelectedProject = {
+    ...state.selectedProject,
+  };
+
+  return {
+    ...state,
+    projects: state.projects.map((project) => {
+      if (project._id === projectId) {
+        project.channels = project.channels.map((channel) => {
+          if (channel._id === channelId) {
+            //channel.messages.push(newMessage);
+            for (let i = channel.messages.length - 1; i > 0; i--) {
+              if (channel.messages[i].initialId === initialId) {
+                channel.messages[i] = {
+                  ...newMessage,
+                };
+              }
+            }
           }
           return channel;
         });
@@ -83,11 +111,39 @@ export const createMessageSuccess = (state, action) => {
 };
 
 export const createMessageFail = (state, action) => {
-  return {
-    ...state,
-    error: action.payload.err,
-    loading: false,
-  };
+  const { channelId, projectId, initialId } = action.payload;
+
+  if (!state.selectedProject) {
+    return {
+      ...state,
+      error: action.payload.err,
+      projects: state.projects.map((project) => {
+        if (project._id === projectId) {
+          project.channels = project.channels.map((channel) => {
+            if (channel._id === channelId) {
+              channel.messages = channel.messages.filter((message) => {
+                if (message.initialId !== action.payload.initialId)
+                  return message;
+                return null;
+              });
+            }
+            return channel;
+          });
+
+          if (project.selectedChannel._id === channelId) {
+            project.selectedChannel = project.selectedChannel.messages.filter(
+              (message) => {
+                if (message.initialId !== initialId) return message;
+                return null;
+              }
+            );
+          }
+        }
+        return project;
+      }),
+      loading: false,
+    };
+  }
 };
 
 // DELETE MESSAGE
