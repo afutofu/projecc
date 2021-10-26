@@ -58,10 +58,10 @@ const Messages = (props) => {
 
   return (
     <MessagesComp>
-      {newMessages.map((message) => {
+      {newMessages.map((message, i) => {
         return (
           <Message
-            key={message._id}
+            key={i}
             message={message}
             channelId={channelId}
             projectId={projectId}
