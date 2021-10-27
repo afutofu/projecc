@@ -11,6 +11,14 @@ const ProjectItemComp = styled.div`
   box-sizing: border-box;
   cursor: pointer;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+
   transition: 0.2s;
   :hover {
     border-radius: 30%;
@@ -34,7 +42,9 @@ const ProjectItem = (props) => {
     <ProjectItemComp
       selected={selected}
       onClick={() => setSelectedProject(project._id)}
-    ></ProjectItemComp>
+    >
+      {project && project.name.substring(0, 1)}
+    </ProjectItemComp>
   );
 };
 
