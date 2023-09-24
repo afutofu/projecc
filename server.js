@@ -34,18 +34,6 @@ app.use("/api/users/:userId/friends", friendRoutes);
 app.use("/api/directMessages", directMessageRoutes);
 app.use("/api/auth", authRoutes);
 
-// CONNECT TO DB
-mongoose.connect(
-  process.env.DB_CONNECTION,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true,
-  },
-  () => console.log("Connected to DB!")
-);
-
 // SERVE STATIC ASSETS IF IN PRODUCTION
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
@@ -59,7 +47,20 @@ if (process.env.NODE_ENV === "production") {
 const server = http.createServer(app);
 connectSocket(server);
 
-// START SERVER
-server.listen(PORT, () => {
-  console.log(`Server has started on port ${PORT}`);
-});
+// CONNECT TO DB
+mongoose.connect(
+  process.env.DB_CONNECTION,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  },
+  () => {
+    console.log("Connected to DB!");
+
+    // START SERVER
+    server.listen(PORT, () => {
+      console.log(`Server has started on port ${PORT}`);
+    });
+  }
+);
